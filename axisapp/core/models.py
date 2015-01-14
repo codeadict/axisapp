@@ -28,10 +28,10 @@ class Partner(models.Model):
     cellphone = models.CharField(_('Cellphone'), max_length=100, blank=True)
     email = models.CharField(_('Email'), max_length=200, blank=True)
     fax = models.CharField(_('Fax'), max_length=100, blank=True)
-    tradename = models.CharField(_('Trade Name'), max_length=100, null=True, blank=True)
-    specialcontributor = models.BooleanField(_('Special Contributor'), False)
-    isprovider = models.BooleanField(_('Is Provider'), False)
-    iscustomer = models.BooleanField(_('Is Customer'), False)
+    trade_name = models.CharField(_('Trade Name'), max_length=100, null=True, blank=True)
+    special_contributor = models.BooleanField(_('Special Contributor'), False)
+    is_provider = models.BooleanField(_('Is Provider'), False)
+    is_customer = models.BooleanField(_('Is Customer'), False)
 
 
     @staticmethod
