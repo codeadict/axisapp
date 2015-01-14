@@ -18,7 +18,7 @@ from django.db.transaction import atomic
 
 from axisapp.core.models import NameBase
 from axisapp.core.fields import PercentageField
-from axisapp.core.form_helper import DATETIME_FORMATS
+from axisapp.core.form_helpers import DATETIME_FORMATS
 from axisapp.core.mustache import load_mustache_template_source
 from axisapp.storages import PublicStorage, PublicDebugStorage
 
