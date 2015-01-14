@@ -64,7 +64,8 @@ class User(AbstractBaseUser):
     mobile = models.CharField(_('Mobile Number'), max_length=255, null=True, blank=True)
     phone = models.CharField(_('Telephone Number'), max_length=255, null=True, blank=True)
     gender = models.PositiveSmallIntegerField(_('Gender'), choices=GENDERS, null=True, blank=True)
-    photo = models.ImageField(_('Photo'), upload_to=photo_processing.user_photo_path, null=True, blank=True)
+    # TODO: Fix photo paths
+    photo = models.ImageField(_('Photo'), upload_to='userphotos', null=True, blank=True)
     date_of_birth = models.DateField(_('Date of Birth'), null=True, blank=True)
     date_created = models.DateField(_('Date Created'), auto_now_add=True)
     timezone = models.CharField(_('Timezone'), max_length=255,
@@ -146,7 +147,7 @@ class User(AbstractBaseUser):
         super(User, self).save(*args, **kwargs)
 
     class Meta():
-        app_label = 'axisauth'
+        app_label = 'security'
         ordering = ['last_name', 'first_name']
         unique_together = [('email', 'branch')]
 

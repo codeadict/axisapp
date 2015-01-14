@@ -3,6 +3,18 @@ from django.utils.translation import ugettext as _
 from django.db import models
 
 
+class NameBase(models.Model):
+    """
+    Abstract model for small tables that have name field
+    """
+    name = models.CharField(_('Name'), max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+
 class IdentificationType(models.Model):
     name = models.CharField(max_length=20)
 
@@ -61,3 +73,4 @@ class Partner(models.Model):
 
     def save(self, **kargs):
         super(Partner, self).save(kargs)
+
