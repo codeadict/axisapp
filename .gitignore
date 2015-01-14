@@ -55,3 +55,6 @@ target/
 
 #pycharm files
 .idea/
+
+#lib js and css
+axisapp/static/libs/
