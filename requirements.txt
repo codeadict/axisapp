@@ -1,6 +1,9 @@
 Django==1.7.2
+django-debug-toolbar==1.2.1
+django-jinja==1.0.3
 argparse==1.2.1
 jsonfield==1.0.0
+Jinja2==2.7.3
 psycopg2
 pystache==0.5.4
 wsgiref==0.1.2

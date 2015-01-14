@@ -1,0 +1,15 @@
+{% extends "base.jinja" %}
+
+{% block extra_css %}
+	<link rel="stylesheet" href="{{ "css/messages.css"|static }}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="message-area">
+    <div class="alert alert-danger" role="alert" align="center">
+        <h3>500 - Internal Server Error</h3>
+    </div>
+  </div>
+</div>
+{% endblock %}
