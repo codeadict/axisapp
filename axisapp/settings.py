@@ -51,6 +51,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     #Third party
     'django_jinja',
+    'storages',
+    #Axis
+    'axisapp.core',
+    'axisapp.company',
+    'axisapp.security',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -214,6 +219,47 @@ SESSION_COOKIE_AGE = 2 * 60 * 60
 CAPTCHA_FONT_SIZE = 40
 CAPTCHA_LETTER_ROTATION = (-30, 30)
 CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_arcs', 'captcha.helpers.noise_dots',)
+
+# as a rule we will only use S3 when the system is actually running on production
+if USE_S3:
+    # these are the "default" settings used for private files
+    AWS_QUERYSTRING_AUTH = True
+    AWS_S3_SECURE_URLS = True
+    AWS_DEFAULT_ACL = 'private'
+    # AWS_QUERYSTRING_EXPIRE = 600
+
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+    AWS_STORAGE_BUCKET_NAME = 'axisapp-private'
+
+    MEDIA_URL = 'https://s3-eu-west-1.amazonaws.com/axisapp-private/'
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+    PUBLIC_URL = 'https://axisapp-public.s3.amazonaws.com/'
+    PUBLIC_AWS_STORAGE_BUCKET_NAME = 'tutorcruncher-public'
+    PUBLIC_AWS_HEADERS = {"Cache-Control": "public, max-age=86400", }
+    PUBLIC_AWS_QUERYSTRING_AUTH = False
+    PUBLIC_AWS_DEFAULT_ACL = 'public-read'
+
+    STATIC_URL = 'https://axisapp.s3.amazonaws.com/'
+    STATIC_AWS_STORAGE_BUCKET_NAME = 'axisapp'
+    STATIC_AWS_HEADERS = {"Cache-Control": "public, max-age=86400", }
+    STATIC_AWS_QUERYSTRING_AUTH = False
+    STATIC_AWS_DEFAULT_ACL = 'public-read'
+
+    STATICFILES_STORAGE = 'axisapp.storage.StaticStorage'
+
+    # AWS_REDUCED_REDUNDANCY = False
+    AWS_IS_GZIPPED = False
+else:
+    STATIC_ROOT = 'staticfiles'
+    STATIC_URL = '/static/'
+
+    MEDIA_ROOT = 'mediafiles'
+    MEDIA_URL = '/media/'
+
+    PUBLIC_URL = '/media/public/'
 
 # You can use this to locate slowest tests:
 # > pip install django-slowtests

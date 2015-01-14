@@ -20,7 +20,7 @@ from axisapp.core.models import NameBase
 from axisapp.core.fields import PercentageField
 from axisapp.core.form_helpers import DATETIME_FORMATS
 from axisapp.core.mustache import load_mustache_template_source
-from axisapp.storages import PublicStorage, PublicDebugStorage
+from axisapp.storage import PublicStorage, PublicDebugStorage
 
 from axisapp.security import models as auth
 
