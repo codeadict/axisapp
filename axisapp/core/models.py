@@ -19,6 +19,7 @@ class IdentificationType(models.Model):
 
 class Partner(models.Model):
     name = models.CharField(_('Name'), max_length=200)
+    lastname = models.CharField(_('Last Name'), max_length=200)
     shortname = models.CharField(_('Short Name'), max_length=100, blank=True)
     typeid = models.ForeignKey(IdentificationType)
     identification = models.CharField(_('Identification'), max_length=200)
@@ -31,7 +32,7 @@ class Partner(models.Model):
     specialcontributor = models.BooleanField(default=False)
 
     @staticmethod
-    def if_tradename(self):
+    def have_tradename(self):
         return self.tradename != ''
 
     def business_name(self):
@@ -41,7 +42,7 @@ class Partner(models.Model):
         return self.name
 
     def full_name(self):
-        return self.name
+        return self.fullname
 
     def name_identification(self):
         return "%s - %s" % (self.identification, self.name)
