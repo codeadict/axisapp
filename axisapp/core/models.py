@@ -29,7 +29,7 @@ class Partner(models.Model):
     email = models.CharField(_('Email'), max_length=200, blank=True)
     fax = models.CharField(_('Fax'), max_length=100, blank=True)
     tradename = models.CharField(_('Trade Name'), max_length=100, null=True, blank=True)
-    specialcontributor = models.BooleanField(default=False)
+    specialcontributor = models.BooleanField(_('Special Contributor'), False)
 
     @staticmethod
     def have_tradename(self):
@@ -48,6 +48,7 @@ class Partner(models.Model):
         return "%s - %s" % (self.identification, self.name)
 
     class Meta:
+        abstract = True
         verbose_name = _('Partner')
         verbose_name_plural = _('Partners')
         ordering = [_('name')]
