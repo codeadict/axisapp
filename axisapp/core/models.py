@@ -30,9 +30,14 @@ class Partner(models.Model):
     fax = models.CharField(_('Fax'), max_length=100, blank=True)
     trade_name = models.CharField(_('Trade Name'), max_length=100, null=True, blank=True)
     special_contributor = models.BooleanField(_('Special Contributor'), False)
-    is_provider = models.BooleanField(_('Is Provider'), False)
-    is_customer = models.BooleanField(_('Is Customer'), False)
 
+    @property
+    def is_provider(self):
+        return False
+
+    @property
+    def is_customer(self):
+        return False
 
     @staticmethod
     def have_tradename(self):
