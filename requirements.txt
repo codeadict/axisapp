@@ -12,3 +12,4 @@ wsgiref==0.1.2
 django-simple-captcha==0.4.3
 django-sslify==0.2.4
 django-storages==1.1.8
+grablib==0.05
