@@ -30,6 +30,9 @@ class Partner(models.Model):
     fax = models.CharField(_('Fax'), max_length=100, blank=True)
     tradename = models.CharField(_('Trade Name'), max_length=100, null=True, blank=True)
     specialcontributor = models.BooleanField(_('Special Contributor'), False)
+    isprovider = models.BooleanField(_('Is Provider'), False)
+    iscustomer = models.BooleanField(_('Is Customer'), False)
+
 
     @staticmethod
     def have_tradename(self):
@@ -49,9 +52,7 @@ class Partner(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = _('Partner')
-        verbose_name_plural = _('Partners')
-        ordering = [_('name')]
+        ordering = ['name']
 
     def save(self, **kargs):
         super(Partner, self).save(kargs)
