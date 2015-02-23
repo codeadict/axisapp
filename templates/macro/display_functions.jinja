@@ -1,0 +1,124 @@
+{% macro showobject_info_short(object) %}
+  {% for name, value in gen_object_short(object) %}
+    <div class="col-md-6 detail-item">
+      <label>{{ name }}:</label>
+      <div class="one-line detail-info">
+        {% if value %}
+          {{ value|safe }}
+        {% else %}
+          {{ _('Ninguno') }}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+{% endmacro %}
+
+{% macro showobject_info_long(object) %}
+  <div class="detail-long">
+    {% for name, value in gen_object_long(object) %}
+      <div class="col-md-12 detail-item">
+        <label>{{ name }}:</label>
+        <div class="detail-info">{{ value|safe }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro showobject_with_image(object, detail_view) %}
+  {% if detail_view %}
+    <a class="photo" href="{{ url(detail_view, pk=object.pk) }}">
+        <img src="{{ "default_avatar.png"|static }}"/>
+    </a>
+  {% else %}
+    <div class="photo">
+        <img src="{{ "default_avatar.png"|static }}"/>
+    </div>
+  {% endif %}
+
+  <div class="descr img-descr row detail-short">
+    {{ showobject_info_short(object) }}
+  </div>
+  {{ showobject_info_long(object) }}
+{% endmacro %}
+
+{% macro showobject_without_image(object) %}
+  <div class="descr row detail-short">
+    {{ showobject_info_short(object) }}
+  </div>
+  {{ showobject_info_long(object) }}
+{% endmacro %}
+
+{% macro link_table(object_list, gen_object, detail_view) %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+      {% for name, _ in gen_object(object_list[0]) %}
+        <th>{{ name }}</th>
+      {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for object in object_list %}
+        <tr>
+          {% for name, value in gen_object(object) %}
+            {% if loop.index == 1 %}
+              <td><a href="{{ url(detail_view, pk=object.pk) }}">{{ value }}</a></td>
+            {% else %}
+              <td>{{ value }}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endmacro %}
+
+{% macro pagination(page_obj) %}
+  {% if page_obj.has_other_pages() %}
+    <div align="center">
+    <ul class="pagination">
+      {% if page_obj.number != 1 %}
+        <li><a href="?page=1">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><a href="#">&laquo;</a></li>
+      {% endif %}
+      {% for num in range(page_obj.number - 5, page_obj.number + 6) %}
+        {% if num in page_obj.paginator.page_range %}
+          {% if num == page_obj.number %}
+            <li class="active"><a href="#">{{ num }} <span class="sr-only">(actual)</span></a></li>
+          {% else %}
+            <li><a href="?page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.number != page_obj.paginator.num_pages %}
+        <li><a href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><a href="#">&raquo;</a></li>
+      {% endif %}
+    </ul>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro wait(job_status_url, message) %}
+  <div id="waiting" align="center">
+    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+    <div>{{ message }}</div>
+  </div>
+  <script>
+    var status_url = '{{ job_status_url }}';
+    function check_status(data){
+      if (data.job_complete) {
+        location.reload();
+      }
+    }
+
+    function wait_check_status(){
+      $.getJSON(status_url, check_status);
+    }
+    $(document).ready(function() {
+      setInterval(wait_check_status, 1000);
+    });
+  </script>
+{% endmacro %}

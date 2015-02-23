@@ -1,0 +1,17 @@
+{% extends "page.jinja" %}
+
+{% import 'macro/display_functions.jinja' as display with context %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {{ display.showobject_without_image(object) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            {% if extra_content %}
+                {% include extra_content %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

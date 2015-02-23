@@ -1,0 +1,32 @@
+{% extends "page.jinja" %}
+
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ "css/form.css"|static }}{% if debug %}?{% endif %}">
+  <link rel="stylesheet" href="{{ "libs/css/select2.css"|static }}">
+  <link rel="stylesheet" href="{{ "libs/css/select2-bootstrap.css"|static }}">
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-6 col-md-push-3">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media|safe }}
+        {{ form|bootstrap }}
+        <input type="submit" value="{{ _('Submit') }}" class="btn btn-default"/>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+  <script src="{{ "libs/js/select2.min.js"|static }}"></script>
+  <script>
+  $(document).ready(function () {
+    $('select[multiple]').select2();
+  });
+  </script>
+{% endblock %}

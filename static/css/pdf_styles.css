@@ -1,0 +1,69 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+body {
+  background-color: transparent;
+  text-rendering: geometricPrecision;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', serif;
+}
+
+page[size="A4"] {
+  background-color: #fff;
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  page-break-after: always;
+  page-break-before: always;
+}
+
+h1 {
+  font-size: 30px;
+  margin-top: 0;
+}
+
+img.logo {
+  height: 80px;
+}
+
+.panel {
+  border-width: 2px;
+}
+
+.info-block {
+  padding-top: 20px;
+}
+
+.panel-heading {
+  border-bottom-width: 2px;
+}
+
+.break-words {
+  word-break: break-all;
+}
+
+.small-para-gap p{
+  margin-bottom: 4px;
+}
+
+.narrow {
+  width: 20%;
+}
+
+.v-narrow {
+  width: 15%;
+}
+
+.invoice-totals {
+  padding-right: 25px;
+}
+
+.grey {
+  color: #888;
+}
+
+tr.blank-row td {
+  border-left-color: transparent;
+  border-right-color: transparent;
+}

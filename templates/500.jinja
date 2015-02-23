@@ -1,0 +1,19 @@
+{% extends "base.jinja" %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ "css/errors.css"|static }}">
+{% endblock %}
+
+{% block body %}
+<img id="background-image" style="display: none" src="" data-path-base="{{ 'dinosaurs/d1.svg' |static }}" align="center">
+<div class="container">
+  <div class="message-area">
+    <h3>500 - {{ _('Error interno del Servidor') }}</h3>
+    {% if view.request.sentry %}
+      <p>{{ _('Error ID') }}: {{ view.request.sentry.id }}</p>
+    {% endif %}
+    <p>{{ _("Ha ocurrido un error en el sistema, este ha sido enviado a los administradores y será solucionado de forma urgente. Disculpe las inconvenientes ocasionadas.") }}</p>
+  </div>
+</div>
+<script src="{{ "js/errors.js"|static }}"></script>
+{% endblock %}

@@ -1,0 +1,17 @@
+page[size="A4"] {
+  margin: 20px auto;
+  width: 210mm;
+  height: 297mm;
+  padding: 10mm 8mm;
+  box-shadow: 0 3px 5px 3px #888;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+table {
+  page-break-inside:auto !important;
+}
+page[size="A4"] tr {
+  page-break-inside:avoid !important;
+  page-break-after:auto !important;
+}

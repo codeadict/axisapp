@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+{% block extra_meta %}
+    <meta name="description" content="Distribution Management Software">
+    <meta name="author" content="G&D Systems">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+{% endblock %}
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ "favicon.ico"|static }}" />
+    <link rel="stylesheet" href="{{ 'libs/css/bootstrap.css'|static if debug else 'libs/css/bootstrap.min.css'|static }}">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    {% block extra_css %}{% endblock %}
+    <!--[if lt IE 9]>
+      <script src="{{ "libs/js/html5shiv.js"|static }}"></script>
+      <script src="{{ "libs/js/respond.min.js"|static }}"></script>
+    <![endif]-->
+  </head>
+  <body {% block body_attr %}{% endblock %}>
+  <script src="{{ 'libs/js/jquery-1.11.0.js'|static if debug else 'libs/js/jquery-1.11.0.min.js'|static }}"></script>
+{% block body %}{% endblock %}
+
+ <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+{% if debug %}
+  <script src="{{ "libs/js/bootstrap.js"|static }}"></script>
+  <script src="{{ "libs/js/bootbox.js"|static }}"></script>
+{% else %}
+  <script src="{{ "libs/js/bootstrap.min.js"|static }}"></script>
+  <script src="{{ "libs/js/bootbox.min.js"|static }}"></script>
+{% endif %}
+  {% block double_submit %} {# Block wrapper so it could be overwritten in templates if needed. #}
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('form').submit(function(){
+          $('input[type=submit]', this).attr('disabled', 'disabled');
+          $('button[type=submit]', this).attr('disabled', 'disabled');
+        });
+      });
+    </script>
+  {% endblock %}
+{% block extra_js %}{% endblock %}
+  </body>
+</html>

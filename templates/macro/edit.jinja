@@ -1,0 +1,37 @@
+{% macro field_datetime(form, field, format = 'DD/MM/YYYY', pick_time = False) %}
+<div class="form-group pick-time{% if field.errors %} has-error{% endif %}">
+  {% if field.auto_id %}
+      <label class="control-label {% if field.field.required %}{{ form.required_css_class }}{% endif %}" for="{{ field.auto_id }}">{{ field.label }}</label>
+  {% endif %}
+
+  <div>
+    <div class="input-group" id="dt_{{ field.auto_id }}">
+      {{ add_field_attrs(field, {'class': 'form-control', 'data-date-format': format}) }}
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </button>
+      </span>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            var container = $('#dt_{{ field.auto_id }}')
+            container.find('input').attr('data-date-format', container.attr('data-date-format'));
+            container.datetimepicker({
+                pickTime: {{ 'true' if pick_time else 'false' }}
+            });
+        });
+    </script>
+
+    {% for error in field.errors %}
+        <span class="help-block {{ form.error_css_class }}">{{ error }}</span>
+    {% endfor %}
+
+    {% if field.help_text %}
+        <p class="help-block">
+            {{ field.help_text|safe }}
+        </p>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,15 @@
+{% import 'macro/extra_details.jinja' as macros %}
+
+<div class="item-extra">
+    <ul class="nav nav-tabs nav-justified">
+      <li role="presentation" class="active"><a href="#">Datos Local</a></li>
+      <li role="presentation"><a href="#">Localización</a></li>
+      <li role="presentation"><a href="#">Activos Mercado</a></li>
+      <li role="presentation"><a href="#">Visitas</a></li>
+      <li role="presentation"><a href="#">Categorización Productos</a></li>
+    </ul>
+</div>
+<form action="{{ url('client-set-status', pk=object.pk) }}" method="POST" id="status_change_form">
+  {% csrf_token %}
+  <input type="hidden" id="id_status_change" name="status"/>
+</form>

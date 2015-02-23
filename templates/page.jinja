@@ -1,0 +1,166 @@
+{% extends "base.jinja" %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ "css/theme.css"|static }}{{ '?' if debug }}">
+  <link rel="stylesheet" href="{{ "css/page_styles.css"|static }}{{ '?' if debug }}">
+  <link rel="stylesheet" href="{{ 'css/Control.FullScreen.css'|static }}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{{ "js/theme.js"|static }}{{ '?' if debug }}"></script>
+{% endblock %}
+
+{% macro menu(menu_items, menu_id) %}
+  <div id="{{ menu_id }}">
+    {% for item in menu_items %}
+      {% if item.submenu %}
+        <div class="panel{% if item.subactive %} inside{% endif %}">
+          <div class="menu-item {{ item.class }}{% if item.active %} active{% endif %}">
+            <a data-toggle="collapse" data-parent="#{{ menu_id }}" href="{{ item.url }}">
+              {{ item.name }}
+              <span class="glyphicon drop-arrow"></span>
+            </a>
+          </div>
+          <div id="{{ item.menu_id }}" class="panel-collapse collapse {{ 'in' if item.subactive }} sub-menu">
+            {{ menu(item.submenu, item.menu_id) }}
+          </div>
+        </div>
+      {% else %}
+        <div class="menu-item basic {{ item.class }}{{ ' active' if item.active }}"{% if item.target %}
+             target="#{{ item.target }}"{% endif %}>
+          <a href="{{ item.url }}">{{ item.name }}</a>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro show_link(item, default_classes="") %}
+  {% if item.rurl or item.url %}
+    <a href="{{ item.url if item.url else obj_url(item.rurl) }}" class="{{ default_classes }} {{ item.classes }}"
+       msg="{{ item.msg }}" data-method="{{ item.method if item.method else 'get' }}"
+       {% if item.modal %} data-toggle="modal" data-target="#{{ item.target_modal }}"{% endif %}
+       {% if item.color %} style="font-weight: bold; color: {{ item.color }};"{% endif %}
+       {% if item.data %}{% for k,v in item.data.items() %} data-{{ k }}="{{ v }}"{% endfor %}{% endif %}>
+      {{ item.name }}
+    </a>
+  {% endif %}
+{% endmacro %}
+
+{% macro buttons(button_menu) %}
+  {% if button_menu|is_iter and button_menu|length > 0 %}
+    {% if button_menu[0] is not mapping %}
+      {% for button in button_menu %}
+        {{ buttons(button) }}
+      {% endfor %}
+    {% else %}
+      <div class="btn-group button-menu">
+        {% for button in button_menu %}
+          {% if button is not mapping %}
+            menu
+          {% elif button.dropdown %}
+            {% if button_menu|length > 1 %}
+              <div class="btn-group">{% endif %}
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            {{ button.name }}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            {% for item in button.dropdown %}
+                <li>
+                  {{ show_link(item) }}
+                </li>
+            {% endfor %}
+          </ul>
+          {% if button_menu|length > 1 %}</div>{% endif %}
+          {% else %}
+            {% if button.css_class %}
+              {{ show_link(button, "btn btn-default " + button.css_class) }}
+            {% else %}
+              {{ show_link(button, "btn btn-default") }}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% block body %}
+  <div class="navbar navbar-default navbar-fixed-top navbar-custom" role="navigation">
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 navbar-container">
+      <div class="navbar-header">
+        <span class="navbar-brand">{{ title }}</span>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse">
+        <form class="navbar-form navbar-left" role="search" method="get" action="{% if search_section %}?section={{ search_section }}{% endif %}">
+          <div class="input-group">
+            <input type="text" class="form-control" name="search" placeholder={{ _("Buscar") }} value="{{ request.GET.search }}">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+          </div>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              {{ user.get_full_name() }}
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li class="divider"></li>
+              <li><a href="#">{{ _('Desconectarse') }}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 col-xs-12 sidebar collapse" style="visibility: visible;">
+        <a class="logo" href="/">
+            <img src="{{ "app_logo.png"|static }}" />
+        </a>
+        {{ menu(main_menu, "menu_accordion") }}
+        </div>
+      </div>
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="btn-toolbar" role="toolbar">
+          {{ buttons(button_menu) }}
+        </div>
+        <div>
+          {% for message in messages %}
+            {% if 'safe' in message.tags %}
+              <div class="alert alert-info safe">
+                <button type="button" class="close" data-dismiss="alert">
+                  <span aria-hidden="true">&times;</span>
+                  <span class="sr-only">{{ _("Cerrar") }}</span>
+                </button>
+                {{ message|safe }}
+              </div>
+            {% else %}
+              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags or 'default' }}{% endif %}">
+                <button type="button" class="close" data-dismiss="alert">
+                  <span aria-hidden="true">&times;</span>
+                  <span class="sr-only">{{ _("Cerrar") }}</span>
+                </button>
+                {{ message }}
+              </div>
+             {% endif %}
+          {% endfor %}
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <form id="button-form" method="POST">{% csrf_token %}</form>
+  {% block extra_modals %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.jinja" %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ "css/errors.css"|static }}">
+{% endblock %}
+
+{% block body %}
+<img id="background-image" style="display: none" src="" data-path-base="{{ 'dinosaurs/d1.svg' |static }}" align="center">
+<div class="container">
+  <div class="message-area">
+    <h3>{{ _('Lo sentimos. Usted no tiene permiso para entrar a esta area.') }}</h3>
+  </div>
+</div>
+<script src="{{ "js/errors.js"|static }}"></script>
+{% endblock %}

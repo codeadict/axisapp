@@ -1,0 +1,38 @@
+{% macro extras_column(title, objects, reverse=None, renderer=None, addurl=None, addlink=None, pk_page=None, modal=False) %}
+<div class="panel panel-custom">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ title }}</h3>
+    {% if addlink or addurl %}
+        <a {% if modal %}data-toggle="crud-modal"{% endif %} href="{{ addurl if addurl else url(addlink, pk=pk_page) if pk_page else url(addlink) }}"
+         data-placement="right" title="{{ _('Add ') }}{{ title }}">
+        <span class="subtle-link glyphicon glyphicon-plus"></span>
+      </a>
+    {% endif %}
+  </div>
+  <div class="panel-body">
+    {{ extras_column_body(title, objects, reverse, renderer, pk_page) }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro extras_column_body(title, objects, reverse=None, renderer=None, pk_page=None) %}
+<ul class="list-group">
+  {% if objects %}
+    {% for obj in objects %}
+      <li class="list-group-item">
+        {% if reverse %}
+          <a href="{{ url(reverse, pk=obj.pk) }}">{{ obj.name }}</a>
+        {% else %}
+          {% if pk_page %}
+            {{ renderer(obj, pk_page) }}
+          {% else %}
+            {{ renderer(obj) }}
+          {% endif %}
+        {% endif %}
+      </li>
+    {% endfor %}
+  {% else %}
+    <p class="aside">{{ _('No %(title)s', title=title) }}</p>
+  {% endif %}
+</ul>
+{% endmacro %}

@@ -1,0 +1,55 @@
+.cal-hours {
+    font-weight: bolder;
+}
+
+.dropzone-active {
+    background-color: #eee;
+}
+
+.dropzone-hover {
+    background-color: #ccc;
+}
+
+.calendar-event {
+    display: inline-block;
+}
+
+.ui-draggable-dragging {
+    z-index: 1000;
+    width: 300px;
+}
+
+#cal-slide-content .ui-draggable-dragging > a.event-item {
+    color: orangered;
+}
+
+#cal-slide-content, #cal-slide-content:hover {
+    padding: 20px;
+    color: #000;
+    background: lightgray None;
+    -webkit-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+}
+
+#cal-slide-content a.event-item {
+    color: #000;
+}
+
+.events-list {
+    max-height: 66px;
+    font-size: 11px;
+}
+
+span[data-cal-date] {
+    position: relative;
+    z-index: 1;
+}
+
+.events-list .event, .events-list .event:hover{
+    width: 90px;
+    height: 22px;
+    overflow: hidden;
+    padding: 3px 5px;
+    color:black;
+    margin-bottom: 0;
+}

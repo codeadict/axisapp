@@ -1,0 +1,74 @@
+.input-prepend .colorPicker-picker.add-on, .input-append .colorPicker-picker.add-on, .colorPicker-picker {
+  height: 28px;
+  width: 28px;
+  padding: 0 !important;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  line-height: 20px;
+  display: inline-block;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+  -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+  -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+  -o-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+
+.colorPicker-palette, .colorPicker-palette.dropdown-menu {
+  background-color: white;
+  padding: 10px;
+  max-width: 140px;
+}
+
+.colorPicker-palette .colorPicker-swatch-container {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+.colorPicker-palette .colorPicker-swatch-container a {
+  padding: 1px;
+  margin: 0;
+  line-height: 29px;
+}
+
+.colorPicker-palette .colorPicker-swatch {
+  height: 29px;
+  width: 29px;
+  display: inline-block;
+  margin: 0;
+  cursor: pointer;
+  line-height: 29px;
+  -webkit-transition: all ease 0.1s;
+  transition: all ease 0.1s;
+}
+
+
+.colorPicker-palette .colorPicker-swatch:hover {
+  text-decoration: none;
+  opacity: 0.8;
+  filter: alpha(opacity = 80);
+  -webkit-transform: scale(1.08);
+  -ms-transform: scale(1.08);
+  transform: scale(1.08);
+}
+
+.colorPicker-swatch-container.active .colorPicker-swatch:after {
+  content: "\e013";
+  font-family: 'Glyphicons Halflings';
+  font-size: 10px;
+  color: #FFF;
+  text-align: center;
+}
+
+.colorPicker-palette .colorPicker-addSwatchContainer {
+  margin-top: 10px;
+}
+
+.colorPicker-palette .colorPicker-addSwatchContainer .colorPicker-addSwatchInput {
+  margin-bottom: 0;
+}
+
+.colorPicker-palette .colorPicker-addSwatchContainer .colorPicker-addSwatchButton {
+  margin-left: 8px;
+  margin-bottom: 5px;
+  height: 28px;
+}

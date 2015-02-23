@@ -1,0 +1,45 @@
+body {
+    padding-top: 3px;
+    background-color: #ccc;
+}
+
+iframe {
+  width: 100%;
+  border: 0;
+  margin-top: 36px;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+  color: #9D9D9D;
+}
+
+.navbar .container {
+  width: 210mm;
+}
+
+#splash {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  z-index: 100000;
+  display: none;
+}
+
+.glyphicon-refresh-animate {
+  color: white;
+  font-size: 40pt;
+  margin-top: 150px;
+  -animation: spin 1.5s infinite linear;
+  -webkit-animation: spin2 1.5s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+  from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+  from {transform: scale(1) rotate(0deg);}
+  to {transform: scale(1) rotate(360deg);}
+}

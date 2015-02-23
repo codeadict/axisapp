@@ -1,0 +1,25 @@
+body {
+  background-color: #29639c;
+  text-align: center;
+}
+
+.message-area {
+  max-width: 600px;
+  padding: 5px;
+  margin: 0 auto;
+  color: white;
+  position: absolute;
+  top: 0;
+  text-align: left;
+}
+
+.message-area p {
+  margin: 0 0 2px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}

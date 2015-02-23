@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% load admin_static %}
+{% load leaflet_tags %}
+
+{# Additional CSS includes #}
+{% block extrastyle %}
+    {% leaflet_css %}
+
+    <style type="text/css">
+        .leaflet-container {
+            /* all maps */
+            height: 100%;
+            min-height: 480px;
+        }
+
+        .leaflet-map-pane {
+            z-index: 2 !important;
+        }
+
+        .leaflet-google-layer {
+            z-index: 2 !important;
+        }
+    </style>
+{% endblock %}
+
+{# Additional JS files in footer, right before </body> #}
+
+
+{% block footer_links %}
+
+{% endblock %}
+
+{% block copyright %}
+
+{% endblock %}
+
+{# Footer branding name (center) #}
+{% block footer_branding %}
+
+{% endblock %}

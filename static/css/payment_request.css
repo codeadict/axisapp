@@ -1,0 +1,44 @@
+.payment-request-tables table {
+  margin: 0;
+}
+
+.payment-request-tables {
+  margin: 20px 0;
+}
+
+.payment-request-tables.editable table.main td:first-child,
+.payment-request-tables.editable table.main th:first-child {
+  width: 4%
+}
+
+.payment-request-tables table.main td:last-child,
+.payment-request-tables table.main th:last-child,
+.payment-request-tables table.main td:nth-last-child(2),
+.payment-request-tables table.main th:nth-last-child(2),
+.payment-request-tables table.main td:nth-last-child(3),
+.payment-request-tables table.main th:nth-last-child(3){
+  width: 10%
+}
+
+.payment-request-tables table.main td:nth-last-child(5),
+.payment-request-tables table.main th:nth-last-child(5),
+.payment-request-tables table.main td:nth-last-child(4),
+.payment-request-tables table.main th:nth-last-child(4){
+  width: 15%
+}
+
+.payment-request-tables .panel-default {
+    margin: 0 0 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: 0;
+}
+
+.detail-item {
+  min-height: 25px;
+  font-size: 13pt;
+}
+
+.detail-item .detail-info {
+  margin-left: auto;
+}

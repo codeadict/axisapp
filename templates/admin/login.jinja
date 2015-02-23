@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+  <meta name="description" content="Sistema de Distribución y Logística">
+  <meta name="author" content="G&D Systems">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Entrar como SuperAdmin</title>
+  <link rel="icon" type="image/png" href="{% static "favicon.ico" %}"/>
+  <link rel="stylesheet" href="{% static 'libs/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static "css/login.css" %}">
+</head>
+<body style="background-color: #bbb;">
+  <div class="container">
+    <form class="form-signin" role="form" method="post" action="">{% csrf_token %}
+      <h2 class="form-signin-heading">Super-admin Login</h2>
+      {% if form.non_field_errors or form.username.errors or form.password.errors %}
+        <div class="alert alert-danger">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+          <p>{{ form.username.errors }}</p>
+          <p>{{ form.password.errors }}</p>
+        </div>
+      {% endif %}
+      <input style="display:none" type="password" name="fuck_you_autofill"/>
+
+      <input autofocus="true" class="form-control" id="id_username" name="username" placeholder="Email Address" required="true" type="email">
+      <input class="form-control" autocomplete="off" id="id_password" name="password" placeholder="Password" required="true" type="password">
+      <button class="btn btn-lg btn-primary btn-block" type="submit">{{ _('Sign in') }}</button>
+    </form>
+  </div>
+</body>
+</html>
