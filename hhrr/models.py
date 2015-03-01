@@ -1,10 +1,13 @@
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 from django.conf.global_settings import LANGUAGES
 from base import models as base_models
+from base import fields as base_fields
 from phonenumber_field import modelfields
 from django_countries import fields
+from base.date_utils import humanize_time
 
 
 class EmploymentHistory(models.Model):
@@ -13,12 +16,11 @@ class EmploymentHistory(models.Model):
     """
 
     # Employent History Data
-    # TODO: Leave now the company as CharField, Later will be an FK with company table
     company = models.CharField(max_length=255, verbose_name=_('Company Name'))
     position = models.CharField(max_length=255, verbose_name=_('Position'))
-    date_in = models.DateField(default=timezone.now(), verbose_name='Date hired')
-    date_out = models.DateField(default=timezone.now(), verbose_name='Date leaving')
-    out_reason = models.CharField(max_length=255, verbose_name='Reason of leaving')
+    date_in = models.DateField(default=timezone.now(), verbose_name=_('Date hired'))
+    date_out = models.DateField(default=timezone.now(), verbose_name=_('Date leaving'))
+    out_reason = models.CharField(max_length=255, verbose_name=_('Reason of leaving'))
 
     def __unicode__(self):
         """
@@ -28,25 +30,25 @@ class EmploymentHistory(models.Model):
         return self.get_company_position()
 
     def get_company_position(self):
-        return '%s %s' % (self.company, self.position)
+        return '%s %s %s' % (self.company, ugettext('at'), self.position)
 
     @property
     def time_worked(self):
         """
-        Returns the number of days the
+        Returns the number of years, months and days the
         Employee works into the company
         :return: Int
         """
         if self.date_in > self.date_out:
-            return 0
+            return _('No time')
         else:
-            delta = self.date_in - self.date_out
-            return delta.days
+            delta = relativedelta(self.date_out - self.date_in)
+            return humanize_time(delta)
 
     class Meta:
         verbose_name = _('Employment history')
         verbose_name_plural = _('Employment history')
-        ordering = ['company']
+        ordering = ['date_out']
 
 
 class Language(models.Model):
@@ -54,10 +56,10 @@ class Language(models.Model):
     Language managed by Employees
     """
 
-    NATIVE = 3
-    HIGH = 2
-    INTERMEDIATE = 1
     LOW = 0
+    INTERMEDIATE = 1
+    HIGH = 2
+    NATIVE = 3
 
     TYPES = (
         (LOW, _('Low')),
@@ -81,8 +83,8 @@ class Language(models.Model):
         return '%s %s %s %s' % (self.name, self.speak, self.write, self.read)
 
     class Meta:
-        verbose_name = _('Dominated language ')
-        verbose_name_plural = _('Languages dominated')
+        verbose_name = _('Language')
+        verbose_name_plural = _('Languages')
         ordering = ['name']
 
 
@@ -120,17 +122,18 @@ class FamilyDependant(models.Model):
     last_name = models.CharField(max_length=255, verbose_name=_('Last name'))
     relationship = models.ForeignKey(FamilyRelation, verbose_name=_('Relation ship'))
     birthday = models.DateField(default=timezone.now(), verbose_name=_('Birthday'))
-    phone = modelfields.PhoneNumberField(verbose_name=_('Phone Number'))
+    phone = modelfields.PhoneNumberField(verbose_name=_('Phone Number'),
+                                         help_text='If phone from different country \
+                                         than company, please provide international format +prefix-number')
     handicapped = models.BooleanField(default=False, verbose_name=_('Handicapped'))
     have_insurance = models.BooleanField(default=False, verbose_name=_('Insurance'))
 
     @property
     def age(self):
-        if self.birthday > timezone.now():
-            raise BaseException(_('Birthday can\'t in the future'))
-
-        delta = self.birthday - timezone.now()
-        return delta.days
+        if self.birthdate > timezone.now().replace(year=self.birthdate.year):
+            return timezone.now().year - self.birthdate.year - 1
+        else:
+            return timezone.now().year - self.birthdate.year
 
     def __unicode__(self):
         """
@@ -184,8 +187,11 @@ class Education(models.Model):
 
     @property
     def timespend(self):
-        #Return teh time passed in the course
-        return True
+        if self.start_date > self.graduation_date:
+            raise BaseException(_('Begin date can not be over the end date'))
+        else:
+            deltatime = self.graduation_date - self.start_date
+            return humanize_time(deltatime)
 
     def __unicode__(self):
         """
@@ -221,6 +227,7 @@ class EnterpriseDepartment(models.Model):
     """
 
     name = models.CharField(max_length=255, verbose_name=_('Department name'))
+    manager = models.ForeignKey(Employee, verbose_name=_('Department Manager'))
 
     def __unicode__(self):
         """
@@ -325,7 +332,7 @@ class Employee(base_models.Partner):
     name = models.CharField(max_length=255, verbose_name=_('Name'))
     last_name = models.CharField(max_length=255, verbose_name=_('Last Name'))
     id_type = models.IntegerField(choices=ID_TYPE, default=2, verbose_name=_('Id type'))
-    id = models.CharField(max_length=20, verbose_name=_('ID number'))
+    identification = models.CharField(max_length=20, verbose_name=_('ID number'))
     photo = models.ImageField(verbose_name=_('Image'))
     address = models.CharField(max_length=255, verbose_name=_('Address'))
     province = models.ForeignKey(base_models.Provincia, verbose_name=_('Province'))
@@ -337,28 +344,29 @@ class Employee(base_models.Partner):
     nationality = fields.CountryField(verbose_name=_('Nationality'), blank_label=_('(select country)'))
     blood_type = models.IntegerField(choices=BLOOD_TYPE, default=0, verbose_name=_('Blood type'))
     handicapped = models.BooleanField(default=0, verbose_name=_('Is handicapped?'))
-    handicap_percent = models.SmallIntegerField(default=0, verbose_name=_('Handicap percent'))
+    handicap_percent = base_fields.PercentageField(default=0, verbose_name=_('Handicap percent'))
     handicap_type = models.CharField(max_length=255, verbose_name=_('Handicap type'))
     handicap_card_number = models.CharField(max_length=255, verbose_name=_('Handicap card number'))
-    phone = modelfields.PhoneNumberField(verbose_name=_('Phone number'))
-    cellphone = modelfields.PhoneNumberField(verbose_name=_('Cellphone number'))
+    phone = modelfields.PhoneNumberField(verbose_name=_('Phone number'), help_text='If phone from different country \
+                                         than company please, provide international format +prefix-number')
+    cellphone = modelfields.PhoneNumberField(verbose_name=_('Cellphone number'), help_text='If cellphone from different \
+                                         country than company please, provide international format +prefix-number')
     email = models.EmailField(max_length=255, verbose_name=_('Email'))
     skype = models.CharField(max_length=255, verbose_name=_('Skype user'))
-    department = models.ForeignKey(EnterpriseDepartment, verbose_name=_('Department'))
+    department = models.ForeignKey(EnterpriseDepartment, related_name='employees', verbose_name=_('Department'))
     marital_status = models.IntegerField(choices=MARITAL_STATUS, default=0, verbose_name=_('Marital status'))
     sex = models.IntegerField(choices=GENDER_TYPE, default=-1, verbose_name=_('Gender'))
     birthday = models.DateField(default=timezone.now(), verbose_name=_('Birthday'))
     emergency_person = models.CharField(max_length=255, verbose_name=_('Name to call at emergency'))
     emergency_phone = modelfields.PhoneNumberField(verbose_name=_('Phone number to call at emergency'))
-    #TODO: Write the name, i dont know what is this
-    maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_(''))
+
+    maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_('Maintain reserve funds?'))
     status = models.IntegerField(choices=STATUS_TYPE, default=0, verbose_name=_('Status'))
     ethnic_race = models.IntegerField(choices=ETHNIC_RACE_TYPE, default=0, verbose_name=_('Ethnic race'))
-
-    family_dependants = models.ForeignKey(FamilyDependant, verbose_name=_('Family dependants'))
-    language_skill = models.ForeignKey(Language, verbose_name=_('Language skills'))
-    employment_history = models.ForeignKey(EmploymentHistory, verbose_name=_('Employment history'))
-    education = models.ForeignKey(Education, verbose_name=_('Education'))
+    family_dependants = models.ForeignKey(FamilyDependant, related_name='family_sdependants', verbose_name=_('Family dependants'))
+    language_skill = models.ForeignKey(Language, related_name='languages', verbose_name=_('Language skills'))
+    employment_history = models.ForeignKey(EmploymentHistory, related_name='history', verbose_name=_('Employment history'))
+    education = models.ForeignKey(Education, related_name='education', verbose_name=_('Education'))
 
     def __unicode__(self):
         """
@@ -370,4 +378,4 @@ class Employee(base_models.Partner):
     class Meta:
         verbose_name = _('Employee')
         verbose_name_plural = _('Employees')
-        ordering = ['name']
+        ordering = ['last_name']

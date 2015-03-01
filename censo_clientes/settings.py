@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'censo',
     'corsheaders',
     #For countries fields
-    'django-countries',
+    #'django-countries',
 )
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
