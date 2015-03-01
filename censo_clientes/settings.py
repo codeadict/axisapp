@@ -56,6 +56,8 @@ INSTALLED_APPS = (
     'base',
     'censo',
     'corsheaders',
+    #For countries fields
+    'django-countries',
 )
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
@@ -129,8 +131,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'axisapp',
-        'USER': 'codeadict',
-        'PASSWORD': 'unixrocks2012',
+        'USER': 'postgres',
+        'PASSWORD': 'swda-1432',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

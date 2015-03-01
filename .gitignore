@@ -58,3 +58,6 @@ target/
 
 #lib js and css
 static/libs/
+
+# My configurations
+censo/settings.py
