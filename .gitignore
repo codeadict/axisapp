@@ -60,4 +60,4 @@ target/
 static/libs/
 
 # My configurations
-censo/settings.py
+censo_clientes/settings.py

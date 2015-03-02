@@ -58,6 +58,8 @@ INSTALLED_APPS = (
     'corsheaders',
     #For countries fields
     #'django-countries',
+    #For python-mptt
+    'mptt',
 )
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']

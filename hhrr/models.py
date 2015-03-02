@@ -9,6 +9,8 @@ from phonenumber_field import modelfields
 from django_countries import fields
 from base.date_utils import humanize_time
 
+from mptt.models import MPTTModel, TreeForeignKey
+
 
 class EmploymentHistory(models.Model):
     """
@@ -221,20 +223,25 @@ class EducationArea(models.Model):
         return '%s' % self.name
 
 
-class EnterpriseDepartment(models.Model):
+class EnterpriseDepartment(MPTTModel):
     """
     Model to record the Work Department
+    Need to be a tree model
     """
 
-    name = models.CharField(max_length=255, verbose_name=_('Department name'))
+    name = models.CharField(max_length=255, unique=True, verbose_name=_('Department name'))
     manager = models.ForeignKey(Employee, verbose_name=_('Department Manager'))
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='sub_department')
 
     def __unicode__(self):
         """
         Object representation
         :return: Unicode String
         """
-        return '%s' % self.name
+        return '%s %s %s' % (self.name, ugettext(' managed by '), self.manager.name)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
 
 class Employee(base_models.Partner):
