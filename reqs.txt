@@ -1,3 +1,4 @@
+BeautifulSoup4
 Django==1.7
 GrabLib==0.05
 Jinja2==2.7.3
@@ -5,6 +6,7 @@ MarkupSafe==0.23
 django-bootstrap3-datetimepicker==2.2.3
 django-debug-toolbar==1.2.1
 django-extensions==1.4.9
+django-celery==3.1.16
 django-filter==0.8
 django-jinja==1.0.3
 -e git+https://github.com/samuelcolvin/django-jinja-bootstrap-form.git@bbceabb7832005568c6f863f68010795bdc9e5e7#egg=django_jinja_bootstrap_form-master == 4.0
@@ -35,3 +37,7 @@ psycopg2==2.5.4
 six==1.8.0
 tablib==0.10.0
 wsgiref==0.1.2
+django-phonenumber-field==0.7.1
+django-countries==3.2
+python-dateutil==2.4.0
+django-mptt==0.6.1
