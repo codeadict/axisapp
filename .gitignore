@@ -8,10 +8,11 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
+ENV/
+bin/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 lib/
 lib64/
@@ -21,12 +22,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -41,23 +36,40 @@ nosetests.xml
 coverage.xml
 
 # Translations
-*.mo
-*.pot
+# this is commented out so translations are included in repo
+# *.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Rope
+.ropeproject
 
 # Django stuff:
 *.log
+*.pot
 
 # Sphinx documentation
 docs/_build/
 
-# PyBuilder
-target/
+# custom
+localsettings.*
+extra_path.txt
+*.DS_Store
+env
+env2
+*.sqlite3
+staticfiles/
+TutorCruncher/static/libs/
+mediafiles/
+Django*
+django-jinja-bootstrap-form/
+*.idea
+scripts/gdrive_data/
+TutorCruncher/static/tests/import_data_right.xlsx
 
-#pycharm files
-.idea/
-
-#lib js and css
-static/libs/
-
-# My configurations
-censo_clientes/settings.py
+# vim and ctags files
+*.swp
+tags
