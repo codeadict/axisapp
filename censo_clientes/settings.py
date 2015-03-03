@@ -269,3 +269,10 @@ LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
+
+# this provides a way of overwriting variables locally without
+# adding it to git, use for TEST_CONCURRENCY, DATABASES
+try:
+    from localsettings import *
+except ImportError:
+    pass
