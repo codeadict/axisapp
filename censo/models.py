@@ -2,7 +2,9 @@ from datetime import date
 import requests
 import bs4
 
+from django.conf import settings
 from django.contrib.gis.db import models
+from django.utils.translation import ugettext_lazy as _
 from smart_selects.db_fields import ChainedForeignKey
 
 from base import models as modelos_maestros
@@ -276,10 +278,37 @@ class InvProductos(models.Model):
     presentacion = models.ForeignKey(modelos_maestros.Presentacion, verbose_name='Presentacion')
     envase = models.ForeignKey(modelos_maestros.Envase, verbose_name='Envase')
 
-
     class Meta:
-        verbose_name = 'Inventaario Producto'
+        verbose_name = 'Inventario Producto'
         verbose_name_plural = 'Inventario Productos'
 
     def __unicode__(self):
         return '%s - %s' % (self.cliente.nombres + ' ' + self.cliente.apellidos, self.marca.marca)
+
+
+class PresalesDistribution(models.Model):
+    """
+    Distribution of clients for pre-sales.
+    We need to separate an area on clusters containing N clients, each cluster will be stored on this table
+    with the required data:
+        name: the generated polygon name that can be e.g QP001, Q for Quito, P for Preventa, and consecutive number
+        clients: foreign key 1 to Clients referencing all the points generated on kmeans.
+        polygon: postgis polygon field that encloses all the points(clients) inside it using ConvexHull.
+        assigned_seller: the seller assigned to work on this polygon, nullable, by default it takes seller on Area.
+    """
+    name = models.CharField(max_length=255, verbose_name=_('Polygon Name'), null=True, blank=True)
+    clients = models.ManyToManyField(Cliente, verbose_name=_('Clients'), related_name='distributions', blank=True)
+    polygon = models.PolygonField(verbose_name=_('Polygon'))
+    assigned_seller = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Assigned Pre-seller',
+                                        related_name='areas_preseller', null=True, blank=False)
+    objects = models.GeoManager()
+
+    class Meta:
+        verbose_name = _('Distribution Area')
+        verbose_name_plural = _('Distribution Areas')
+
+    def __unicode__(self):
+        if self.name:
+            return self.name
+        else:
+            return ''
