@@ -1,5 +1,6 @@
 from base.models import Label, Partner
 from clients import *
+from distribution import *
 
 
 def role_set_label(request, pk):

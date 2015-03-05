@@ -11,7 +11,7 @@ MENUS = {
         ]},
         {'name': _('Logistica'), 'submenu': [
             {'name': _('Distribucion'), 'submenu': [
-                {'name': _('Asignaciones Preventa'), 'rurl': 'index', 'perms': []},
+                {'name': _('Asignaciones Preventa'), 'rurl': 'presales-client-distribution', 'perms': []},
                 {'name': _('Seguimiento Censadores/Prevendedores'), 'rurl': 'index', 'perms': []},
             ]},
             {'name': _('Inventarios'), 'submenu': [

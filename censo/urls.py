@@ -13,4 +13,7 @@ urlpatterns = patterns('partners.views',
                        url(r'^clients/(?P<pk>\d+)/set_status/$', 'client_set_status', name='client-set-status'),
                        #url(r'^search/$', 'search_universal', name='search-universal'),
                        url(r'^partner/(?P<pk>\d+)/set_label/$', 'role_set_label', name='role-set-label'),
+                       url(r'^clients/distribution/$', 'distribution_list', name='presales-client-distribution'),
+                       url(r'^clients/distribution/generate/$', 'distribution_generate', name='generate-distribution'),
+
 )
