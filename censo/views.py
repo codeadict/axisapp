@@ -2,16 +2,16 @@ import logging
 import os.path
 from os.path import basename
 from django.conf import settings
+
+from django.utils.translation import ugettext_lazy as _
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
-from censo.models import Cliente
+from base.default_views import CustomListView
+from censo.models import Cliente,  PresalesDistribution
 log = logging.getLogger(__name__)
-
-
-
 
 
 def descargar_apk(request):
@@ -31,11 +31,10 @@ def descargar_apk(request):
     response['Content-Disposition'] = 'inline; filename=%s' % basename(filename)
     return response
 
+
 def map_view(request):
     clientes = Cliente.objects.all()
     return render_to_response('map.html', {'clientes': clientes}, context_instance=RequestContext(request))
-
-
 
 def crear_ruta(request):
     """

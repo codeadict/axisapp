@@ -3,7 +3,8 @@ from django import forms
 from django.forms import ModelForm, Select
 from suit.widgets import NumberInput
 
-from base.form_helper import GenericFilterForm
+from base.form_helper import GenericFilterForm, TCForm
+from base.models import Area
 from censo.models import Cliente
 from partners.partner_form_helper import CreatePartnerForm, UpdatePartnerForm
 
@@ -75,3 +76,16 @@ class ClientSearchForm(GenericFilterForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientSearchForm, self).__init__(*args, **kwargs)
+
+
+class GenerateDistributionForm(TCForm):
+    """
+    Form used to give params to generate distribution view
+    """
+    area = forms.ChoiceField(label=_('Area'), help_text=_('Area where you want to perform the distribution'))
+    points_per_polygon = forms.IntegerField(label=_('Clients per Polygon'), required=True,
+                                            help_text=_('The amount of clients in each generated polygon'))
+
+    def __init__(self, *args, **kwargs):
+        super(GenerateDistributionForm, self).__init__(*args, **kwargs)
+        self.fields['area'].choices = [(o.id, str(o)) for o in Area.objects.all()]

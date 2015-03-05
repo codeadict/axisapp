@@ -62,7 +62,7 @@ env
 env2
 *.sqlite3
 staticfiles/
-TutorCruncher/static/libs/
+static/libs/
 mediafiles/
 Django*
 django-jinja-bootstrap-form/

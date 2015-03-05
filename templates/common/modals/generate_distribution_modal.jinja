@@ -1,0 +1,10 @@
+{% extends '/common/modals/form_modal.jinja' %}
+
+{% block modal_body_before_form %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-info" role="alert"><strong>{{ _('Information') }}:</strong> {{ _('Here you will generate distribution for pre-sales, the process can take some time please be patient.') }}</div>
+    </div>
+  </div>
+{% endblock %}
+{% block modal_button_text %}{{ _('Generate') }}{% endblock %}

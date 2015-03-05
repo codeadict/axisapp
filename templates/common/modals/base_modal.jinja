@@ -1,0 +1,7 @@
+{% block modal_body %}{% endblock %}
+<div class="modal-footer">
+    <a class="btn" data-dismiss="modal">{{ _('Cancel') }}</a>
+	<a class="btn btn-primary" onclick="$('.modal-body form').submit();">
+        {% block modal_button_text %}{{ _('Save') }}{% endblock %}
+    </a>
+</div>
