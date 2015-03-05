@@ -89,3 +89,16 @@ class DeleteObject(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         return reverse(self.reverse_name)
 
+
+class ModalMixin(object):
+    """
+    Simple mixin to add/edit data on a bootstrap modal
+    You need to specify a template for modal using modal_template_name attribute.
+    If the request is via ajax it renders the form on modal template, otherwise renders the normal view.
+    """
+
+    def dispatch(self, *args, **kwargs):
+        if self.request.is_ajax():
+            self.template_name = getattr(self, 'modal_template_name', 'common/modals/form_modal.jinja')
+        return super(ModalMixin, self).dispatch(*args, **kwargs)
+

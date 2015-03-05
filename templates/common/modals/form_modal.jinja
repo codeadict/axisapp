@@ -1,0 +1,14 @@
+{% extends '/common/modals/base_modal.jinja' %}
+{% block modal_body %}
+  {% block modal_body_before_form %}{% endblock %}
+  <div class="row">
+      <div class="col-md-12">
+          <form method="post" action="">
+            {% csrf_token %}
+            {{ form.media|safe }}
+            {{ form|bootstrap }}
+          </form>
+      </div>
+  </div>
+  {% block modal_body_after_form %}{% endblock %}
+{% endblock %}
