@@ -67,6 +67,7 @@ mediafiles/
 Django*
 django-jinja-bootstrap-form/
 *.idea
+.idea/
 scripts/gdrive_data/
 TutorCruncher/static/tests/import_data_right.xlsx
 
