@@ -124,7 +124,7 @@ class GenerateDistribution(ModalMixin, FormView):
                        'FROM (SELECT kmeans(ARRAY[ST_X(geom), ST_Y(geom)], %s) OVER (), geom '
                        'FROM censo_cliente WHERE ST_X(geom) IS NOT NULL AND ST_Y(geom) IS NOT NULL ) '
                        'AS ksub GROUP BY kmeans ORDER BY kmeans;', [areas_amount])
-        
+
         #Fetch into list all the kmeans as (id, count of point into, geo)
         result = cursor.fetchall()
 
