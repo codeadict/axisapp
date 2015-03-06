@@ -296,9 +296,39 @@ class PresalesDistribution(models.Model):
         polygon: postgis polygon field that encloses all the points(clients) inside it using ConvexHull.
         assigned_seller: the seller assigned to work on this polygon, nullable, by default it takes seller on Area.
     """
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
+
+    WEEKDAYS = (
+        (MONDAY, _('Monday')),
+        (TUESDAY, _('Tuesday')),
+        (WEDNESDAY, _('Wednesday')),
+        (THURSDAY, _('Thursday')),
+        (FRIDAY, _('Friday')),
+        (SATURDAY, _('Saturday')),
+        (SUNDAY, _('Sunday')),
+    )
+
+    PRESALE = 0
+    AUTOSALE = 1
+    TELESALE = 2
+
+    ROUTE_TYPES = (
+        (PRESALE, _('Pre Sale')),
+        (AUTOSALE, _('Auto Sale')),
+        (TELESALE, _('Tele Sale'))
+    )
+
     name = models.CharField(max_length=255, verbose_name=_('Polygon Name'), null=True, blank=True)
     clients = models.ManyToManyField(Cliente, verbose_name=_('Clients'), related_name='distributions', blank=True)
     polygon = models.PolygonField(verbose_name=_('Polygon'))
+    frequency = models.CommaSeparatedIntegerField(_('Visit Days'), max_length=32, null=True, blank=True)
+    route_type = models.PositiveSmallIntegerField(_('Route Type'), choices=ROUTE_TYPES, null=True, blank=True)
     assigned_seller = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Assigned Pre-seller',
                                         related_name='areas_preseller', null=True, blank=False)
     objects = models.GeoManager()
