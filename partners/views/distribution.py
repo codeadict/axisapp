@@ -3,6 +3,7 @@ import logging
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
+from task import get_context_hull_by_areas
 
 from base.default_views import CustomListView, ModalMixin
 from censo.models import PresalesDistribution
@@ -59,6 +60,12 @@ class GenerateDistribution(ModalMixin, FormView):
         form = self.get_form(form_class)
         if self.form.is_valid():
             # TODO: Here we generate the distribution
+            # Just for test
+            #self.get_context_hull_by_areas.delay(2, 50)
+            area = request.post['area']
+            points_per_polygon = request.post['points_per_polygon']
+            get_context_hull_by_areas.delay(int(area), int(points_per_polygon))
+
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
