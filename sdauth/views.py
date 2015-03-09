@@ -15,7 +15,6 @@ from sdauth.models import User
 logger = logging.getLogger('__name__')
 
 
-
 def logout(request):
     auth_logout(request)
     return redirect(reverse('auth:login'))
