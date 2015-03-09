@@ -81,16 +81,16 @@ class AreaAdmin(admin.GeoModelAdmin):
 class LabelAdmin(admin.ModelAdmin):
     list_display = ['name', 'colour']
 
-class MacroCanalAdmin(admin.ModelAdmin):
+class MacroCanalAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
-class OcasionConsumoAdmin(admin.ModelAdmin):
+class OcasionConsumoAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
-class CanalAdmin(admin.ModelAdmin):
+class CanalAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
-class SubCanal(admin.ModelAdmin):
+class SubCanal(ImportExportModelAdmin):
     list_display = ['nombre']
 
 class MacroCatAdmin(ImportExportModelAdmin):
@@ -109,7 +109,7 @@ class PresentacionAdmin(ImportExportModelAdmin):
     resource_class = PresentacionesResource
     list_display = ['nombre']
 
-class EnvaseAdmin(admin.ModelAdmin):
+class EnvaseAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
 

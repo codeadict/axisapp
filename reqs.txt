@@ -41,3 +41,6 @@ django-phonenumber-field==0.7.1
 django-countries==3.2
 python-dateutil==2.4.0
 django-mptt==0.6.1
+easy-thumbnails==2.2
+# until https://bitbucket.org/openpyxl/openpyxl/issue/401/unboundlocalerror-upon-empty-row-in-an is resolved
+openpyxl==2.1.3

@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'bootstrapform_jinja',
     'bootstrap3_datetime',
     'django_jinja',
+    'django_jinja.contrib._easy_thumbnails',
     'djcelery',
     'rest_framework',
     'smart_selects',
@@ -53,6 +54,7 @@ INSTALLED_APPS = (
     'import_export',
     'account',
     'sdauth',
+    'easy_thumbnails',
     'base',
     'censo',
     'corsheaders',
@@ -270,6 +272,17 @@ LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
 
+
+DEFAULT_THUMBNAIL_SIZE = (100, 100)
+
+THUMBNAIL_ALIASES = {
+    'sdauth.User.photo': {
+        'small': {'size': DEFAULT_THUMBNAIL_SIZE, 'crop': True},
+    },
+}
+
+# TODO move this to True on production
+USE_ASYNC_IMPORT = False
 # this provides a way of overwriting variables locally without
 # adding it to git, use for TEST_CONCURRENCY, DATABASES
 try:

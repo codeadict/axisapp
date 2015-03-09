@@ -1,0 +1,23 @@
+{% extends "page.jinja" %}
+{% import 'macro/display_functions.jinja' as display_macros %}
+
+{% block content %}
+  {% if job_ongoing %}
+    {{ display_macros.wait(job_status_url, _('Please wait while data is imported.')) }}
+  {% else %}
+    <div>
+      <h1>{{ _('Import Data') }}</h1>
+      <p>
+        <a href="{{ url('import-template') }}">{{ _('Download Template Sample') }}</a>
+      </p>
+      <form action method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="xls">{{ _('Please select XLSX file') }}</label>
+          <input type="file" name="xlsx">
+        </div>
+        <button class="btn btn-primary" type="submit">{{ _('Import') }}</button>
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}
