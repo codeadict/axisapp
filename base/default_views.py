@@ -7,6 +7,7 @@ from django.shortcuts import render
 
 from base.display_generator import ItemDisplayMixin, BasicPage
 
+
 class CustomListView(ItemDisplayMixin, ListView):
     """
     This is the main ListView you should use for most lists in the system which

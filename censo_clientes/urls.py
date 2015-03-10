@@ -9,7 +9,7 @@ from djgeojson.views import TiledGeoJSONLayerView
 from base.site import SitePlus
 
 from base.models import Area
-from censo.models import Cliente
+from censo.models import Cliente, PresalesDistribution
 
 
 urlpatterns = patterns('',
@@ -25,8 +25,11 @@ urlpatterns = patterns('',
     url(r'^', include('censo.urls')),
     #url(r'^censo/mapa/$', 'censo.views.map_view', name='mapa'),
     url(r'^poligonos.geojson$', GeoJSONLayerView.as_view(model=Area, geometry_field = 'poligono', properties=(
-            ['nombre', 'id', 'total_clientes']
+            ['nombre', 'id']
         )),  name='poligonos_data'),
+    url(r'^distributions.geojson$', GeoJSONLayerView.as_view(model=PresalesDistribution, geometry_field='polygon', properties=(
+            ['name', 'id']
+        )),  name='distribution_data'),
     url(r'^clientes.geojson$', GeoJSONLayerView.as_view(model=Cliente, geometry_field = 'coordenadas', properties=(
             ['popupContent', 'id',]
         )), name='clients_data'),

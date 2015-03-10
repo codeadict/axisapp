@@ -131,7 +131,7 @@ $(function () {
                 body.html(data);
                 $('#tc-modal-body form').attr('action', url);
                 dialog.modal('show');
-                modal_form_submit('#tc-modal-body form', '#tc-modal');
+                //modal_form_submit('#tc-modal-body form', '#tc-modal');
             });
         }
     });
