@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'cacheops',
     'bootstrapform_jinja',
     'bootstrap3_datetime',
     'django_jinja',
@@ -49,7 +50,7 @@ INSTALLED_APPS = (
     'djcelery',
     'rest_framework',
     'smart_selects',
-    #'leaflet',
+    'leaflet',
     'djgeojson',
     'import_export',
     'account',
@@ -283,6 +284,25 @@ THUMBNAIL_ALIASES = {
 
 # TODO move this to True on production
 USE_ASYNC_IMPORT = False
+
+# Caching configuration, you need redis installed in order to work, if not it will degrade graceful
+CACHEOPS_REDIS = {
+    'host': 'localhost',  # redis-server is on same machine
+    'port': 6379,         # default redis port
+    'db': 1,              # SELECT non-default redis database
+    'socket_timeout': 3,  # using separate redis db or redis instance is highly recommended on production
+}
+
+CACHEOPS = {
+    'censo.cliente': {'ops': 'all', 'timeout': 60*15},
+}
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 60*60
+}
+
+#CACHEOPS_DEGRADE_ON_FAILURE = True
+
 # this provides a way of overwriting variables locally without
 # adding it to git, use for TEST_CONCURRENCY, DATABASES
 try:

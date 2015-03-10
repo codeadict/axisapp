@@ -4,7 +4,7 @@ import bs4
 
 from django.conf import settings
 from django.contrib.gis.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from smart_selects.db_fields import ChainedForeignKey
 
 from base import models as modelos_maestros
@@ -116,12 +116,18 @@ class Cliente(modelos_maestros.Partner):
 
     def __unicode__(self):
         """
-        Representacion del Objeto
+        Object representation
         :return: Unicode String
         """
         return self.get_full_name()
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('client-details', [self.pk])
+
     def get_full_name(self):
+        if "'" in self.nombres:
+            return ugettext('Names not present on DataBase')
         return '%s %s' % (self.nombres, self.apellidos)
 
     def foto_cliente_admin(self):
@@ -270,7 +276,12 @@ class InvProductos(models.Model):
         chained_model_field="categoria",
         show_all=False, auto_choose=True
     )
-    presentacion = models.ForeignKey(modelos_maestros.Presentacion, verbose_name='Presentacion')
+    presentacion = ChainedForeignKey(modelos_maestros.Presentacion,
+                                            verbose_name='Presentacion',
+                                            chained_field="marca",
+                                            chained_model_field="marca",
+                                            show_all=False, auto_choose=True
+    )
     envase = models.ForeignKey(modelos_maestros.Envase, verbose_name='Envase')
 
     class Meta:
@@ -326,6 +337,10 @@ class PresalesDistribution(models.Model):
     route_type = models.PositiveSmallIntegerField(_('Route Type'), choices=ROUTE_TYPES, null=True, blank=True)
     assigned_seller = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Assigned Pre-seller',
                                         related_name='areas_preseller', null=True, blank=False)
+    initial_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_initial',
+                                       help_text=_('Select the initial client from where you will start selling'))
+    final_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_final',
+                                     help_text=_('Select the final client from where you will start selling'))
     objects = models.GeoManager()
 
     class Meta:
@@ -337,3 +352,11 @@ class PresalesDistribution(models.Model):
             return self.name
         else:
             return ''
+
+    @property
+    def clients_count(self):
+        """
+        Rerurns the ammount of clients per polygon
+        :return: integer
+        """
+        pass

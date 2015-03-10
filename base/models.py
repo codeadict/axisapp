@@ -193,7 +193,6 @@ class Area(NombreMayusculasModel):
 
     objects = gismodel.GeoManager()
 
-
     def __unicode__(self):
         return self.nombre
 
@@ -308,6 +307,7 @@ class Marca(models.Model):
 
 
 class Presentacion(NombreMayusculasModel):
+    marca = models.ForeignKey(Marca, verbose_name='Marca', null=True)
     nombre = models.CharField(max_length=100, verbose_name='Presentacion')
 
     class Meta:
