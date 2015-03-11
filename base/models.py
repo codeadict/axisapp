@@ -179,17 +179,17 @@ class Area(NombreMayusculasModel):
         show_all=False, auto_choose=True
     )
     parroquia = ChainedForeignKey(Parroquia, chained_field="canton", chained_model_field="canton")
-    agencia = models.CharField(max_length=20, verbose_name='Agencia', null=True, blank=True)
-    tipo_ruta = models.CharField(max_length=20, verbose_name='Tipo Ruta', null=True, blank=True)
-    ruta = models.CharField(max_length=20, verbose_name='Ruta', null=True, blank=True)
+    #agencia = models.CharField(max_length=20, verbose_name='Agencia', null=True, blank=True)
+    #tipo_ruta = models.CharField(max_length=20, verbose_name='Tipo Ruta', null=True, blank=True)
+    #ruta = models.CharField(max_length=20, verbose_name='Ruta', null=True, blank=True)
     poligono = gismodel.PolygonField()
-    ruta_geom = gismodel.LineStringField(
-        null=True, blank=True,
-        help_text='Ruta a seguir por el censador o prevendedor')
-    censador = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Censador Asignado', related_name='areas_censador', null=True,
-                                 blank=False)
-    prevendedor = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Prevendedor Asignado', related_name='areas_prevendedor',
-                                    null=True, blank=False)
+    #ruta_geom = gismodel.LineStringField(
+    #    null=True, blank=True,
+    #    help_text='Ruta a seguir por el censador o prevendedor')
+    #censador = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Censador Asignado', related_name='areas_censador', null=True,
+    #                             blank=False)
+    #prevendedor = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Prevendedor Asignado', related_name='areas_prevendedor',
+    #                                null=True, blank=False)
 
     objects = gismodel.GeoManager()
 
