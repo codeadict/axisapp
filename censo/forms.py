@@ -4,8 +4,8 @@ from django.forms import ModelForm, Select
 from suit.widgets import NumberInput
 
 from base.form_helper import GenericFilterForm, TCForm
-from base.models import Area
-from censo.models import Cliente
+from base.models import Area, Provincia, MacroCat, Categoria, Marca, Presentacion
+from censo.models import Cliente, PresalesDistribution
 from partners.partner_form_helper import CreatePartnerForm, UpdatePartnerForm
 
 
@@ -78,6 +78,22 @@ class ClientSearchForm(GenericFilterForm):
         super(ClientSearchForm, self).__init__(*args, **kwargs)
 
 
+class ClientsMapFilterForm(TCForm):
+    province = forms.ModelChoiceField(Provincia.objects.none(), required=False)
+    macro_categ = forms.ModelChoiceField(MacroCat.objects.none(), required=False, label=_('Macro Category'))
+    category = forms.ModelChoiceField(Categoria.objects.none(), required=False)
+    brand = forms.ModelChoiceField(Marca.objects.none(), required=False)
+    presentation = forms.ModelChoiceField(Presentacion.objects.none(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ClientsMapFilterForm, self).__init__(*args, **kwargs)
+        self.fields['province'].queryset = Provincia.objects.all()
+        self.fields['macro_categ'].queryset = MacroCat.objects.all()
+        self.fields['category'].queryset = Categoria.objects.all()
+        self.fields['brand'].queryset = Marca.objects.all()
+        self.fields['presentation'].queryset = Presentacion.objects.all()
+
+
 class GenerateDistributionForm(TCForm):
     """
     Form used to give params to generate distribution view
@@ -89,3 +105,12 @@ class GenerateDistributionForm(TCForm):
     def __init__(self, *args, **kwargs):
         super(GenerateDistributionForm, self).__init__(*args, **kwargs)
         self.fields['area'].choices = [(o.id, str(o)) for o in Area.objects.all()]
+
+
+class UpdateDistributionForm(UpdatePartnerForm):
+    class Meta:
+        model = PresalesDistribution
+        exclude = ['clients']
+
+    def __init__(self, **kwargs):
+        super(UpdateDistributionForm, self).__init__(**kwargs)

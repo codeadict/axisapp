@@ -48,6 +48,7 @@ class EmpresaActivosIE(resources.ModelResource):
     class Meta:
         model = models.EmpresaActivos
 
+
 class EmpresaVisitasIE(resources.ModelResource):
     """
     Para Importar Datos
@@ -55,19 +56,23 @@ class EmpresaVisitasIE(resources.ModelResource):
     class Meta:
         model = models.EmpresaVisitas
 
+
 class ProvinciaAdmin(ImportExportModelAdmin):
     resource_class = ProvinciasResource
     list_display = ['nombre']
+
 
 class CantonAdmin(ImportExportModelAdmin):
     resource_class = CantonResource
     list_display = ['nombre']
 
+
 class ParroquiaAdmin(ImportExportModelAdmin):
     resource_class = ParroquiaIE
     list_display = ['nombre']
 
-class AreaAdmin(admin.GeoModelAdmin):
+
+class AreaAdmin(LeafletGeoAdmin):
     search_fields = ['nombre']
     list_display = ['nombre', 'provincia', 'canton', 'parroquia']
     default_zoom = 7
@@ -81,16 +86,16 @@ class AreaAdmin(admin.GeoModelAdmin):
 class LabelAdmin(admin.ModelAdmin):
     list_display = ['name', 'colour']
 
-class MacroCanalAdmin(admin.ModelAdmin):
+class MacroCanalAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
-class OcasionConsumoAdmin(admin.ModelAdmin):
+class OcasionConsumoAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
-class CanalAdmin(admin.ModelAdmin):
+class CanalAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
-class SubCanal(admin.ModelAdmin):
+class SubCanal(ImportExportModelAdmin):
     list_display = ['nombre']
 
 class MacroCatAdmin(ImportExportModelAdmin):
@@ -109,7 +114,7 @@ class PresentacionAdmin(ImportExportModelAdmin):
     resource_class = PresentacionesResource
     list_display = ['nombre']
 
-class EnvaseAdmin(admin.ModelAdmin):
+class EnvaseAdmin(ImportExportModelAdmin):
     list_display = ['nombre']
 
 

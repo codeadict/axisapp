@@ -4,7 +4,7 @@ import bs4
 
 from django.conf import settings
 from django.contrib.gis.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from smart_selects.db_fields import ChainedForeignKey
 
 from base import models as modelos_maestros
@@ -56,18 +56,17 @@ class Cliente(modelos_maestros.Partner):
     # Datos del Cliente
     #TODO: en filtros poner uno por categoria de productos, ejemplo solo los que compran licores
     #TODO: Minimo un record en productos y visitas
-    #TODO: En las fechas poner un input mask DD/MM/AAAA y que no salga hoy ni lance el calendar
     #Que el link de la APK aparezca solo un dia y se cambie el slug
     nombres = models.CharField(max_length=255, verbose_name='Nombres')
     apellidos = models.CharField(max_length=255, verbose_name='Apellidos')
     tipo_id = models.PositiveIntegerField(choices=TIPOS_IDS, default=0, verbose_name='Tipo ID')
-    identif = models.CharField(max_length=13, verbose_name='Identificacion')
+    identif = models.CharField(max_length=16, verbose_name='Identificacion')
     fecha_verificado_sri = models.DateField(verbose_name='Fecha Verificacion SRi', null=True, blank=True)
     email = models.EmailField(max_length=150, verbose_name='Email', null=True, blank=True)
     celular = models.CharField(max_length=10, verbose_name='Celular', null=True, blank=True)
     convencional = models.CharField(max_length=9, verbose_name='Convencional', null=True, blank=True,
                                     help_text='Poner con 9 numeros, Ejemplo: 021234567')
-    cumple = models.DateField(verbose_name='Cumpleanos')
+    cumple = models.DateField(verbose_name='Cumpleanos', null=True, blank=True)
     administrador = models.CharField(max_length=255, verbose_name='Administrador', null=True, blank=True)
     foto = models.ImageField(upload_to='fotos/clientes/', null=True,
                              blank=True, verbose_name=u'Foto')
@@ -93,9 +92,8 @@ class Cliente(modelos_maestros.Partner):
 
     medida_frente = models.FloatField(verbose_name='Medida Frente', blank=True, null=True)
     medida_fondo = models.FloatField(verbose_name='Medida Fondo', blank=True, null=True)
-    #TODO: Poner horas en formato 24 horas y poner help_text que diga al usuario el formato
-    horario_desde = models.TimeField(verbose_name='Desde', help_text='Formato 24 horas: 00:00')
-    horario_hasta = models.TimeField(verbose_name='Hasta', help_text='Formato 24 horas: 00:00')
+    horario_desde = models.TimeField(verbose_name='Horario Desde', help_text='Formato 24 horas: 00:00')
+    horario_hasta = models.TimeField(verbose_name='Horario Hasta', help_text='Formato 24 horas: 00:00')
     abc_compras = models.CharField(max_length=1, choices=ABC, verbose_name='ABC Compras', null=True, blank=True)
     abc_industrias = models.CharField(max_length=1, choices=ABC, verbose_name='ABC Industrias', null=True, blank=True)
 
@@ -106,10 +104,8 @@ class Cliente(modelos_maestros.Partner):
     codigo = models.CharField(max_length=20, verbose_name='Codigo', null=True, blank=True)
     barrio = models.CharField(max_length=255, verbose_name='Barrio', blank=True, null=True)
     sector = models.CharField(max_length=255, verbose_name='Sector', blank=True, null=True)
-    coordenadas = models.PointField(db_column="geom")
+    coordenadas = models.PointField(db_column="geom", null=True, blank=True)
 
-    frecuencia = models.CharField(max_length=20, verbose_name='Frecuencia', null=True, blank=True)
-    secuencia = models.CharField(max_length=20, verbose_name='Secuencia', null=True, blank=True)
     estado = models.PositiveSmallIntegerField(choices=ESTADOS, verbose_name='Estado', default=ACTIVO)
 
     #TODO: Foto Local obligatoria en la app movil
@@ -120,12 +116,18 @@ class Cliente(modelos_maestros.Partner):
 
     def __unicode__(self):
         """
-        Representacion del Objeto
+        Object representation
         :return: Unicode String
         """
         return self.get_full_name()
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('client-details', [self.pk])
+
     def get_full_name(self):
+        if "'" in self.nombres:
+            return ugettext('Names not present on DataBase')
         return '%s %s' % (self.nombres, self.apellidos)
 
     def foto_cliente_admin(self):
@@ -196,11 +198,10 @@ class Cliente(modelos_maestros.Partner):
             setattr(self, 'administrador', self.apellidos + ' ' + self.nombres)
 
         #obtener todos los campos Char sin choices para poner en mayusculas, DRY
-        char_fields = [f.name for f in self._meta.fields if
-                       isinstance(f, models.CharField) and not getattr(f, 'choices')]
+        char_fields = [f.name for f in self._meta.fields if isinstance(f, models.CharField) and not isinstance(f, models.EmailField) and not isinstance(f, models.URLField) and not getattr(f, 'choices')]
         for f in char_fields:
             val = getattr(self, f, False)
-            if val:
+            if val and isinstance(val, basestring):
                 setattr(self, f, val.upper())
         super(Cliente, self).save(*args, **kwargs)
 
@@ -275,7 +276,12 @@ class InvProductos(models.Model):
         chained_model_field="categoria",
         show_all=False, auto_choose=True
     )
-    presentacion = models.ForeignKey(modelos_maestros.Presentacion, verbose_name='Presentacion')
+    presentacion = ChainedForeignKey(modelos_maestros.Presentacion,
+                                            verbose_name='Presentacion',
+                                            chained_field="marca",
+                                            chained_model_field="marca",
+                                            show_all=False, auto_choose=True
+    )
     envase = models.ForeignKey(modelos_maestros.Envase, verbose_name='Envase')
 
     class Meta:
@@ -296,11 +302,45 @@ class PresalesDistribution(models.Model):
         polygon: postgis polygon field that encloses all the points(clients) inside it using ConvexHull.
         assigned_seller: the seller assigned to work on this polygon, nullable, by default it takes seller on Area.
     """
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
+
+    WEEKDAYS = (
+        (MONDAY, _('Monday')),
+        (TUESDAY, _('Tuesday')),
+        (WEDNESDAY, _('Wednesday')),
+        (THURSDAY, _('Thursday')),
+        (FRIDAY, _('Friday')),
+        (SATURDAY, _('Saturday')),
+        (SUNDAY, _('Sunday')),
+    )
+
+    PRESALE = 0
+    AUTOSALE = 1
+    TELESALE = 2
+
+    ROUTE_TYPES = (
+        (PRESALE, _('Pre Sale')),
+        (AUTOSALE, _('Auto Sale')),
+        (TELESALE, _('Tele Sale'))
+    )
+
     name = models.CharField(max_length=255, verbose_name=_('Polygon Name'), null=True, blank=True)
     clients = models.ManyToManyField(Cliente, verbose_name=_('Clients'), related_name='distributions', blank=True)
     polygon = models.PolygonField(verbose_name=_('Polygon'))
+    frequency = models.CommaSeparatedIntegerField(_('Visit Days'), max_length=32, null=True, blank=True)
+    route_type = models.PositiveSmallIntegerField(_('Route Type'), choices=ROUTE_TYPES, null=True, blank=True)
     assigned_seller = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Assigned Pre-seller',
                                         related_name='areas_preseller', null=True, blank=False)
+    initial_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_initial',
+                                       help_text=_('Select the initial client from where you will start selling'))
+    final_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_final',
+                                     help_text=_('Select the final client from where you will start selling'))
     objects = models.GeoManager()
 
     class Meta:
@@ -312,3 +352,11 @@ class PresalesDistribution(models.Model):
             return self.name
         else:
             return ''
+
+    @property
+    def clients_count(self):
+        """
+        Rerurns the ammount of clients per polygon
+        :return: integer
+        """
+        pass

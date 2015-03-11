@@ -21,6 +21,8 @@ MENUS = {
         {'name': _('Ventas'), 'submenu': [
             {'name': _('Pedidos'), 'rurl': 'index', 'perms': []},
         ]},
-
+        {'name': _('Configuracion'), 'submenu': [
+            {'name': _('Importar Datos'), 'rurl': 'import', 'perms': []},
+        ]},
     ],
 }

@@ -42,17 +42,20 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'cacheops',
     'bootstrapform_jinja',
     'bootstrap3_datetime',
     'django_jinja',
+    'django_jinja.contrib._easy_thumbnails',
     'djcelery',
     'rest_framework',
     'smart_selects',
-    #'leaflet',
+    'leaflet',
     'djgeojson',
     'import_export',
     'account',
     'sdauth',
+    'easy_thumbnails',
     'base',
     'censo',
     'corsheaders',
@@ -269,6 +272,36 @@ LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
+
+
+DEFAULT_THUMBNAIL_SIZE = (100, 100)
+
+THUMBNAIL_ALIASES = {
+    'sdauth.User.photo': {
+        'small': {'size': DEFAULT_THUMBNAIL_SIZE, 'crop': True},
+    },
+}
+
+# TODO move this to True on production
+USE_ASYNC_IMPORT = False
+
+# Caching configuration, you need redis installed in order to work, if not it will degrade graceful
+CACHEOPS_REDIS = {
+    'host': 'localhost',  # redis-server is on same machine
+    'port': 6379,         # default redis port
+    'db': 1,              # SELECT non-default redis database
+    'socket_timeout': 3,  # using separate redis db or redis instance is highly recommended on production
+}
+
+CACHEOPS = {
+    'censo.cliente': {'ops': 'all', 'timeout': 60*15},
+}
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 60*60
+}
+
+#CACHEOPS_DEGRADE_ON_FAILURE = True
 
 # this provides a way of overwriting variables locally without
 # adding it to git, use for TEST_CONCURRENCY, DATABASES

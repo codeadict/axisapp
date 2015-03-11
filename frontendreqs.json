@@ -73,6 +73,7 @@
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/moment.min.js": "js/{{ filename }}",
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker.js": "js/{{ filename }}",
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker-bs3.css": "css/{{ filename }}",
-    "{{ github }}/mlevans/leaflet-hash/master/leaflet-hash.js": "js/{{ filename }}"
+    "{{ github }}/mlevans/leaflet-hash/master/leaflet-hash.js": "js/{{ filename }}",
+    "{{ github }}/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer_compiled.js": "js/{{ filename }}"
   }
 }
