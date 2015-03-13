@@ -27,11 +27,11 @@
 {% macro showobject_with_image(object, detail_view) %}
   {% if detail_view %}
     <a class="photo" href="{{ url(detail_view, pk=object.pk) }}">
-        <img src="{{ "default_avatar.png"|static }}"/>
+        <img src="{{ "default_avatar.png"|static }}" width="50" height="50"/>
     </a>
   {% else %}
     <div class="photo">
-        <img src="{{ "default_avatar.png"|static }}"/>
+        <img src="{{ "default_avatar.png"|static }}" width="50" height="50"/>
     </div>
   {% endif %}
 

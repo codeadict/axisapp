@@ -7,6 +7,7 @@ django-bootstrap3-datetimepicker==2.2.3
 django-debug-toolbar==1.2.1
 django-extensions==1.4.9
 django-celery==3.1.16
+django-cacheops==2.3
 django-filter==0.8
 django-jinja==1.0.3
 -e git+https://github.com/samuelcolvin/django-jinja-bootstrap-form.git@bbceabb7832005568c6f863f68010795bdc9e5e7#egg=django_jinja_bootstrap_form-master == 4.0
@@ -41,3 +42,6 @@ django-phonenumber-field==0.7.1
 django-countries==3.2
 python-dateutil==2.4.0
 django-mptt==0.6.1
+easy-thumbnails==2.2
+# until https://bitbucket.org/openpyxl/openpyxl/issue/401/unboundlocalerror-upon-empty-row-in-an is resolved
+openpyxl==2.1.3

@@ -10,7 +10,7 @@ from base.default_views import EditModelView
 from base.display_generator import BasicPage, ItemDisplayMixin
 from censo.models import Cliente
 from partners.view_utils import PartnerListView, PartnerMapView, PartnerDetailView, _GenericRoleMixin
-from censo.forms import ClientSearchForm, CreateClientForm, UpdateClientForm
+from censo.forms import ClientSearchForm, CreateClientForm, UpdateClientForm, ClientsMapFilterForm
 from partners.partner_form_helper import DeletePartner
 
 
@@ -32,7 +32,6 @@ class ClientList(PartnerListView):
         {'name': _('Filtrar'), 'rurl': 'client-filter'}
     ]
     search_form = ClientSearchForm
-    related_fields = ['user', 'country', 'category']
 
     def get_queryset(self):
         return super(ClientList, self).get_queryset()
@@ -44,6 +43,7 @@ client_list = ClientList.as_view()
 class ClientMap(PartnerMapView):
     active_page = 'client-map'
     geometry_field = 'coordenadas'
+    paginate_by = None  # we get all the results no pagination
     model = Cliente
     perms = []
     detail_view = 'client-details'
@@ -57,13 +57,28 @@ class ClientMap(PartnerMapView):
     ]
     button_menu = [
         {'name': _('Agregar Cliente'), 'rurl': 'client-add'},
-        {'name': _('Filtrar'), 'rurl': 'client-filter'}
+        {'name': _('FullScreen Map'), 'urlfunc': 'fullscreen_url', 'classes': 'map-go-fullscreen'},
     ]
     search_form = ClientSearchForm
-    related_fields = ['user', 'country', 'category']
+
+    def fullscreen_url(self):
+        return 'javascript:void(0);'
 
     def get_queryset(self):
-        return super(ClientMap, self).get_queryset()
+        qs = super(ClientMap, self).get_queryset().only('coordenadas', 'nombres', 'apellidos').order_by().cache()
+        search_form = self.get_search_form()
+        search_form.full_clean()
+        search_form_data = search_form.clean()
+        return qs
+
+    def get_search_form(self):
+        return ClientsMapFilterForm(data=self.request.GET, request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientMap, self).get_context_data(**kwargs)
+        context['search_form'] = self.get_search_form()
+        context['full_width'] = True
+        return context
 
 
 client_map = ClientMap.as_view()
@@ -144,7 +159,7 @@ class ClientDetails(PartnerDetailView):
 
     def map_url(self):
         url = reverse('client-map')
-        return url + '#12/%s/%s' % (self.object.coordenadas.y, self.object.coordenadas.x)
+        return url + '#19/%s/%s' % (self.object.coordenadas.y, self.object.coordenadas.x)
 
     def get_context_data(self, **kwargs):
         context = super(ClientDetails, self).get_context_data(**kwargs)
