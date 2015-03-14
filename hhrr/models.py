@@ -336,16 +336,16 @@ class Employee(base_models.Partner):
     postcode = models.CharField(max_length=10, verbose_name=_('Postal Code'))
     nationality = fields.CountryField(verbose_name=_('Nationality'), blank_label=_('(select country)'))
     blood_type = models.IntegerField(choices=BLOOD_TYPE, default=0, verbose_name=_('Blood type'))
-    handicapped = models.BooleanField(default=0, verbose_name=_('Is handicapped?'))
-    handicap_percent = base_fields.PercentageField(default=0, verbose_name=_('Handicap percent'))
-    handicap_type = models.CharField(max_length=255, verbose_name=_('Handicap type'))
-    handicap_card_number = models.CharField(max_length=255, verbose_name=_('Handicap card number'))
+    handicapped = models.BooleanField(default=False, verbose_name=_('Is handicapped?'))
+    handicap_percent = base_fields.PercentageField(default=0, verbose_name=_('Handicap percent'), blank=True)
+    handicap_type = models.CharField(max_length=255, verbose_name=_('Handicap type'), blank=True)
+    handicap_card_number = models.CharField(max_length=255, verbose_name=_('Handicap card number'), blank=True)
     phone = modelfields.PhoneNumberField(verbose_name=_('Phone number'), help_text='If phone from different country \
                                          than company please, provide international format +prefix-number')
     cellphone = modelfields.PhoneNumberField(verbose_name=_('Cellphone number'), help_text='If cellphone from different \
                                          country than company please, provide international format +prefix-number')
     email = models.EmailField(max_length=255, verbose_name=_('Email'))
-    skype = models.CharField(max_length=255, verbose_name=_('Skype user'))
+    skype = models.CharField(max_length=255, verbose_name=_('Skype user'), blank=True)
     department = models.ForeignKey('EnterpriseDepartment', related_name='employees', verbose_name=_('Department'))
     marital_status = models.IntegerField(choices=MARITAL_STATUS, default=0, verbose_name=_('Marital status'))
     sex = models.IntegerField(choices=GENDER_TYPE, default=-1, verbose_name=_('Gender'))
@@ -353,7 +353,7 @@ class Employee(base_models.Partner):
     emergency_person = models.CharField(max_length=255, verbose_name=_('Name to call at emergency'))
     emergency_phone = modelfields.PhoneNumberField(verbose_name=_('Phone number to call at emergency'))
 
-    maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_('Maintain reserve funds?'))
+    maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_('Maintain reserve funds?'), blank=True)
     status = models.IntegerField(choices=STATUS_TYPE, default=0, verbose_name=_('Status'))
     ethnic_race = models.IntegerField(choices=ETHNIC_RACE_TYPE, default=0, verbose_name=_('Ethnic race'))
     family_dependants = models.ForeignKey(FamilyDependant, related_name='family_dependants',

@@ -105,11 +105,9 @@ class EmployeeDetails(PartnerDetailView):
         'cellphone',
         'address',
         'birthday',
-        'especial',
-        'razon_social',
-        'estatal',
-        'nombre_comercial',
-        'website',
+        'nationality',
+        'status',
+        'ethnic_race',
     ]
     extra_content = 'hhrr/employee/extra_details.jinja'
     button_menu = [
