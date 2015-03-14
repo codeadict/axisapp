@@ -1,4 +1,4 @@
-/* Function to create the sub areas */
+﻿/* Function to create the sub areas */
 CREATE OR REPLACE FUNCTION generate_subareas(costumers_number INT, area_id INT) RETURNS void
 AS $$
 DECLARE
@@ -56,7 +56,7 @@ BEGIN
 	GROUP BY kmeans_group
 	ORDER BY kmeans_group
     LOOP
-	INSERT INTO censo_presalesdistribution (name, polygon) VALUES (area.nombre || rec.kmeans_group, rec.geom);
+	INSERT INTO censo_presalesdistribution (name, polygon) VALUES (area.nombre || rec.kmeans_group, rec.geom::geometry);
 	SELECT CURRVAL(pg_get_serial_sequence('censo_presalesdistribution', 'id')) INTO temp_presales_dist;
 
 	FOR rec1 IN
@@ -71,6 +71,5 @@ BEGIN
 			VALUES (temp_presales_dist, rec1.client_id);
 	END LOOP;
     END LOOP;
-
 END
 $$ language 'plpgsql';
