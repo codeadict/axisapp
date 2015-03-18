@@ -326,7 +326,8 @@ class Employee(base_models.Partner):
     last_name = models.CharField(max_length=255, verbose_name=_('Last Name'))
     id_type = models.IntegerField(choices=ID_TYPE, default=2, verbose_name=_('Id type'))
     identification = models.CharField(max_length=20, verbose_name=_('ID number'))
-    photo = models.ImageField(verbose_name=_('Image'))
+    photo = models.ImageField(upload_to='photos/employee/', verbose_name=_('Image'),
+                              blank=True, null=True)
     address = models.CharField(max_length=255, verbose_name=_('Address'))
     province = models.ForeignKey(base_models.Provincia, verbose_name=_('Province'))
     parish = models.ForeignKey(base_models.Parroquia, verbose_name=_('Parish'))
@@ -374,6 +375,14 @@ class Employee(base_models.Partner):
         verbose_name = _('Employee')
         verbose_name_plural = _('Employees')
         ordering = ['last_name']
+
+    def employee_photo(self):
+        if self.photo:
+            return '<img src="/media/%s" height="200" with="200" style="height: 200px !important;"/>' % self.foto
+        return '<img src="http://placehold.it/200x200&text=%s" height="200" with="200"/>' % _('No photo available')
+
+    employee_photo.allow_tags = True
+    employee_photo.short_description = _('Employee\'s photo')
 
 
 class EnterpriseDepartment(MPTTModel):
