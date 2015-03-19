@@ -5,14 +5,13 @@ from django import forms
 from django.forms import ModelForm, Select
 from suit.widgets import NumberInput
 
-from base.form_helper import GenericFilterForm, TCForm
-from base.models import Area
 from hhrr.models import Employee, EmploymentHistory, FamilyRelation, FamilyDependant, \
     Language, EducationArea, Education, EnterpriseDepartment
-from partners.partner_form_helper import CreatePartnerForm, UpdatePartnerForm
+from partners.partner_form_helper import UpdatePartnerForm, CreatePartnerForm, DeletePartner
+from base import form_helper
 
 
-class EmployeeSearchForm(GenericFilterForm):
+class EmployeeSearchForm(form_helper.GenericFilterForm):
     name = forms.CharField(label=_(u'Name'))
     lastname = forms.CharField(label=_(u'Last name'))
     email = forms.EmailField(label=_(u'Email'))
@@ -39,7 +38,7 @@ class EmployeeSearchForm(GenericFilterForm):
 class CreateEmployeeForm(CreatePartnerForm):
     class Meta:
         model = Employee
-        #exclude = ['agency', 'user']
+        exclude = []
 
 
 class UpdateEmployeeForm(UpdatePartnerForm):
@@ -50,7 +49,13 @@ class UpdateEmployeeForm(UpdatePartnerForm):
         super(UpdateEmployeeForm, self).__init__(**kwargs)
 
 
-class CreateEmploymentHistoryForm(CreatePartnerForm):
+class DeleteEmployeeForm(DeletePartner):
+    class Meta:
+        model = Employee
+        exclude = []
+
+
+class CreateEmploymentHistoryForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -60,7 +65,7 @@ class CreateEmploymentHistoryForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateEmploymentHistoryForm(UpdatePartnerForm):
+class UpdateEmploymentHistoryForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """
@@ -72,7 +77,7 @@ class UpdateEmploymentHistoryForm(UpdatePartnerForm):
         super(UpdateEmploymentHistoryForm, self).__init__(**kwargs)
 
 
-class CreateLanguageForm(CreatePartnerForm):
+class CreateLanguageForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -82,7 +87,7 @@ class CreateLanguageForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateLanguageForm(UpdatePartnerForm):
+class UpdateLanguageForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """
@@ -94,7 +99,7 @@ class UpdateLanguageForm(UpdatePartnerForm):
         super(UpdateLanguageForm, self).__init__(**kwargs)
 
 
-class CreateFamilyRelationForm(CreatePartnerForm):
+class CreateFamilyRelationForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -104,7 +109,7 @@ class CreateFamilyRelationForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateFamilyRelationForm(UpdatePartnerForm):
+class UpdateFamilyRelationForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """
@@ -116,7 +121,7 @@ class UpdateFamilyRelationForm(UpdatePartnerForm):
         super(UpdateFamilyRelationForm, self).__init__(**kwargs)
 
 
-class CreateFamilyDependantForm(CreatePartnerForm):
+class CreateFamilyDependantForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -126,7 +131,7 @@ class CreateFamilyDependantForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateFamilyDependantForm(UpdatePartnerForm):
+class UpdateFamilyDependantForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """
@@ -138,7 +143,7 @@ class UpdateFamilyDependantForm(UpdatePartnerForm):
         super(UpdateFamilyDependantForm, self).__init__(**kwargs)
 
 
-class CreateEducationAreaForm(CreatePartnerForm):
+class CreateEducationAreaForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -148,7 +153,7 @@ class CreateEducationAreaForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateEducationAreaForm(UpdatePartnerForm):
+class UpdateEducationAreaForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """
@@ -160,7 +165,7 @@ class UpdateEducationAreaForm(UpdatePartnerForm):
         super(UpdateEducationAreaForm, self).__init__(**kwargs)
 
 
-class CreateEducationForm(CreatePartnerForm):
+class CreateEducationForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -170,7 +175,7 @@ class CreateEducationForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateEducationForm(UpdatePartnerForm):
+class UpdateEducationForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """
@@ -182,7 +187,7 @@ class UpdateEducationForm(UpdatePartnerForm):
         super(UpdateEducationForm, self).__init__(**kwargs)
 
 
-class CreateEnterpriseDepartmentForm(CreatePartnerForm):
+class CreateEnterpriseDepartmentForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -192,7 +197,7 @@ class CreateEnterpriseDepartmentForm(CreatePartnerForm):
         exclude = []
 
 
-class UpdateEnterpriseDepartmentForm(UpdatePartnerForm):
+class UpdateEnterpriseDepartmentForm(form_helper.TCModelForm):
     """
     Form to update the Employment history
     """

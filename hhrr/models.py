@@ -378,7 +378,7 @@ class Employee(base_models.Partner):
 
     def employee_photo(self):
         if self.photo:
-            return '<img src="/media/%s" height="200" with="200" style="height: 200px !important;"/>' % self.foto
+            return '<img src="/media/%s" height="200" with="200" style="height: 200px !important;"/>' % self.photo
         return '<img src="http://placehold.it/200x200&text=%s" height="200" with="200"/>' % _('No photo available')
 
     employee_photo.allow_tags = True

@@ -48,35 +48,6 @@ class EmployeeList(PartnerListView):
 
 employee_list = EmployeeList.as_view()
 
-"""
-class ClientMap(PartnerMapView):
-    active_page = 'client-map'
-    geometry_field = 'coordenadas'
-    model = Cliente
-    perms = []
-    detail_view = 'client-details'
-    display_items = [
-        'func|identificacion',
-        'email',
-        'celular',
-        'direccion',
-        'convencional',
-        'func|location',
-    ]
-    button_menu = [
-        {'name': _('Agregar Cliente'), 'rurl': 'client-add'},
-        {'name': _('Filtrar'), 'rurl': 'client-filter'}
-    ]
-    search_form = ClientSearchForm
-    related_fields = ['user', 'country', 'category']
-
-    def get_queryset(self):
-        return super(ClientMap, self).get_queryset()
-
-
-client_map = ClientMap.as_view()
-"""
-
 
 class EmployeeFilter(PartnerListView):
     template_name = 'hhrr/filter.jinja'
@@ -117,10 +88,6 @@ class EmployeeDetails(PartnerDetailView):
              'msg': _('Are you going to delete this Employee?')},
         ],
         [
-            {'name': _('Verify on SRI'), 'urlfunc': 'edit_url'},
-            {'name': _('See on the map'), 'urlfunc': 'map_url'},
-        ],
-        [
             {'name': _('Change state'), 'dropdown':
                 [
                     {
@@ -128,7 +95,7 @@ class EmployeeDetails(PartnerDetailView):
                        'urlfunc': 'set_status_url',
                        'classes': 'submit-post client-set-status',
                        'data': {'status': value}
-                    } for value, display_name in Employee.BLOOD_TYPE
+                    } for value, display_name in Employee.STATUS_TYPE
                 ]
             }
         ],
@@ -149,7 +116,7 @@ class EmployeeDetails(PartnerDetailView):
     def get_context_data(self, **kwargs):
         context = super(EmployeeDetails, self).get_context_data(**kwargs)
         con_type = ContentType.objects.get_for_model(Employee)
-        context['status_choices'] = dict(Employee.BLOOD_TYPE)
+        context['status_choices'] = dict(Employee.STATUS_TYPE)
         return context
 
 
@@ -190,23 +157,5 @@ class EmployeeDelete(DeletePartner):
     perms = []
 
 employee_delete = EmployeeDelete.as_view()
-
-"""
-class EmployeeSetStatus(EmployeeDetails):
-    template_name = 'partners/set_role_status.jinja'
-    perms = []
-
-    def post(self, *args, **kwargs):
-        pk = self.kwargs['pk']
-        employee = Employee.objects.request_qs(self.request)
-        employee = get_object_or_404(employee, pk=pk)
-        status = int(self.request.POST['status'])
-        assert status in dict(Employee.BLOOD_TYPE), 'unknown client status %d' % status
-        employee.status = status
-        employee.save()
-        return redirect('employee-details', pk=pk)
-
-employee_set_status = EmployeeSetStatus.as_view()
-"""
 
 
