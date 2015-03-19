@@ -16,5 +16,4 @@ urlpatterns = patterns('partners.views',
                        url(r'^clients/distribution/$', 'distribution_list', name='presales-client-distribution'),
                        url(r'^clients/distribution/(?P<pk>\d+)/edit/$', 'distribution_update', name='edit-distribution'),
                        url(r'^clients/distribution/generate/$', 'distribution_generate', name='generate-distribution'),
-
-)
+                       )
