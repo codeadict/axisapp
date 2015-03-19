@@ -169,6 +169,9 @@
           {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
+          {% if user.is_admin %}
+            <li><a href="{{ url('admin:index') }}">{{ _('Adminnistration Page') }}</a></li>
+          {% endif %}
           <li class="dropdown">
             <a class="user-photo-button" href="#" class="dropdown-toggle" data-toggle="dropdown">
               {% if user.photo %}

@@ -820,3 +820,9 @@ span.loading {
 .leaflet-map-pane {
   z-index: 100;
 }
+
+ul#id_frequency {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}

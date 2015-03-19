@@ -74,6 +74,9 @@
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker.js": "js/{{ filename }}",
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker-bs3.css": "css/{{ filename }}",
     "{{ github }}/mlevans/leaflet-hash/master/leaflet-hash.js": "js/{{ filename }}",
-    "{{ github }}/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer_compiled.js": "js/{{ filename }}"
+    "{{ github }}/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer_compiled.js": "js/{{ filename }}",
+    "{{ github }}/brianreavis/selectize.js/master/dist/js/standalone/selectize.min.js": "js/{{ filename }}",
+    "{{ github }}/brianreavis/selectize.js/master/dist/css/selectize.bootstrap3.css": "css/{{ filename }}"
+
   }
 }

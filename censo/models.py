@@ -155,22 +155,26 @@ class Cliente(modelos_maestros.Partner):
                 'ascii') if self.apellidos else ' ', self.identif if self.identif else ' ',
             self.nombre_comercial.encode('ascii', 'ignore').decode('ascii') if self.nombre_comercial else ' ', self.id)
 
-    def verificar_sri(self):
+    def verify(self):
+        """
+        Verify the client with government institutions to check that data is updated and correct
+        """
+        verification_data = {}
         if self.tipo_id == self.RUC:
             params = {'accion': 'siguiente', 'ruc': self.identif, 'lineasPagina': ''}
             url = 'https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/ruc-datos2.jspa'
             sri_page = requests.post(url, params)
             soup = bs4.BeautifulSoup(sri_page.text)
-
             data = soup.select('table.formulario tr td')
 
-            if not data:
-                return
-            else:
-                self.razon_social = data[0].text.strip(' \n\s')
-                self.identif = data[2].text.strip(' \n\s')
-                self.tipo_contribuyente = data[11].text.strip(' \n\s')
-                self.lleva_contabilidad = True if data[13].text == 'SI' else False
+            if data:
+                verification_data = {
+                    'social_reason': data[0].text.strip(' \n\s'),
+                    'identification': data[2].text.strip(' \n\s'),
+                    'contributor_type': data[11].text.strip(' \n\s'),
+                    'accounting_obligation': True if data[13].text == 'SI' else False,
+                }
+        return verification_data
 
     def save(self, *args, **kwargs):
         """
@@ -340,7 +344,7 @@ class PresalesDistribution(models.Model):
     initial_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_initial',
                                        help_text=_('Select the initial client from where you will start selling'))
     final_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_final',
-                                     help_text=_('Select the final client from where you will start selling'))
+                                     help_text=_('Select the final client from where you will finish selling'))
     objects = models.GeoManager()
 
     class Meta:

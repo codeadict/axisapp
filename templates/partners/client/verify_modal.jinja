@@ -1,0 +1,27 @@
+{% extends '/common/modals/base_modal.jinja' %}
+
+{% block modal_body %}
+  <div class="row">
+    <div class="col-md-6 detail-item">
+      <label>{{ _('Social Reason') }}:</label>
+      <div class="detail-info">
+        {% if social_reason %}
+          {{ social_reason|safe }}
+        {% else %}
+          {{ _('-') }}
+        {% endif %}
+      </div>
+    </div>
+  <div class="col-md-6 detail-item">
+      <label>{{ _('Identification') }}:</label>
+      <div class="detail-info">
+        {% if identification %}
+          {{ identification }}
+        {% else %}
+          {{ _('-') }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block modal_button_text %}{{ _('Update Client Data') }}{% endblock %}

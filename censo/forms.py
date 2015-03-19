@@ -1,9 +1,12 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms import ModelForm, Select
+from django.contrib.gis.forms import GeometryField
 from suit.widgets import NumberInput
 
 from base.form_helper import GenericFilterForm, TCForm
+from base.fields import CSIMultipleChoiceField
+from base import gis as gisform
 from base.models import Area, Provincia, MacroCat, Categoria, Marca, Presentacion
 from censo.models import Cliente, PresalesDistribution
 from partners.partner_form_helper import CreatePartnerForm, UpdatePartnerForm
@@ -108,9 +111,14 @@ class GenerateDistributionForm(TCForm):
 
 
 class UpdateDistributionForm(UpdatePartnerForm):
+    frequency = CSIMultipleChoiceField(label=_('Visit Days'), choices=PresalesDistribution.WEEKDAYS, required=False)
+    polygon = GeometryField(widget=gisform.BaseGMapWidget)
+
     class Meta:
         model = PresalesDistribution
+        fields = ['name', 'route_type', 'assigned_seller', 'frequency', 'initial_client', 'final_client', 'polygon']
         exclude = ['clients']
 
     def __init__(self, **kwargs):
         super(UpdateDistributionForm, self).__init__(**kwargs)
+

@@ -6,10 +6,10 @@ from django.views.generic import CreateView, UpdateView, TemplateView
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
-from base.default_views import EditModelView
+from base.default_views import EditModelView, ModalMixin
 from base.display_generator import BasicPage, ItemDisplayMixin
 from censo.models import Cliente
-from partners.view_utils import PartnerListView, PartnerMapView, PartnerDetailView, _GenericRoleMixin
+from partners.view_utils import PartnerListView, PartnerMapView, PartnerDetailView
 from censo.forms import ClientSearchForm, CreateClientForm, UpdateClientForm, ClientsMapFilterForm
 from partners.partner_form_helper import DeletePartner
 
@@ -128,7 +128,8 @@ class ClientDetails(PartnerDetailView):
              'msg': _('Seguro que desea eliminar este Cliente?')},
         ],
         [
-            {'name': _('Verificar en SRi'), 'urlfunc': 'edit_url'},
+            {'name': _('Verificar en SRi'), 'urlfunc': 'verify_url', 'data':
+                {'toggle': 'crud-modal', 'title': _('Verify Client')}},
             {'name': _('Ver en el mapa'), 'urlfunc': 'map_url'},
         ],
         [
@@ -151,6 +152,9 @@ class ClientDetails(PartnerDetailView):
     def edit_url(self):
         return reverse('client-edit', kwargs={'pk': self.object.pk})
 
+    def verify_url(self):
+        return reverse('client-verify', kwargs={'pk': self.object.pk})
+
     def delete_url(self):
         return reverse('client-delete', kwargs={'pk': self.object.pk})
 
@@ -165,6 +169,7 @@ class ClientDetails(PartnerDetailView):
         context = super(ClientDetails, self).get_context_data(**kwargs)
         con_type = ContentType.objects.get_for_model(Cliente)
         context['status_choices'] = dict(Cliente.ESTADOS)
+        context['full_width'] = True
         return context
 
 
@@ -224,3 +229,30 @@ class ClientSetStatus(ClientDetails):
 
 client_set_status = ClientSetStatus.as_view()
 
+
+class ClientVerify(ClientDetails, ModalMixin):
+    """
+    Verify Client on SRi and Registro Civil(TODO)
+    """
+    model = Cliente
+    template_name = 'partners/client/verify_modal.jinja'
+
+    def __init__(self, *args, **kwargs):
+        self.verification_data = {}
+        return super(ClientVerify, self).__init__(*args, **kwargs)
+
+    def dispatch(self, *args, **kwargs):
+        pk = self.kwargs['pk']
+        client = get_object_or_404(Cliente, pk=pk)
+        self.verification_data = client.verify()
+        return super(ClientVerify, self).dispatch(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        pass
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientVerify, self).get_context_data(**kwargs)
+        context.update(self.verification_data)
+        return context
+
+client_verify = ClientVerify.as_view()

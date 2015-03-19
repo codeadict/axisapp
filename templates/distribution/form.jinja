@@ -9,7 +9,16 @@
 {% block content %}
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}{{ form.media|safe }}
-    {{ form|bootstrap_columns() }}
-    <input type="submit" value="{{ _('Guardar') }}" class="btn btn-success" />
+    {{ form|bootstrap_columns(widths={'polygon': 12}) }}
+    <input type="submit" value="{{ _('Save') }}" class="btn btn-primary" />
   </form>
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+  <script>
+    $(document).ready(function () {
+      $('select').selectize();
+    });
+  </script>
 {% endblock %}

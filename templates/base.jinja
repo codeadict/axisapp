@@ -11,7 +11,7 @@
     <title>{% block title %}{{ title }}{% endblock %}</title>
     <link rel="icon" type="image/png" href="{{ "favicon.ico"|static }}" />
     <link rel="stylesheet" href="{{ 'libs/css/bootstrap.css'|static if debug else 'libs/css/bootstrap.min.css'|static }}">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="{{ 'libs/css/bootstrap.css'|static if debug else 'libs/css/selectize.bootstrap3.css'|static }}">
     {% block extra_css %}{% endblock %}
     <!--[if lt IE 9]>
       <script src="{{ "libs/js/html5shiv.js"|static }}"></script>
@@ -22,7 +22,6 @@
   <script src="{{ 'libs/js/jquery-1.11.0.js'|static if debug else 'libs/js/jquery-1.11.0.min.js'|static }}"></script>
 {% block body %}{% endblock %}
 
- <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 {% if debug %}
   <script src="{{ "libs/js/bootstrap.js"|static }}"></script>
   <script src="{{ "libs/js/bootbox.js"|static }}"></script>
@@ -30,6 +29,7 @@
   <script src="{{ "libs/js/bootstrap.min.js"|static }}"></script>
   <script src="{{ "libs/js/bootbox.min.js"|static }}"></script>
 {% endif %}
+<script src="{{ "libs/js/selectize.min.js"|static }}"></script>
   {% block double_submit %} {# Block wrapper so it could be overwritten in templates if needed. #}
     <script type="text/javascript">
       $(document).ready(function () {
