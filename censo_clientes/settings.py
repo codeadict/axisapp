@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     #'django-countries',
     #For python-mptt
     'mptt',
+    'hhrr'
 )
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']

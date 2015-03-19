@@ -1,0 +1,30 @@
+{% extends "page.jinja" %}
+
+{% import 'macro/display_functions.jinja' as display with context %}
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      {% if object_list %}
+        {% for object in object_list %}
+          <div class="panel panel-custom">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                {% if detail_view %}
+                  <a href="{{ url(detail_view, pk=object.pk) }}">{{ get_item_title(object) }}</a>
+                {% else %}
+                  {{ get_item_title(object) }}
+                {% endif %}
+              </h3>
+            </div>
+            <div class="panel-body">
+              {{ display.showobject_with_image(object, detail_view) }}
+            </div>
+          </div>
+        {% endfor %}
+          {{ display.pagination(page_obj) }}
+      {% else %}
+        <h3>No existen {{ plural_name }}. Puede comenzar agregando uno.</h3>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
