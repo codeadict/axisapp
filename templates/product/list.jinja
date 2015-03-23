@@ -1,0 +1,84 @@
+{% extends "page.jinja" %}
+
+{% import 'macro/display_functions.jinja' as display %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-7">
+      {% if object_list %}
+        <table class="table table">
+          <thead>
+          <tr>
+            {% for name, value in gen_object_short(object_list[0]) %}
+              <th>{{ name }}</th>
+            {% endfor %}
+          </tr>
+          </thead>
+          <tbody>
+          {% for object in object_list %}
+            <tr>
+              {% for name, value in gen_object_short(object) %}
+                {% if loop.index == 1 and detail_view %}
+                  <td><a href="{{ url(detail_view, pk=object.pk) }}">{{ value }}</a></td>
+                {% else %}
+                  <td>{{ value }}</td>
+                {% endif %}
+              {% endfor %}
+              <td><a class="btn btn-default" href="{{ url('edit-distribution', pk=object.pk) }}">{{ _('Edit') }}</a>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {{ display.pagination(page_obj) }}
+      {% else %}
+        <h3>{% trans %}No {{ plural_name }} found{% endtrans %}</h3>
+      {% endif %}
+    </div>
+    <div class="col-md-5 height-css pull-right">
+        <div id="map"><span class="loading">{{ _('Loading Polygons...') }}</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+  <script src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false&region=ec"></script>
+
+  <script>
+
+    function handleNoGeolocation(errorFlag) {
+      var options = {
+        position: new google.maps.LatLng(60, 105)
+      };
+
+      map.setCenter(options.position);
+    }
+
+    $(document).ready(function () {
+      var mapOptions = {
+        zoom: 13,
+        mapTypeControl: true,
+        mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+        mapTypeId: google.maps.MapTypeId.SATELLITE
+      };
+
+      map = new google.maps.Map($('#map')[0], mapOptions);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          map.setCenter(pos);
+        }, function () {
+          handleNoGeolocation(true);
+        });
+      } else {
+        // Browser doesn't support Geolocation
+        handleNoGeolocation(false);
+      }
+
+      map.data.loadGeoJson('{{ url('distribution_data') }}');
+    });
+  </script>
+{% endblock %}
