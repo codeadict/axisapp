@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext, ugettext_lazy as _
+from decimal import Decimal
 from mptt.models import MPTTModel, TreeForeignKey
 from base.models import Partner
 
@@ -12,42 +13,26 @@ def date_default():
     return timezone.now()
 
 
-class Taxes(models.Model):
+class IceTax(models.Model):
     """
-    Class to handle the taxes to the product
+    Class to handle the ICE taxes to the product
     """
 
     name = models.CharField(_("Name"), max_length=255)
+    code = models.IntegerField(_("Code"), max_length=255)
+    percent = models.DecimalField(max_digits=20, decimal_places=2, default=Decimal(0))
 
     class Meta:
         ordering = ['name']
-        verbose_name = _('Tax')
-        verbose_name_plural = _('Taxes')
+        verbose_name = _('I.C.E. tax')
+        verbose_name_plural = _('I.C.E taxes')
 
     def __unicode__(self):
         """
         Object representation
         :return: Unicode String
         """
-        return '%s' % self.name
-
-
-class TaxesValue(models.Model):
-    """
-    Class to handle the taxes value
-    """
-
-    tax_id = models.ForeignKey('products.Taxes', blank=True, null=True)
-
-    # It must be a flat value
-    value = models.FloatField(_("Value"), blank=True, null=True)
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s' % self.name
+        return '%s %s' % (self.name, self.code)
 
 
 class ProductsCategory(MPTTModel):
@@ -168,58 +153,101 @@ class ProductImage(models.Model):
         verbose_name_plural = _('Images')
 
 
-#TODO: Create a class for the tax (it could be ICE and IVA or others)
-class Product(models.Model):
+class SelleAbleItem(models.Model):
     """
-    Products
+    Abstract class for products and services
     """
 
-    PRODUCT_STATE_NOT_ACTIVE = 0
-    PRODUCT_STATE_ACTIVE = 1
+    ITEM_STATE_NOT_ACTIVE = 0
+    ITEM_STATE_ACTIVE = 1
 
-    PRODUCT_STATE = (
-        (PRODUCT_STATE_NOT_ACTIVE, _("Not Active")),
-        (PRODUCT_STATE_ACTIVE, _("Active"))
+    ITEM_STATE = (
+        (ITEM_STATE_NOT_ACTIVE, _("Not Active")),
+        (ITEM_STATE_ACTIVE, _("Active"))
     )
 
-    PRODUCT_TYPE_CONSUMABLE = 0
-    PRODUCT_TYPE_SERVICE = 1
+    ITEM_TYPE_CONSUMABLE = 0
+    ITEM_TYPE_SERVICE = 1
 
-    PRODUCT_TYPE = (
-        (PRODUCT_TYPE_CONSUMABLE, _("Consumable")),
-        (PRODUCT_TYPE_SERVICE, _("Service"))
+    ITEM_TYPE = (
+        (ITEM_TYPE_CONSUMABLE, _("Consumable")),
+        (ITEM_TYPE_SERVICE, _("Service"))
+    )
+
+    ITEM_TAX_IVA_NONE = 0
+    ITEM_TAX_IVA_CERO = 1
+    ITEM_TAX_IVA_TWELVE = 2
+
+    ITEM_TAX_IVA = (
+        (ITEM_TAX_IVA_NONE, _("No I.V.A.")),
+        (ITEM_TAX_IVA_NONE, _("I.V.A. 0%")),
+        (ITEM_TAX_IVA_NONE, _("I.V.A. 12%")),
     )
 
     name = models.CharField(verbose_name=_("Name"), max_length=255)
     description = models.CharField(verbose_name=_("Description"), max_length=2048, blank=True)
     title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True)
 
-    type = models.IntegerField(verbose_name=_("Type"), choices=PRODUCT_TYPE, default=0)
-    #price = models.FloatField(verbose_name=_("Price"), default=0.00)
-    #cost_price = models.FloatField(verbose_name=_("Cost price"), default=0.00)
+    type = models.IntegerField(verbose_name=_("Type"), choices=ITEM_TYPE, default=ITEM_TYPE_CONSUMABLE)
     image = models.ForeignKey('products.ProductImage', null=True)
 
+    # This is the price show it to the client
+    price_excl_tax = models.FloatField(verbose_name=_("Price"), default=0.00)
+    # This is only to calculate profit margin.
+    cost_price = models.FloatField(verbose_name=_("Cost price"), default=0.00)
+
+    #TODO: DO we have to create a model for this?
+    # Currency
+    price_currency = models.CharField(verbose_name=_("Currency"), max_length=12)
+
     # Taxes
-    taxes = models.ManyToManyField('products.Taxes', verbose_name=_("Taxes"), blank=True, null=True)
+    iva_tax = models.IntegerField(verbose_name=_("Taxes"), choices=ITEM_TAX_IVA, default=ITEM_TAX_IVA_TWELVE)
 
-    # Universal product code
-    upc = models.CharField(_("UPC"), max_length=64, blank=True, null=True, unique=True,
-                           help_text=_("Universal Product Code (UPC)"))
+    active = models.IntegerField(verbose_name=_("Active"), choices=ITEM_STATE,
+                                 default=ITEM_STATE_ACTIVE)
 
-    active = models.IntegerField(verbose_name=_("Active"), choices=PRODUCT_STATE,
-                                 default=PRODUCT_STATE_ACTIVE)
     attributes = models.ManyToManyField('products.ProductAttribute', verbose_name=_('Attributes'),
                                         null=True, blank=True)
 
     category = models.ForeignKey('products.ProductsCategory', verbose_name=_('Category'))
 
-    related_products = models.ForeignKey('products.Product', verbose_name=_('Related products'),
-                                         related_name='related', blank=True, null=True)
+    related_items = models.ForeignKey('products.Product', verbose_name=_('Related items'),
+                                      related_name='related', blank=True, null=True)
 
     # Product score - used by analytics app
-    score = models.FloatField(_('Score'), default=0.00, db_index=True)
+    score = models.FloatField(_('Score'), default=Decimal(0), db_index=True)
 
     date_created = models.DateField(_("Date Created"), default=date_default)
+
+    class Meta:
+        abstract = True
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return "%s %s" % (self.name, self.description if self.description else _('No description'))
+
+
+class Product(SelleAbleItem):
+    """
+    Products
+    """
+
+    # Universal product code
+    upc = models.CharField(_("UPC"), max_length=64, blank=True, null=True, unique=True,
+                           help_text=_("Universal Product Code (UPC)"))
+
+    # ICE taxes
+    ice_tax = models.ForeignKey('products.IceTax', verbose_name=_('Ice'))
+
+    # It could be big numbers in here
+    items_number = models.BigIntegerField(verbose_name=_("Number in stock"), blank=True)
+    low_stock_threshold = models.IntegerField(verbose_name=_("Low Stock Threshold"),
+                                              blank=True, null=True)
 
     class Meta:
         ordering = ['upc']
@@ -233,42 +261,6 @@ class Product(models.Model):
         """
         return "%s %s" % (self.name, self.upc if self.upc else "No UPC")
 
-
-class Stock(models.Model):
-    """
-    It handle the stock from a product
-    """
-
-    product = models.ForeignKey('products.Product', verbose_name=_("Product"), db_index=True)
-
-    # This is the price show it to the client
-    price_excl_tax = models.FloatField(verbose_name=_("Price"), default=0.00)
-    # This is only to calculate profit margin.
-    cost_price = models.FloatField(verbose_name=_("Cost price"), default=0.00)
-
-    #TODO: DO we have to create a model for this?
-    # Currency
-    price_currency = models.CharField(verbose_name=_("Currency"), max_length=12)
-
-    # It could be big numbers in here
-    items_number = models.BigIntegerField(verbose_name=_("Number in stock"), blank=True)
-    low_stock_threshold = models.IntegerField(verbose_name=_("Low Stock Threshold"),
-                                              blank=True, null=True)
-
-    date_created = models.DateField(_("Date Created"), default=date_default)
-    date_updated = models.DateField(_("Date Updated"), default=date_default)
-
-    class Meta:
-        verbose_name = _("Stock record")
-        verbose_name_plural = _("Stock records")
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return "%s %s" % (self.product.name, self.price_excl_tax)
-
     @property
     def is_low_stock(self):
         """
@@ -279,3 +271,20 @@ class Stock(models.Model):
             return True
         else:
             return False
+
+
+class Service(SelleAbleItem):
+    """
+    Service
+    """
+
+    class Meta:
+        verbose_name = _('Service')
+        verbose_name_plural = _('Services')
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return "%s" % self.name

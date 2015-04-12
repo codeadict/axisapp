@@ -12,7 +12,7 @@ django-filter==0.8
 django-jinja==1.0.3
 -e git+https://github.com/samuelcolvin/django-jinja-bootstrap-form.git@bbceabb7832005568c6f863f68010795bdc9e5e7#egg=django_jinja_bootstrap_form-master == 4.0
 ModestMaps==1.4.6
-PIL==1.1.7
+#PIL==1.1.7 install it from script install_PIL_ubuntu.sh
 Pillow==2.5.3
 cached-property==0.1.5
 PyJWT==0.2.1
