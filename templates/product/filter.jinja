@@ -28,20 +28,3 @@
     </div>
   </div>
 {% endblock %}
-
-{% block extra_js %}
-  {{ super() }}
-  <script src="{{ "libs/js/select2.min.js"|static }}"></script>
-  <script src="{{ "libs/js/lodash.min.js"|static }}"></script>
-  <script src="{{ "js/select2_ajax.js"|static }}"></script>
-  <script>
-  $(document).ready(function () {
-    $('#id_subject').select2({
-      matcher: function(term, text, opt){
-        return text.toUpperCase().indexOf(term.toUpperCase())>=0 || opt.parent("optgroup").attr("label").toUpperCase().indexOf(term.toUpperCase())>=0
-      }
-    });
-    $('#id_qual_level').select2();
-  });
-  </script>
-{% endblock %}

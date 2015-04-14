@@ -34,7 +34,7 @@ class ProductsList(CustomListView):
         {'name': _('Filter'), 'rurl': 'product-filter'}
     ]
     #search_form = ProductSearchForm
-    related_fields = ['image', 'category', 'taxes', 'attributes']
+    related_fields = ['image', 'category', 'ice_tax', 'attributes']
 
     def get_queryset(self):
         return super(ProductsList, self).get_queryset()
@@ -55,7 +55,7 @@ class ProductFilter(ListFilterMixin, CustomListView):
     perms = []
     display_items = []
     search_form = forms.ProductSearchForm
-    related_fields = ['image', 'category', 'taxes', 'attributes']
+    related_fields = ['image', 'category', 'ice_tax', 'attributes']
 
     def get_context_data(self, **kwargs):
         context = super(ProductFilter, self).get_context_data(**kwargs)
@@ -78,7 +78,6 @@ class ProductDetails(CustomDetailView):
         'type',
         'func|image',
     ]
-    #extra_content = 'hhrr/employee/extra_details.jinja'
     button_menu = [
         [
             {'name': _('Edit'), 'urlfunc': 'edit_url'},
@@ -93,7 +92,7 @@ class ProductDetails(CustomDetailView):
                         'urlfunc': 'set_status_url',
                         'classes': 'submit-post product-set-status',
                         'data': {'status': value}
-                    } for value, display_name in models.Product.PRODUCT_STATE
+                    } for value, display_name in models.Product.ITEM_STATE
                 ]
             }
         ],
@@ -117,7 +116,7 @@ class ProductDetails(CustomDetailView):
     def get_context_data(self, **kwargs):
         context = super(ProductDetails, self).get_context_data(**kwargs)
         cont_type = ContentType.objects.get_for_model(models.Product)
-        context['status_choices'] = dict(models.Product.PRODUCT_STATE)
+        context['status_choices'] = dict(models.Product.ITEM_STATE)
         return context
 
 product_details = ProductDetails.as_view()
@@ -152,7 +151,7 @@ product_update = ProductUpdate.as_view()
 
 class ProductDelete(DeleteObject):
     model = models.Product
-    reverse_name = 'employee-list'
+    reverse_name = 'product-list'
     perms = []
 
 product_delete = ProductDelete.as_view()
@@ -224,7 +223,7 @@ class CategoryDetails(CustomDetailView):
         'default_attributes',
         'func|image',
     ]
-    # TODO: display the shild and attributes as a table
+    # TODO: display the child and attributes as a table
     #extra_content = 'hhrr/employee/extra_details.jinja'
     button_menu = [
         [

@@ -72,8 +72,6 @@ class ProductAttribute(models.Model):
     Product attribute
     """
     name = models.CharField(verbose_name=_("Name"), max_length=255)
-    value_id = models.ForeignKey('products.ProductAttributeValue', verbose_name=_("Value"),
-                                 blank=True, null=True)
 
     def __unicode__(self):
         """
@@ -112,6 +110,9 @@ class ProductAttributeValue(models.Model):
     """
     Product Attribute value
     """
+
+    attr = models.ForeignKey('products.ProductAttribute', related_name='attr', verbose_name=_("Attribute"),
+                             default=None)
     #TODO: Make a better attribute value to support all attribute types (string, int, float, bool)
     name = models.CharField(verbose_name=_("Name"), max_length=255)
     unit_measure = models.ForeignKey('products.ProductAttributeValueUnitMeasure', verbose_name=_("Unit of measure"),
@@ -134,10 +135,10 @@ class ProductImage(models.Model):
     Product images
     """
 
-    identification = models.CharField(verbose_name=_("Image identification"), max_length=255)
+    identification = models.CharField(verbose_name=_("Image identification"), max_length=255,
+                                      blank=True, null=True)
     display_order = models.IntegerField(verbose_name=_("Display order"))
-    image = models.ImageField(_('Image'), upload_to='products', blank=True,
-                              null=True, max_length=255)
+    image = models.ImageField(_('Image'), upload_to='products', max_length=255)
     date_uploaded = models.DateField(verbose_name=_("Date added"), default=date_default)
 
     def __unicode__(self):
@@ -198,7 +199,7 @@ class SelleAbleItem(models.Model):
 
     #TODO: DO we have to create a model for this?
     # Currency
-    price_currency = models.CharField(verbose_name=_("Currency"), max_length=12)
+    price_currency = models.CharField(verbose_name=_("Currency"), max_length=12, default=_('$'))
 
     # Taxes
     iva_tax = models.IntegerField(verbose_name=_("Taxes"), choices=ITEM_TAX_IVA, default=ITEM_TAX_IVA_TWELVE)
@@ -212,7 +213,7 @@ class SelleAbleItem(models.Model):
     category = models.ForeignKey('products.ProductsCategory', verbose_name=_('Category'))
 
     related_items = models.ForeignKey('products.Product', verbose_name=_('Related items'),
-                                      related_name='related', blank=True, null=True)
+                                      blank=True, null=True)
 
     # Product score - used by analytics app
     score = models.FloatField(_('Score'), default=Decimal(0), db_index=True)
@@ -242,10 +243,12 @@ class Product(SelleAbleItem):
                            help_text=_("Universal Product Code (UPC)"))
 
     # ICE taxes
-    ice_tax = models.ForeignKey('products.IceTax', verbose_name=_('Ice'))
+    ice_tax = models.ForeignKey('products.IceTax', verbose_name=_('Ice'), default=Decimal(0))
 
     # It could be big numbers in here
-    items_number = models.BigIntegerField(verbose_name=_("Number in stock"), blank=True)
+    items_stock_number = models.BigIntegerField(verbose_name=_("Number in stock"), blank=True,
+                                                default=0)
+    # Low stock threshold
     low_stock_threshold = models.IntegerField(verbose_name=_("Low Stock Threshold"),
                                               blank=True, null=True)
 
@@ -267,7 +270,7 @@ class Product(SelleAbleItem):
         Return a low stock alarm
         :return: boolean
         """
-        if self.items_number < self.low_stock_threshold:
+        if self.items_stock_number < self.low_stock_threshold:
             return True
         else:
             return False

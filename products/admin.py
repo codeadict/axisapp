@@ -13,23 +13,10 @@ class ProductResource(resources.ModelResource):
         #form = CreateEmploymentHistoryForm
 
 
-class ProductStockResource(resources.ModelResource):
+class IceTaxResource(resources.ModelResource):
     class Meta:
-        model = Stock
+        model = IceTax
         #form = CreateEmploymentHistoryForm
-
-
-class TaxesResource(resources.ModelResource):
-    class Meta:
-        model = Taxes
-        #form = CreateEmploymentHistoryForm
-
-
-class TaxesValueResource(resources.ModelResource):
-    class Meta:
-        model = TaxesValue
-        #form = CreateEmploymentHistoryForm
-
 
 class ProductAttributeResource(resources.ModelResource):
     class Meta:
@@ -61,20 +48,9 @@ class ProductsCategoryResource(resources.ModelResource):
         #form = CreateEmploymentHistoryForm
 
 
-class TaxesAdmin(ImportExportModelAdmin):
-    resource_class = TaxesResource
+class IceTaxAdmin(ImportExportModelAdmin):
+    resource_class = IceTaxResource
     list_display = ['name', ]
-
-
-class StockAdmin(ImportExportModelAdmin):
-    resource_class = ProductStockResource
-    list_display = ['product', 'price_excl_tax', 'items_number', 'date_created']
-
-
-class TaxesValueAdmin(ImportExportModelAdmin):
-    resource_class = TaxesValueResource
-    list_display = ['tax_id', 'value']
-
 
 class ProductAttributeAdmin(ImportExportModelAdmin):
     resource_class = ProductAttributeResource
@@ -172,12 +148,10 @@ class ProductStockAdmin(admin.ModelAdmin):
     ]
 
 # Register your models here.
-admin.site.register(Taxes, TaxesAdmin)
-admin.site.register(TaxesValue, TaxesValueAdmin)
+admin.site.register(IceTax, IceTaxAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(ProductAttribute, ProductAttributeAdmin)
 admin.site.register(ProductAttributeValue, ProductAttributeValueAdmin)
 admin.site.register(ProductAttributeValueUnitMeasure, ProductAttributeValueUnitMeasureAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductsCategory, ProductsCategoryAdmin)
-admin.site.register(Stock, StockAdmin)

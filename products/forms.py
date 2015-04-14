@@ -1,4 +1,4 @@
-__author__ = 'yo'
+__author__ = 'malbalat85'
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -39,18 +39,18 @@ class ProductSearchForm(form_helper.GenericFilterForm):
         super(ProductSearchForm, self).__init__(*args, **kwargs)
 
 
-class CreateProductForm(form_helper.TCModelForm):
+class EditProductForm(form_helper.TCModelForm):
     class Meta:
         model = models.Product
-        #exclude = []
+        exclude = []
 
 
-class UpdateProductForm(form_helper.TCModelForm):
-    class Meta:
-        model = models.Product
+class CreateProductForm(EditProductForm):
+    pass
 
-    def __init__(self, **kwargs):
-        super(UpdateProductForm, self).__init__(**kwargs)
+
+class UpdateProductForm(EditProductForm):
+    pass
 
 
 class DeleteProductsForm(DeleteObject):
@@ -58,18 +58,15 @@ class DeleteProductsForm(DeleteObject):
         model = models.Product
         exclude = []
 
+
 #------------------------------------
 class ProductsCategorySearchForm(form_helper.GenericFilterForm):
     name = forms.CharField(label=_('Name'))
     full_name = forms.CharField(label=_('Description'))
-    created_after = forms.DateTimeField(label=_('Created After'))
-    created_before = forms.DateTimeField(label=_('Created Before'))
 
     fields_mapping = {
         'name': 'name__icontains',
         'full_name': 'full_name__icontains',
-        'created_after': 'date_created__gte',
-        'created_before': 'date_created__lte',
     }
     model = models.Product
 
@@ -77,9 +74,9 @@ class ProductsCategorySearchForm(form_helper.GenericFilterForm):
         super(ProductsCategorySearchForm, self).__init__(*args, **kwargs)
 
 
-class CreateProductsCategoryForm(form_helper.TCModelForm):
+class EditProductsCategoryForm(form_helper.TCModelForm):
     """
-    Form to create the Products Category
+    Form for the ProductCategory
     """
 
     class Meta:
@@ -87,16 +84,18 @@ class CreateProductsCategoryForm(form_helper.TCModelForm):
         exclude = []
 
 
-class UpdateProductsCategoryForm(form_helper.TCModelForm):
+class CreateProductsCategoryForm(EditProductsCategoryForm):
+    """
+    Form to create the Products Category
+    """
+    pass
+
+
+class UpdateProductsCategoryForm(EditProductsCategoryForm):
     """
     Form to update the Products Category
     """
-
-    class Meta:
-        model = models.ProductsCategory
-
-    def __init__(self, **kwargs):
-        super(UpdateProductsCategoryForm, self).__init__(**kwargs)
+    pass
 
 
 class DeleteProductsCategoryForm(DeleteObject):
@@ -104,8 +103,9 @@ class DeleteProductsCategoryForm(DeleteObject):
         model = models.ProductsCategory
         exclude = []
 
+
 #---------------------------------------------------
-class CreateProductAttributeForm(form_helper.TCModelForm):
+class EditProductAttributeForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -115,17 +115,18 @@ class CreateProductAttributeForm(form_helper.TCModelForm):
         exclude = []
 
 
-class UpdateProductAttributeForm(form_helper.TCModelForm):
+class CreateProductAttributeForm(EditProductAttributeForm):
+    """
+    Form to create the Employment history
+    """
+    pass
+
+
+class UpdateProductAttributeForm(EditProductAttributeForm):
     """
     Form to update the Employment history
     """
-
-    class Meta:
-        model = models.ProductAttribute
-        exclude = []
-
-    def __init__(self, **kwargs):
-        super(UpdateProductAttributeForm, self).__init__(**kwargs)
+    pass
 
 
 class DeleteProductAttributeForm(DeleteObject):
@@ -135,7 +136,7 @@ class DeleteProductAttributeForm(DeleteObject):
 
 
 #---------------------------------------------------
-class CreateProductAttributeValueForm(form_helper.TCModelForm):
+class EditProductAttributeValueForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -145,17 +146,18 @@ class CreateProductAttributeValueForm(form_helper.TCModelForm):
         exclude = []
 
 
-class UpdateProductAttributeValueForm(form_helper.TCModelForm):
+class CreateProductAttributeValueForm(EditProductAttributeValueForm):
+    """
+    Form to create the Employment history
+    """
+    pass
+
+
+class UpdateProductAttributeValueForm(EditProductAttributeValueForm):
     """
     Form to update the Employment history
     """
-
-    class Meta:
-        model = models.ProductAttributeValue
-        exclude = []
-
-    def __init__(self, **kwargs):
-        super(UpdateProductAttributeValueForm, self).__init__(**kwargs)
+    pass
 
 
 class DeleteProductAttributeValueForm(DeleteObject):
@@ -165,65 +167,38 @@ class DeleteProductAttributeValueForm(DeleteObject):
 
 
 #---------------------------------------------------
-class CreateTaxesForm(form_helper.TCModelForm):
+class EditIceTaxForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
 
     class Meta:
-        model = models.Taxes
+        model = models.IceTax
         exclude = []
 
 
-class UpdateTaxesForm(form_helper.TCModelForm):
+class CreateIceTaxForm(EditIceTaxForm):
+    """
+    Form to create the Employment history
+    """
+    pass
+
+
+class UpdateIceTaxForm(EditIceTaxForm):
     """
     Form to update the Employment history
     """
-
-    class Meta:
-        model = models.Taxes
-
-    def __init__(self, **kwargs):
-        super(UpdateTaxesForm, self).__init__(**kwargs)
+    pass
 
 
 class DeleteTaxesForm(DeleteObject):
     class Meta:
-        model = models.Taxes
+        model = models.IceTax
         exclude = []
 
 
 #---------------------------------------------------
-class CreateTaxesValueForm(form_helper.TCModelForm):
-    """
-    Form to create the Employment history
-    """
-
-    class Meta:
-        model = models.TaxesValue
-        exclude = []
-
-
-class UpdateTaxesValueForm(form_helper.TCModelForm):
-    """
-    Form to update the Employment history
-    """
-
-    class Meta:
-        model = models.TaxesValue
-
-    def __init__(self, **kwargs):
-        super(UpdateTaxesValueForm, self).__init__(**kwargs)
-
-
-class DeleteTaxesValueForm(DeleteObject):
-    class Meta:
-        model = models.TaxesValue
-        exclude = []
-
-
-#---------------------------------------------------
-class CreateProductAttributeValueUnitMeasureForm(form_helper.TCModelForm):
+class EditProductAttributeValueUnitMeasureForm(form_helper.TCModelForm):
     """
     Form to create the Employment history
     """
@@ -233,46 +208,21 @@ class CreateProductAttributeValueUnitMeasureForm(form_helper.TCModelForm):
         exclude = []
 
 
-class UpdateProductAttributeValueUnitMeasureForm(form_helper.TCModelForm):
+class CreateProductAttributeValueUnitMeasureForm(EditProductAttributeValueUnitMeasureForm):
+    """
+    Form to create the Employment history
+    """
+    pass
+
+
+class UpdateProductAttributeValueUnitMeasureForm(EditProductAttributeValueUnitMeasureForm):
     """
     Form to update the Employment history
     """
-
-    class Meta:
-        model = models.ProductAttributeValueUnitMeasure
-
-    def __init__(self, **kwargs):
-        super(UpdateProductAttributeValueUnitMeasureForm, self).__init__(**kwargs)
+    pass
 
 
 class DeleteProductAttributeValueUnitMeasureForm(DeleteObject):
     class Meta:
         model = models.ProductAttributeValueUnitMeasure
-        exclude = []
-#-----------------------------------------------------------
-class CreateStockForm(form_helper.TCModelForm):
-    """
-    Form to create the Employment history
-    """
-
-    class Meta:
-        model = models.Stock
-        exclude = []
-
-
-class UpdateStockForm(form_helper.TCModelForm):
-    """
-    Form to update the Employment history
-    """
-
-    class Meta:
-        model = models.Stock
-
-    def __init__(self, **kwargs):
-        super(UpdateStockForm, self).__init__(**kwargs)
-
-
-class DeleteStockForm(DeleteObject):
-    class Meta:
-        model = models.Stock
         exclude = []
