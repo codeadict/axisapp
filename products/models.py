@@ -111,7 +111,7 @@ class ProductAttributeValue(models.Model):
     Product Attribute value
     """
 
-    attr = models.ForeignKey('products.ProductAttribute', related_name='attr', verbose_name=_("Attribute"),
+    attr = models.ForeignKey('products.ProductAttribute', related_name='value', verbose_name=_("Attribute"),
                              default=None)
     #TODO: Make a better attribute value to support all attribute types (string, int, float, bool)
     name = models.CharField(verbose_name=_("Name"), max_length=255)
@@ -146,7 +146,7 @@ class ProductImage(models.Model):
         Object representation
         :return: Unicode String
         """
-        return "%s%s%s" % (self.identification, ugettext(' at position '), self.display_order)
+        return self.identification if self.identification else self.image.name
 
     class Meta:
         ordering = ['identification']
@@ -176,13 +176,13 @@ class SelleAbleItem(models.Model):
     )
 
     ITEM_TAX_IVA_NONE = 0
-    ITEM_TAX_IVA_CERO = 1
+    ITEM_TAX_IVA_ZERO = 1
     ITEM_TAX_IVA_TWELVE = 2
 
     ITEM_TAX_IVA = (
         (ITEM_TAX_IVA_NONE, _("No I.V.A.")),
-        (ITEM_TAX_IVA_NONE, _("I.V.A. 0%")),
-        (ITEM_TAX_IVA_NONE, _("I.V.A. 12%")),
+        (ITEM_TAX_IVA_ZERO, _("I.V.A. 0%")),
+        (ITEM_TAX_IVA_TWELVE, _("I.V.A. 12%")),
     )
 
     name = models.CharField(verbose_name=_("Name"), max_length=255)
@@ -196,10 +196,6 @@ class SelleAbleItem(models.Model):
     price_excl_tax = models.FloatField(verbose_name=_("Price"), default=0.00)
     # This is only to calculate profit margin.
     cost_price = models.FloatField(verbose_name=_("Cost price"), default=0.00)
-
-    #TODO: DO we have to create a model for this?
-    # Currency
-    price_currency = models.CharField(verbose_name=_("Currency"), max_length=12, default=_('$'))
 
     # Taxes
     iva_tax = models.IntegerField(verbose_name=_("Taxes"), choices=ITEM_TAX_IVA, default=ITEM_TAX_IVA_TWELVE)
@@ -221,9 +217,8 @@ class SelleAbleItem(models.Model):
     date_created = models.DateField(_("Date Created"), default=date_default)
 
     class Meta:
-        abstract = True
-        verbose_name = _('Product')
-        verbose_name_plural = _('Products')
+        verbose_name = _('Item')
+        verbose_name_plural = _('Items')
 
     def __unicode__(self):
         """
@@ -243,7 +238,7 @@ class Product(SelleAbleItem):
                            help_text=_("Universal Product Code (UPC)"))
 
     # ICE taxes
-    ice_tax = models.ForeignKey('products.IceTax', verbose_name=_('Ice'), default=Decimal(0))
+    ice_tax = models.ForeignKey('products.IceTax', verbose_name=_('Ice'), null=True, blank=True)
 
     # It could be big numbers in here
     items_stock_number = models.BigIntegerField(verbose_name=_("Number in stock"), blank=True,
