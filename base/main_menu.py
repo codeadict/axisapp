@@ -1,8 +1,6 @@
 # This Python file uses the following encoding: utf-8
 from django.utils.translation import ugettext_lazy as _
 
-
-
 MENUS = {
     'Admin': [
         {'name': _('Tablero de Mando'), 'rurl': 'index'},
@@ -22,11 +20,17 @@ MENUS = {
         {'name': _('Ventas'), 'submenu': [
             {'name': _('Pedidos'), 'rurl': 'index', 'perms': []},
         ]},
+        {'name': _('Products'), 'submenu': [
+            {'name': _('Inventory'), 'rurl': 'product-list', 'perms': []},
+        ]},
         {'name': _('HHRR'), 'submenu': [
             {'name': _('Employees'), 'rurl': 'employee-list', 'perms': []},
         ]},
         {'name': _('Configuracion'), 'submenu': [
             {'name': _('Importar Datos'), 'rurl': 'import', 'perms': []},
+            {'name': _('Inventory'), 'submenu': [
+                {'name': _('Product Categories'), 'rurl': 'product-category-details', 'perms': []},
+            ]},
         ]},
     ],
 }

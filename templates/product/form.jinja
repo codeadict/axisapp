@@ -1,0 +1,15 @@
+{% extends "page.jinja" %}
+{% import 'macro/edit.jinja' as macros %}
+
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ "css/form.css"|static }}{% if debug %}?{% endif %}">
+{% endblock %}
+
+{% block content %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}{{ form.media|safe }}
+    {{ form|bootstrap_columns() }}
+    <input type="submit" value="{{ _('Guardar') }}" class="btn btn-success" />
+  </form>
+{% endblock %}
