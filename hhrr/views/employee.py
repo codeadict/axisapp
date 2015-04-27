@@ -21,16 +21,21 @@ class EmployeeList(PartnerListView):
     """
     CLass to list all the Employees
     """
+    extra_items = ['name', 'last_name', 'id_type', 'identification', 'address']
+    # TODO: Add support for custom attributes
+    # find_attributes = True
+    order_by = ['last_name', 'name', 'identification']
     template_name = 'hhrr/employee/employee_list.jinja'
     active_page = 'employee-list'
     model = Employee
     perms = []
     detail_view = 'employee-details'
     display_items = [
-        'func|identificacion',
+        'func|identification',
         'email',
         'cellphone',
         'address',
+        'department',
     ]
     button_menu = [
         {'name': _('Add Employee'), 'rurl': 'employee-add'},
@@ -42,11 +47,61 @@ class EmployeeList(PartnerListView):
     def get_queryset(self):
         return super(EmployeeList, self).get_queryset()
 
-    def identificacion(self, obj):
-        return '%s (%s)' % (obj.identification, obj.id_type())
-    identificacion.short_description = _('Identificacion')
+    def identification(self, obj):
+        return '%s (%s)' % (obj.identification, obj.get_id_type_display())
+    identification.short_description = _('Identification')
+
+    def get_search_form(self):
+        return EmployeeSearchForm(data=self.request.GET, request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super(EmployeeList, self).get_context_data(**kwargs)
+        context['search_form'] = self.get_search_form()
+        context['full_width'] = True
+        return context
 
 employee_list = EmployeeList.as_view()
+
+
+class EmployeeMap(PartnerMapView):
+    extra_items = ['name', 'last_name', 'id_type', 'identification', 'address']
+    order_by = ['last_name', 'name', 'identification']
+    active_page = 'employee-map'
+    geometry_field = 'coordinates'
+    paginate_by = None  # we get all the results no pagination
+    model = Employee
+    perms = []
+    detail_view = 'employee-details'
+    template_name = 'hhrr/employee/employee_map.jinja'
+    display_items = [
+        'email',
+    ]
+    button_menu = [
+        {'name': _('Add Employee'), 'rurl': 'employee-add'},
+        {'name': _('FullScreen Map'), 'urlfunc': 'fullscreen_url', 'classes': 'map-go-fullscreen'},
+    ]
+    search_form = ClientSearchForm
+
+    def fullscreen_url(self):
+        return 'javascript:void(0);'
+
+    def get_queryset(self):
+        qs = super(EmployeeMap, self).get_queryset().only('coordinates', 'name', 'last_name')
+        search_form = self.get_search_form()
+        search_form.full_clean()
+        search_form_data = search_form.clean()
+        return qs
+
+    def get_search_form(self):
+        return EmployeeSearchForm(data=self.request.GET, request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super(EmployeeMap, self).get_context_data(**kwargs)
+        context['search_form'] = self.get_search_form()
+        context['full_width'] = True
+        return context
+
+employee_map = EmployeeMap.as_view()
 
 
 class EmployeeFilter(PartnerListView):
@@ -104,6 +159,10 @@ class EmployeeDetails(PartnerDetailView):
         ]
     ]
 
+    def identification(self, obj):
+        return '%s (%s)' % (obj.identification, obj.get_id_type_display())
+    identification.short_description = _('Identification')
+
     def edit_url(self):
         return reverse('employee-edit', kwargs={'pk': self.object.pk})
 
@@ -111,12 +170,12 @@ class EmployeeDetails(PartnerDetailView):
         return reverse('employee-delete', kwargs={'pk': self.object.pk})
 
     def set_status_url(self):
-        return reverse('employee-set-status', kwargs={'pk': self.object.pk})
+        return reverse('client-set-status', kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super(EmployeeDetails, self).get_context_data(**kwargs)
-        con_type = ContentType.objects.get_for_model(Employee)
         context['status_choices'] = dict(Employee.STATUS_TYPE)
+        context['full_width'] = True
         return context
 
 

@@ -130,19 +130,11 @@ class EmployeeAdmin(admin.ModelAdmin):
 
         (_('Status'), {
             'classes': ('suit-tab', 'suit-tab-local',),
-            'fields': ['marital_status', 'family_dependants', ]}),
-
-        (_('Education'), {
-            'classes': ('suit-tab', 'suit-tab-local',),
-            'fields': ['language_skill', 'education', ]}),
+            'fields': ['marital_status', ]}),
 
         (_('Economics'), {
             'classes': ('suit-tab', 'suit-tab-local',),
             'fields': ['maintain_reserve_funds', ]}),
-
-        (_('Employment history'), {
-            'classes': ('suit-tab', 'suit-tab-local',),
-            'fields': ['employment_history', ]}),
         ]
 
 # Register your models here.

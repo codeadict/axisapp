@@ -1145,3 +1145,8 @@ ul#id_frequency {
   min-height: 300px;
   padding: 10px 20px;
 }
+
+#legend {
+    background: white;
+    padding: 10px;
+  }

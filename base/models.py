@@ -83,7 +83,7 @@ class Partner(models.Model):
         priorities = {
             'Cliente': 10,
             'Proveedor': 20,
-            'Empleado': 30,
+            'Employee': 30,
         }
         return priorities[self.partner_type]
 

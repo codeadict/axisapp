@@ -1,15 +1,31 @@
 {% import 'macro/extra_details.jinja' as macros %}
 
-<div class="item-extra">
-    <ul class="nav nav-tabs nav-justified">
-      <li role="presentation" class="active"><a href="#">Datos Local</a></li>
-      <li role="presentation"><a href="#">Localización</a></li>
-      <li role="presentation"><a href="#">Activos Mercado</a></li>
-      <li role="presentation"><a href="#">Visitas</a></li>
-      <li role="presentation"><a href="#">Categorización Productos</a></li>
-    </ul>
+<div class="item-extra" role="tabpanel">
+  <ul class="nav nav-tabs nav-justified" role="tablist">
+    <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">{{ _('Basic Data') }}</a></li>
+    <li role="presentation"><a href="#family" role="tab" data-toggle="tab">{{ _('Family Dependants') }}</a></li>
+    <li role="presentation"><a href="#contract" role="tab" data-toggle="tab">{{ _('Contract Information') }}</a></li>
+    <li role="presentation"><a href="#education" role="tab" data-toggle="tab">{{ _('Education Data') }}</a></li>
+    <li role="presentation"><a href="#history" role="tab" data-toggle="tab">{{  _('Employment History') }}</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane fade in active" id="place-data">
+
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="location">...</div>
+    <div role="tabpanel" class="tab-pane fade" id="market-acts">
+      <div class="row">
+        <div class="col-md-12">
+
+        </div>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="visits">...</div>
+    <div role="tabpanel" class="tab-pane fade" id="products-category">...</div>
+  </div>
 </div>
-<form action="{{ url('employee-set-status', pk=object.pk) }}" method="POST" id="status_change_form">
+<form action="{{ url('client-set-status', pk=object.pk) }}" method="POST" id="status_change_form">
   {% csrf_token %}
   <input type="hidden" id="id_status_change" name="status"/>
 </form>

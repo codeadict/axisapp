@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.gis.db import models as gismodel
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
@@ -17,217 +18,6 @@ def date_default():
     :return: timezone timedate
     """
     return timezone.now()
-
-
-class EmploymentHistory(models.Model):
-    """
-    Employment History
-    """
-
-    # Employent History Data
-    company = models.CharField(max_length=255, verbose_name=_('Company Name'))
-    position = models.CharField(max_length=255, verbose_name=_('Position'))
-    date_in = models.DateField(default=date_default, verbose_name=_('Date hired'))
-    date_out = models.DateField(default=date_default, verbose_name=_('Date leaving'))
-    out_reason = models.CharField(max_length=255, verbose_name=_('Reason of leaving'))
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return self.get_company_position()
-
-    def get_company_position(self):
-        return '%s %s %s' % (self.company, ugettext('at'), self.position)
-
-    @property
-    def time_worked(self):
-        """
-        Returns the number of years, months and days the
-        Employee works into the company
-        :return: Int
-        """
-        if self.date_in > self.date_out:
-            return _('No time')
-        else:
-            delta = relativedelta(self.date_out - self.date_in)
-            return humanize_time(delta)
-
-    class Meta:
-        verbose_name = _('Employment history')
-        verbose_name_plural = _('Employment history')
-        ordering = ['date_out']
-
-
-class Language(models.Model):
-    """
-    Language managed by Employees
-    """
-
-    LOW = 0
-    INTERMEDIATE = 1
-    HIGH = 2
-    NATIVE = 3
-
-    TYPES = (
-        (LOW, _('Low')),
-        (INTERMEDIATE, _('Intermediate')),
-        (HIGH, _('High')),
-        (NATIVE, _('Native')),
-    )
-
-    NAMES = tuple([(i, j) for i, j in enumerate(LANGUAGES)])
-
-    name = models.PositiveIntegerField(choices=NAMES, default=19, verbose_name=_('Language Name'))
-    speak = models.PositiveIntegerField(choices=TYPES, default=0, verbose_name=_('Speak skills'))
-    write = models.PositiveIntegerField(choices=TYPES, default=0, verbose_name=_('Write skills'))
-    read = models.PositiveIntegerField(choices=TYPES, default=0, verbose_name=_('Read skills'))
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s %s %s %s' % (self.name, self.speak, self.write, self.read)
-
-    class Meta:
-        verbose_name = _('Language')
-        verbose_name_plural = _('Languages')
-        ordering = ['name']
-
-
-class FamilyRelation(models.Model):
-    """
-    Model to record the family relation type
-    """
-    #TODO: Create the table from xml
-    # https://github.com/cecep-edu/refactory/blob/staging/iaen_base/data/family_relationship_data.xml
-    # To have it all set
-
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    description = models.CharField(max_length=255, verbose_name=_('Description'))
-    code_mrl = models.CharField(max_length=255, verbose_name=_('Code MRL'))
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s %s' % (self.name, self.description)
-
-    class Meta:
-        verbose_name = _('Family relation')
-        verbose_name_plural = _('Family relations')
-        ordering = ['name']
-
-
-class FamilyDependant(models.Model):
-    """
-    Model to record the Family information
-    """
-
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    last_name = models.CharField(max_length=255, verbose_name=_('Last name'))
-    relationship = models.ForeignKey(FamilyRelation, verbose_name=_('Relation ship'))
-    birthday = models.DateField(default=date_default, verbose_name=_('Birthday'))
-    phone = modelfields.PhoneNumberField(verbose_name=_('Phone Number'),
-                                         help_text='If phone from different country \
-                                         than company, please provide international format +prefix-number')
-    handicapped = models.BooleanField(default=False, verbose_name=_('Handicapped'))
-    have_insurance = models.BooleanField(default=False, verbose_name=_('Insurance'))
-
-    @property
-    def age(self):
-        if self.birthdate > timezone.now().replace(year=self.birthdate.year):
-            return timezone.now().year - self.birthdate.year - 1
-        else:
-            return timezone.now().year - self.birthdate.year
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s %s %s' % (self.name, self.last_name, self.relationship.name)
-
-    class Meta:
-        verbose_name = _('Family dependant')
-        verbose_name_plural = _('Family dependants')
-        ordering = ['name']
-
-
-class EducationArea(models.Model):
-    """
-    Model to record the education areas
-    """
-
-    name = models.CharField(max_length=255, verbose_name=_('Area name'))
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s' % self.name
-
-
-class Education(models.Model):
-    """
-    Model to record the studies
-    """
-    NO_INSTRUCTION = 0
-    BASIC_INSTRUCTION = 1
-    PRIMARY_INSTRUCTION = 2
-    SECONDARY_INSTRUCTION = 3
-    BACHELOR_INSTRUCTION = 4
-    FOURTH_INSTRUCTION = 5
-    TECH_SENIOR_INSTRUCTION = 6
-    TECH_INSTRUCTION = 7
-    THIRD_INSTRUCTION = 8
-
-    INSTRUCTION_TYPE_LEVEL = (
-        (NO_INSTRUCTION, _('No instruction')),
-        (BASIC_INSTRUCTION, _('Basic school')),
-        (PRIMARY_INSTRUCTION, _('Primary')),
-        (SECONDARY_INSTRUCTION, _('Secondary')),
-        (BACHELOR_INSTRUCTION, _('Bachelor')),
-        (FOURTH_INSTRUCTION, _('Fourth')),
-        (TECH_SENIOR_INSTRUCTION, _('Senior Technician')),
-        (TECH_INSTRUCTION, _('Technics')),
-        (THIRD_INSTRUCTION, _('Third')),
-
-    )
-
-    institution = models.CharField(max_length=255, verbose_name=_('Institution Name'))
-    country = fields.CountryField(verbose_name=_('Institution Name'), blank_label=_('(select country)'))
-    start_date = models.DateField(default=date_default, verbose_name=_('Start date'))
-    graduation_date = models.DateField(default=date_default, verbose_name=_('Graduation date'))
-    instruction_level = models.IntegerField(default=0, choices=INSTRUCTION_TYPE_LEVEL, verbose_name=_('Level'))
-    degree = models.CharField(max_length=255, verbose_name=_('Degree'))
-    is_finished = models.BooleanField(default=False, verbose_name=_('Finished?'))
-    last_finished_semester = models.IntegerField(default=0, verbose_name=_('Last finished semester'))
-    education_area = models.ForeignKey(EducationArea, verbose_name=_('Education Area'))
-
-    @property
-    def timespend(self):
-        if self.start_date > self.graduation_date:
-            raise BaseException(_('Begin date can not be over the end date'))
-        else:
-            deltatime = self.graduation_date - self.start_date
-            return humanize_time(deltatime)
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s %s %i' % (self.institution, self.country, self.is_finished)
-
-    class Meta:
-        verbose_name = _('Studied education')
-        verbose_name_plural = _('Studied educations')
-        ordering = ['institution']
 
 
 class Employee(base_models.Partner):
@@ -332,7 +122,7 @@ class Employee(base_models.Partner):
     province = models.ForeignKey(base_models.Provincia, verbose_name=_('Province'))
     parish = models.ForeignKey(base_models.Parroquia, verbose_name=_('Parish'))
     canton = models.ForeignKey(base_models.Canton, verbose_name=_('Canton'))
-    county = models.CharField(max_length=255, verbose_name=_('County'))
+    county = models.CharField(max_length=255, verbose_name=_('County'), null=True, blank=True)
     city = models.CharField(max_length=255, verbose_name=_('City'))
     postcode = models.CharField(max_length=10, verbose_name=_('Postal Code'))
     nationality = fields.CountryField(verbose_name=_('Nationality'), default='EC')
@@ -341,8 +131,8 @@ class Employee(base_models.Partner):
     handicap_percent = base_fields.PercentageField(default=0, verbose_name=_('Handicap percent'), blank=True)
     handicap_type = models.CharField(max_length=255, verbose_name=_('Handicap type'), blank=True)
     handicap_card_number = models.CharField(max_length=255, verbose_name=_('Handicap card number'), blank=True)
-    phone = modelfields.PhoneNumberField(verbose_name=_('Phone number'), help_text='If phone from different country \
-                                         than company please, provide international format +prefix-number')
+    phone = modelfields.PhoneNumberField(verbose_name=_('Phone number'), null=True, blank=True,
+                                         help_text='Provide international format +prefix-number')
     cellphone = modelfields.PhoneNumberField(verbose_name=_('Cellphone number'), help_text='If cellphone from different \
                                          country than company please, provide international format +prefix-number')
     email = models.EmailField(max_length=255, verbose_name=_('Email'))
@@ -357,24 +147,24 @@ class Employee(base_models.Partner):
     maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_('Maintain reserve funds?'), blank=True)
     status = models.IntegerField(choices=STATUS_TYPE, default=STATUS_ACTIVE, verbose_name=_('Status'))
     ethnic_race = models.IntegerField(choices=ETHNIC_RACE_TYPE, default=ETHNIC_RACE_WHITE, verbose_name=_('Ethnic race'))
-    family_dependants = models.ForeignKey(FamilyDependant, related_name='family_dependants',
-                                          verbose_name=_('Family dependants'))
-    language_skill = models.ForeignKey(Language, related_name='languages', verbose_name=_('Language skills'))
-    employment_history = models.ForeignKey(EmploymentHistory, related_name='history',
-                                           verbose_name=_('Employment history'))
-    education = models.ForeignKey(Education, related_name='education', verbose_name=_('Education'))
+    coordinates = gismodel.PointField(db_column="geom", null=True, blank=True)
+
+    objects = gismodel.GeoManager()
 
     def __unicode__(self):
         """
         Object representation
         :return: Unicode String
         """
-        return '%s %s %s' % (self.name, self.last_name, self.status)
+        return '%s %s' % (self.name, self.last_name)
 
     class Meta:
         verbose_name = _('Employee')
         verbose_name_plural = _('Employees')
         ordering = ['last_name']
+
+    def get_full_name(self):
+        return '%s %s' % (self.name, self.last_name)
 
     def employee_photo(self):
         if self.photo:
@@ -392,7 +182,7 @@ class EnterpriseDepartment(MPTTModel):
     """
 
     name = models.CharField(max_length=255, unique=True, verbose_name=_('Department name'))
-    manager = models.ForeignKey(Employee, verbose_name=_('Department Manager'))
+    manager = models.ForeignKey(Employee, verbose_name=_('Department Manager'), null=True, blank=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='sub_department')
 
     def __unicode__(self):
@@ -400,7 +190,223 @@ class EnterpriseDepartment(MPTTModel):
         Object representation
         :return: Unicode String
         """
-        return '%s %s %s' % (self.name, ugettext(' managed by '), self.manager.name)
+        return self.name
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+
+class EmploymentHistory(models.Model):
+    """
+    Employment History
+    """
+
+    # Employent History Data
+    company = models.CharField(max_length=255, verbose_name=_('Company Name'))
+    position = models.CharField(max_length=255, verbose_name=_('Position'))
+    date_in = models.DateField(default=date_default, verbose_name=_('Date hired'))
+    date_out = models.DateField(default=date_default, verbose_name=_('Date leaving'))
+    out_reason = models.CharField(max_length=255, verbose_name=_('Reason of leaving'))
+    employee = models.ForeignKey(Employee, related_name='employment_history')
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return self.get_company_position()
+
+    def get_company_position(self):
+        return '%s %s %s' % (self.company, ugettext('at'), self.position)
+
+    @property
+    def time_worked(self):
+        """
+        Returns the number of years, months and days the
+        Employee works into the company
+        :return: Int
+        """
+        if self.date_in > self.date_out:
+            return _('No time')
+        else:
+            delta = relativedelta(self.date_out - self.date_in)
+            return humanize_time(delta)
+
+    class Meta:
+        verbose_name = _('Employment history')
+        verbose_name_plural = _('Employment history')
+        ordering = ['date_out']
+
+
+class Language(models.Model):
+    """
+    Language managed by Employees
+    """
+
+    LOW = 0
+    INTERMEDIATE = 1
+    HIGH = 2
+    NATIVE = 3
+
+    TYPES = (
+        (LOW, _('Low')),
+        (INTERMEDIATE, _('Intermediate')),
+        (HIGH, _('High')),
+        (NATIVE, _('Native')),
+    )
+
+    NAMES = tuple([(i, j) for i, j in enumerate(LANGUAGES)])
+
+    name = models.PositiveIntegerField(choices=NAMES, default=19, verbose_name=_('Language'))
+    speak = models.PositiveIntegerField(choices=TYPES, default=0, verbose_name=_('Speak skills'))
+    write = models.PositiveIntegerField(choices=TYPES, default=0, verbose_name=_('Write skills'))
+    read = models.PositiveIntegerField(choices=TYPES, default=0, verbose_name=_('Read skills'))
+    employee = models.ForeignKey(Employee, related_name='languages')
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s %s %s %s' % (self.name, self.speak, self.write, self.read)
+
+    class Meta:
+        verbose_name = _('Language')
+        verbose_name_plural = _('Languages')
+        ordering = ['name']
+
+
+class FamilyRelation(models.Model):
+    """
+    Model to record the family relation type
+    """
+    #TODO: Create the table from xml
+    # https://github.com/cecep-edu/refactory/blob/staging/iaen_base/data/family_relationship_data.xml
+    # To have it all set
+
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
+    description = models.CharField(max_length=255, verbose_name=_('Description'))
+    code_mrl = models.CharField(max_length=255, verbose_name=_('Code MRL'))
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s %s' % (self.name, self.description)
+
+    class Meta:
+        verbose_name = _('Family relation')
+        verbose_name_plural = _('Family relations')
+        ordering = ['name']
+
+
+class FamilyDependant(models.Model):
+    """
+    Model to record the Family information
+    """
+
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
+    last_name = models.CharField(max_length=255, verbose_name=_('Last name'))
+    relationship = models.ForeignKey(FamilyRelation, verbose_name=_('Relation ship'))
+    birthday = models.DateField(default=date_default, verbose_name=_('Birthday'))
+    phone = modelfields.PhoneNumberField(verbose_name=_('Phone Number'),
+                                         help_text='If phone from different country \
+                                         than company, please provide international format +prefix-number')
+    handicapped = models.BooleanField(default=False, verbose_name=_('Handicapped'))
+    have_insurance = models.BooleanField(default=False, verbose_name=_('Insurance'))
+    employee = models.ForeignKey(Employee, related_name='family_dependants')
+
+    @property
+    def age(self):
+        if self.birthdate > timezone.now().replace(year=self.birthdate.year):
+            return timezone.now().year - self.birthdate.year - 1
+        else:
+            return timezone.now().year - self.birthdate.year
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s %s %s' % (self.name, self.last_name, self.relationship.name)
+
+    class Meta:
+        verbose_name = _('Family dependant')
+        verbose_name_plural = _('Family dependants')
+        ordering = ['name']
+
+
+class EducationArea(models.Model):
+    """
+    Model to record the education areas
+    """
+
+    name = models.CharField(max_length=255, verbose_name=_('Area name'))
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s' % self.name
+
+
+class Education(models.Model):
+    """
+    Model to record the studies
+    """
+    NO_INSTRUCTION = 0
+    BASIC_INSTRUCTION = 1
+    PRIMARY_INSTRUCTION = 2
+    SECONDARY_INSTRUCTION = 3
+    BACHELOR_INSTRUCTION = 4
+    FOURTH_INSTRUCTION = 5
+    TECH_SENIOR_INSTRUCTION = 6
+    TECH_INSTRUCTION = 7
+    THIRD_INSTRUCTION = 8
+
+    INSTRUCTION_TYPE_LEVEL = (
+        (NO_INSTRUCTION, _('No instruction')),
+        (BASIC_INSTRUCTION, _('Basic school')),
+        (PRIMARY_INSTRUCTION, _('Primary')),
+        (SECONDARY_INSTRUCTION, _('Secondary')),
+        (BACHELOR_INSTRUCTION, _('Bachelor')),
+        (FOURTH_INSTRUCTION, _('Fourth')),
+        (TECH_SENIOR_INSTRUCTION, _('Senior Technician')),
+        (TECH_INSTRUCTION, _('Technics')),
+        (THIRD_INSTRUCTION, _('Third')),
+
+    )
+
+    institution = models.CharField(max_length=255, verbose_name=_('Institution Name'))
+    country = fields.CountryField(verbose_name=_('Institution Name'), blank_label=_('(select country)'))
+    start_date = models.DateField(default=date_default, verbose_name=_('Start date'))
+    graduation_date = models.DateField(default=date_default, verbose_name=_('Graduation date'))
+    instruction_level = models.IntegerField(default=0, choices=INSTRUCTION_TYPE_LEVEL, verbose_name=_('Level'))
+    degree = models.CharField(max_length=255, verbose_name=_('Degree'))
+    is_finished = models.BooleanField(default=False, verbose_name=_('Finished?'))
+    last_finished_semester = models.IntegerField(default=0, verbose_name=_('Last finished semester'))
+    education_area = models.ForeignKey(EducationArea, verbose_name=_('Education Area'))
+    employee = models.ForeignKey(Employee, related_name='education_records')
+
+    @property
+    def timespend(self):
+        if self.start_date > self.graduation_date:
+            raise BaseException(_('Begin date can not be over the end date'))
+        else:
+            deltatime = self.graduation_date - self.start_date
+            return humanize_time(deltatime)
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s %s %i' % (self.institution, self.country, self.is_finished)
+
+    class Meta:
+        verbose_name = _('Studied education')
+        verbose_name_plural = _('Studied educations')
+        ordering = ['institution']
+
