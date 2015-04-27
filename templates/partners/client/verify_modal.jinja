@@ -1,0 +1,15 @@
+{% extends '/common/modals/base_modal.jinja' %}
+
+{% block modal_body %}
+  <div class="row">
+  <div class="col-md-12 detail-item">
+        {% if response %}
+          {{ response|safe }}
+        {% else %}
+          {{ _('No data on SRI') }}
+        {% endif %}
+    </div>
+
+  </div>
+{% endblock %}
+{% block modal_button_text %}{{ _('Update Client Data') }}{% endblock %}

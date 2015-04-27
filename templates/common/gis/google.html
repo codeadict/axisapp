@@ -1,0 +1,9 @@
+{% extends "gis/openlayers.html" %}
+
+{% block options %}
+{{ block.super }}
+options['base_layer'] = new OpenLayers.Layer.Google("Google Streets", {numZoomLevels: 20, units: 'm'});
+options['point_zoom'] = 14;
+options['default_lat'] = -0.001944;
+options['default_lon'] = -78.455833;
+{% endblock %}

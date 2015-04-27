@@ -167,14 +167,6 @@ class SelleAbleItem(models.Model):
         (ITEM_STATE_ACTIVE, _("Active"))
     )
 
-    ITEM_TYPE_CONSUMABLE = 0
-    ITEM_TYPE_SERVICE = 1
-
-    ITEM_TYPE = (
-        (ITEM_TYPE_CONSUMABLE, _("Consumable")),
-        (ITEM_TYPE_SERVICE, _("Service"))
-    )
-
     ITEM_TAX_IVA_NONE = 0
     ITEM_TAX_IVA_ZERO = 1
     ITEM_TAX_IVA_TWELVE = 2
@@ -189,7 +181,7 @@ class SelleAbleItem(models.Model):
     description = models.CharField(verbose_name=_("Description"), max_length=2048, blank=True)
     title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True)
 
-    type = models.IntegerField(verbose_name=_("Type"), choices=ITEM_TYPE, default=ITEM_TYPE_CONSUMABLE)
+    type = models.CharField(_('Type'), max_length=50, editable=False, db_index=True)
     image = models.ForeignKey('products.ProductImage', null=True)
 
     # This is the price show it to the client
@@ -216,9 +208,36 @@ class SelleAbleItem(models.Model):
 
     date_created = models.DateField(_("Date Created"), default=date_default)
 
+    selleabe_item_type_name = property(lambda self: self.partner_model())
+
     class Meta:
         verbose_name = _('Item')
         verbose_name_plural = _('Items')
+
+    def save(self, *args, **kw):
+        if not self.type:
+            self.type = self.__class__.__name__
+        return super(SelleAbleItem, self).save(*args, **kw)
+
+    @property
+    def type_verbose_name(self):
+        return self.selleable_obj()._meta.verbose_name
+
+    def object_model(self):
+        return self.type
+
+    def selleable_obj(self):
+        return getattr(self, self.type.lower())
+
+    def is_product(self):
+        return self.type == 'Product'
+
+    def is_service(self):
+        return self.type == 'Service'
+
+    def _get_partner_id(self):
+        # make sure we always use the id even if this method is called on child instances.
+        return getattr(self, 'selleableitem_ptr_id', self.id)
 
     def __unicode__(self):
         """

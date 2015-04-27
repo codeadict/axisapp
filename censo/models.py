@@ -104,15 +104,17 @@ class Cliente(modelos_maestros.Partner):
     codigo = models.CharField(max_length=20, verbose_name='Codigo', null=True, blank=True)
     barrio = models.CharField(max_length=255, verbose_name='Barrio', blank=True, null=True)
     sector = models.CharField(max_length=255, verbose_name='Sector', blank=True, null=True)
-    coordenadas = models.PointField(db_column="geom", null=True, blank=True)
 
     estado = models.PositiveSmallIntegerField(choices=ESTADOS, verbose_name='Estado', default=ACTIVO)
-
     #TODO: Foto Local obligatoria en la app movil
     foto_local = models.ImageField(upload_to='fotos/locales/', null=True,
                                    blank=True, verbose_name=u'Foto del Local')
+    coordenadas = models.PointField(db_column="geom", null=True, blank=True)
 
     objects = models.GeoManager()
+
+    class Meta:
+        ordering = ['nombres']
 
     def __unicode__(self):
         """
@@ -155,22 +157,29 @@ class Cliente(modelos_maestros.Partner):
                 'ascii') if self.apellidos else ' ', self.identif if self.identif else ' ',
             self.nombre_comercial.encode('ascii', 'ignore').decode('ascii') if self.nombre_comercial else ' ', self.id)
 
-    def verificar_sri(self):
+    def verify(self):
+        """
+        Verify the client with government institutions to check that data is updated and correct
+        """
+        verification_data = {}
         if self.tipo_id == self.RUC:
             params = {'accion': 'siguiente', 'ruc': self.identif, 'lineasPagina': ''}
             url = 'https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/ruc-datos2.jspa'
             sri_page = requests.post(url, params)
             soup = bs4.BeautifulSoup(sri_page.text)
-
+            form = soup.select('table.formulario')
             data = soup.select('table.formulario tr td')
+            resp = str(form[0]) if form else ''
 
-            if not data:
-                return
-            else:
-                self.razon_social = data[0].text.strip(' \n\s')
-                self.identif = data[2].text.strip(' \n\s')
-                self.tipo_contribuyente = data[11].text.strip(' \n\s')
-                self.lleva_contabilidad = True if data[13].text == 'SI' else False
+            if data:
+                verification_data = {
+                    'response': resp.decode('utf-8'),
+                    'social_reason': data[0].text.strip(' \n\s'),
+                    'identification': data[2].text.strip(' \n\s'),
+                    'contributor_type': data[11].text.strip(' \n\s'),
+                    'accounting_obligation': True if data[13].text == 'SI' else False,
+                }
+        return verification_data
 
     def save(self, *args, **kwargs):
         """
@@ -210,7 +219,7 @@ class ActivosMercado(models.Model):
     """
     Modelos de mercado
     """
-    cliente = models.ForeignKey(Cliente, verbose_name='Cliente')
+    cliente = models.ForeignKey(Cliente, verbose_name='Cliente', related_name='market_assets')
     empresa = models.ForeignKey(modelos_maestros.EmpresaActivos, verbose_name='Competencia')
     p = models.PositiveIntegerField('P')
     m = models.PositiveIntegerField('M')
@@ -340,7 +349,7 @@ class PresalesDistribution(models.Model):
     initial_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_initial',
                                        help_text=_('Select the initial client from where you will start selling'))
     final_client = models.ForeignKey(Cliente, null=True, blank=True, related_name='presales_final',
-                                     help_text=_('Select the final client from where you will start selling'))
+                                     help_text=_('Select the final client from where you will finish selling'))
     objects = models.GeoManager()
 
     class Meta:

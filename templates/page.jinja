@@ -3,7 +3,7 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{{ "css/theme.css"|static }}{{ '?' if debug }}">
   <link rel="stylesheet" href="{{ "css/page_styles.css"|static }}{{ '?' if debug }}">
-  <link rel="stylesheet" href="{{ 'css/Control.FullScreen.css'|static }}" />
+  <link rel="stylesheet" href="{{ 'css/Control.FullScreen.css'|static }}"/>
 {% endblock %}
 
 {% block extra_js %}
@@ -39,8 +39,8 @@
   {% if item.rurl or item.url %}
     <a href="{{ item.url if item.url else obj_url(item.rurl) }}" class="{{ default_classes }} {{ item.classes }}"
        msg="{{ item.msg }}" data-method="{{ item.method if item.method else 'get' }}"
-       {% if item.modal %} data-toggle="modal" data-target="#{{ item.target_modal }}"{% endif %}
-       {% if item.data %}{% for k,v in item.data.items() %} data-{{ k }}="{{ v }}"{% endfor %}{% endif %}>
+            {% if item.modal %} data-toggle="modal" data-target="#{{ item.target_modal }}"{% endif %}
+            {% if item.data %}{% for k,v in item.data.items() %} data-{{ k }}="{{ v }}"{% endfor %}{% endif %}>
       {{ item.name }}
     </a>
   {% endif %}
@@ -66,9 +66,9 @@
           </button>
           <ul class="dropdown-menu" role="menu">
             {% for item in button.dropdown %}
-                <li>
-                  {{ show_link(item) }}
-                </li>
+              <li>
+                {{ show_link(item) }}
+              </li>
             {% endfor %}
           </ul>
           {% if button_menu|length > 1 %}</div>{% endif %}
@@ -132,73 +132,78 @@
 
 {% block body %}
   <div class="navbar navbar-fixed-top navbar-custom" role="navigation">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="navbar-collapse">
-        <form class="navbar-form navbar-left" role="search" method="get" action="{{ url('search-universal') }}{% if search_section %}?section={{ search_section }}{% endif %}">
-          <div class="input-group">
-            <input type="text" class="form-control" name="search" placeholder={{ _("Search") }} value="{{ request.GET.search }}">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse">
+      <form class="navbar-form navbar-left" role="search" method="get"
+            action="{{ url('search-universal') }}{% if search_section %}?section={{ search_section }}{% endif %}">
+        <div class="input-group">
+          <input type="text" class="form-control" name="search"
+                 placeholder={{ _("Search") }} value="{{ request.GET.search }}">
             <span class="input-group-btn">
               <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
             </span>
-          </div>
-        </form>
-        <ul class="nav navbar-nav">
-          {% if branches %}
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle agency-title" data-toggle="dropdown">{{ user.branch }}</a>
-              <ul class="dropdown-menu" role="menu">
-                <li class="dropdown-header">{{ _('Set Active Branch') }}</li>
-                {% for branch in branches %}
-                  <li{% if branch == user.branch %} class="active"{% endif %}>
-                    <a href="{{ url('auth:set-branch', branch_id=branch.id) }}">{{ branch.name }}</a>
-                  </li>
-                {% endfor %}
-                <li class="divider"></li>
-                <li><a href="{{ url('setup:branch-edit') }}">{{ _('Edit current Branch') }}</a></li>
-              </ul>
-            </li>
-          {% else %}
-            <li><span class="notlink agency-title">{{ agency_branch }}</span></li>
-          {% endif %}
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
+        </div>
+      </form>
+      <ul class="nav navbar-nav">
+        {% if branches %}
           <li class="dropdown">
-            <a class="user-photo-button" href="#" class="dropdown-toggle" data-toggle="dropdown">
-              {% if user.photo %}
-                <img src="{{ user.photo|thumbnail_url('small') }}"/>
-              {% else %}
-                <img src="{{ 'default_avatar.png'|static }}"/>
-              {% endif %}
-            </a>
-            <script>
-              $(function () {
-                $('.user-photo-button').tooltip()
-              });
-            </script>
+            <a href="#" class="dropdown-toggle agency-title" data-toggle="dropdown">{{ user.branch }}</a>
             <ul class="dropdown-menu" role="menu">
-              <li class="dropdown-header user-name">
-                  {{ user.get_full_name() }}
-              </li>
+              <li class="dropdown-header">{{ _('Set Active Branch') }}</li>
+              {% for branch in branches %}
+                <li{% if branch == user.branch %} class="active"{% endif %}>
+                  <a href="{{ url('auth:set-branch', branch_id=branch.id) }}">{{ branch.name }}</a>
+                </li>
+              {% endfor %}
               <li class="divider"></li>
-              <li><a href="{{ url('auth:logout') }}">{{ _('Logout') }}</a></li>
+              <li><a href="{{ url('setup:branch-edit') }}">{{ _('Edit current Branch') }}</a></li>
             </ul>
           </li>
-        </ul>
-      </div>
+        {% else %}
+          <li><span class="notlink agency-title">{{ agency_branch }}</span></li>
+        {% endif %}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if user.is_admin %}
+          <li><a href="{{ url('admin:index') }}">{{ _('Administration Page') }}</a></li>
+        {% endif %}
+        <li class="dropdown">
+          <a class="user-photo-button" href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {% if user.photo %}
+              <img src="{{ user.photo|thumbnail_url('small') }}"/>
+            {% else %}
+              <img src="{{ 'default_avatar.png'|static }}"/>
+            {% endif %}
+          </a>
+          <script>
+            $(function () {
+              $('.user-photo-button').tooltip()
+            });
+          </script>
+          <ul class="dropdown-menu" role="menu">
+            <li class="dropdown-header user-name">
+              {{ user.get_full_name() }}
+            </li>
+            <li class="divider"></li>
+            <li><a href="{{ url('auth:logout') }}">{{ _('Logout') }}</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-3 col-md-2 col-xs-12 sidebar collapse">
         <a class="logo" href="/">
-            <img src="{{ "app_logo.png"|static }}" />
+          <img src="{{ "app_logo.png"|static }}"/>
         </a>
         {{ user_mobile_menu() }}
         {{ menu(main_menu, "menu_accordion") }}
@@ -206,10 +211,7 @@
           <a href="{{ url('auth:logout') }}">{{ _('Logout') }}</a>
         </div>
       </div>
-      <div class="col-sm-9 col-sm-offset-3 {{ 'col-md-10' if full_width else 'col-md-8'}} col-md-offset-2 main">
-        <div class="btn-toolbar" role="toolbar">
-          {{ buttons(button_menu) }}
-        </div>
+      <div class="col-sm-9 col-sm-offset-3 {{ 'col-md-10' if full_width else 'col-md-8' }} col-md-offset-2 main">
         <div>
           {% for message in messages %}
             {% if 'safe' in message.tags %}
@@ -228,12 +230,42 @@
                 </button>
                 {{ message }}
               </div>
-             {% endif %}
+            {% endif %}
           {% endfor %}
           {% if not user.is_active %}
             <div class="alert alert-warning">{{ _('Your account it not active until you confirm your email address') }}</div>
           {% endif %}
+
+          <div class="btn-toolbar pull-right" role="toolbar">
+            {{ buttons(button_menu) }}
+          </div>
+
+
+          <div class="col-md-12">
+            <div class="col-ms-10">
+              <ul id="AppTabs">
+                <li class="active">
+                  <a href="/invoices/544221/">
+                    List
+                  </a>
+                </li>
+                <li class="last-tab">
+                  <a href="/invoices/recurring/544221/">
+                    Map
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
           <div class="content{{ ' block' if not no_outer_block }}{{ ' pad' if not no_page_pad }}">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-left">
+                  <h1>{% block module_icon %}{% endblock %} {{ title }}</h1>
+                </div>
+              </div>
+            </div>
             {% block content %}{% endblock %}
           </div>
           <footer align="center">

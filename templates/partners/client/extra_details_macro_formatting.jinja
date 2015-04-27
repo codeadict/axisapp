@@ -1,0 +1,16 @@
+{% macro client_market_assets(ma, addlink_pk) %}
+  <div>{{ ma.empresa }}</div>
+  <div><strong>{{ _('Small') }}:</strong> {{ ma.p }}</div>
+  <div><strong>{{ _('Medium') }}:</strong> {{ ma.m }}</div>
+  <div><strong>{{ _('Big') }}:</strong> {{ ma.g }}</div>
+  <div><strong>{{ _('Cooler') }}:</strong> {{ ma.congelador }}</div>
+  <div><strong>{{ _('Exhibitor') }}:</strong> {{ ma.exhibidor }}</div>
+  <div><strong>{{ _('Lettering') }}:</strong> {{ ma.rotulo }}</div>
+  <div><strong>{{ _('Shelf') }}:</strong> {{ ma.estante }}</div>
+  <div><strong>{{ _('Tables') }}:</strong> {{ ma.mesas }}</div>
+  <div><strong>{{ _('Chairs') }}:</strong> {{ ma.sillas }}</div>
+    <a href="{{ url("client-edit-market-assets", pk=addlink_pk, marketasset_pk=ma.pk) }}" class="btn btn-default no-dec"
+       data-toggle="tooltip" data-placement="top" title="{{ _('Edit') }}">
+      <span class="subtle-link glyphicon glyphicon-edit"></span> {{ _('Edit') }}
+    </a>
+{% endmacro %}

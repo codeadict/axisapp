@@ -1,13 +1,95 @@
 {% import 'macro/extra_details.jinja' as macros %}
+{% import 'partners/client/extra_details_macro_formatting.jinja' as formatting %}
 
-<div class="item-extra">
-    <ul class="nav nav-tabs nav-justified">
-      <li role="presentation" class="active"><a href="#">Datos Local</a></li>
-      <li role="presentation"><a href="#">Localización</a></li>
-      <li role="presentation"><a href="#">Activos Mercado</a></li>
-      <li role="presentation"><a href="#">Visitas</a></li>
-      <li role="presentation"><a href="#">Categorización Productos</a></li>
-    </ul>
+<div class="item-extra" role="tabpanel">
+  <ul class="nav nav-tabs nav-justified" role="tablist">
+    <li role="presentation" class="active"><a href="#place-data" role="tab" data-toggle="tab">Datos Local</a></li>
+    <li role="presentation"><a href="#location" role="tab" data-toggle="tab">Localización</a></li>
+    <li role="presentation"><a href="#market-acts" role="tab" data-toggle="tab">Activos Mercado</a></li>
+    <li role="presentation"><a href="#visits" role="tab" data-toggle="tab">Visitas</a></li>
+    <li role="presentation"><a href="#products-category" role="tab" data-toggle="tab">Categorización Productos</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane fade in active" id="place-data">
+      <div class="detail-long">
+        <div class="col-md-6 detail-item">
+          <label>{{ _('Business Type') }}:</label>
+          <div class="detail-info">{{ object.get_tipo_local_display() }}</div>
+        </div>
+        <div class="col-md-6 detail-item">
+          <label>{{ _('Address') }}:</label>
+          <div class="detail-info">{{ object.direccion|safe }}</div>
+        </div>
+        <div class="col-md-6 detail-item">
+          <label>{{ _('Social Reason') }}:</label>
+          <div class="detail-info">{{ object.razon_social|safe }}</div>
+        </div>
+        <div class="col-md-6 detail-item">
+          <label>{{ _('Trade Name') }}:</label>
+          <div class="detail-info">{{ object.nombre_comercial|safe }}</div>
+        </div>
+        <div class="col-md-6 detail-item">
+          <label>{{ _('Purchases Person') }}:</label>
+          <div class="detail-info">{{ object.persona_compras|safe }}</div>
+        </div>
+        <div class="col-md-3 detail-item">
+          <label>{{ _('Special Contributor') }}:</label>
+          <div class="detail-info">{{ convert_to_string(value=object.especial) }}</div>
+        </div>
+        <div class="col-md-3 detail-item">
+          <label>{{ _('Government Company') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.estatal) }}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('Macro Channel') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.macro_canal) }}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('Consumption Ocassion') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.ocasion_consumo) }}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('Channel') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.canal) }}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('SubChannel') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.subcanal) }}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('Front Size') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.medida_frente) }} {% if object.medida_frente %}{{ _('Meters') }}{% endif %}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('Large Size') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.medida_fondo) }} {% if object.medida_fondo %}{{ _('Meters') }}{% endif %}</div>
+        </div>
+        <div class="col-md-4 detail-item">
+          <label>{{ _('Working Hours') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.horario_desde) }} {{ _('-') }} {{ convert_to_string(object.horario_hasta) }}</div>
+        </div>
+                <div class="col-md-4 detail-item">
+          <label>{{ _('Sales ABC') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.abc_compras) }}</div>
+        </div>
+                <div class="col-md-4 detail-item">
+          <label>{{ _('Industry ABC') }}:</label>
+          <div class="detail-info">{{ convert_to_string(object.abc_industrias) }}</div>
+        </div>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="location">...</div>
+    <div role="tabpanel" class="tab-pane fade" id="market-acts">
+      <div class="row">
+        <div class="col-md-12">
+          {{ macros.extras_column(_('Market Assets'), market_assets, renderer=formatting.client_market_assets, addlink='client-edit-market-assets', pk_page=object.pk) }}
+        </div>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="visits">...</div>
+    <div role="tabpanel" class="tab-pane fade" id="products-category">...</div>
+  </div>
 </div>
 <form action="{{ url('client-set-status', pk=object.pk) }}" method="POST" id="status_change_form">
   {% csrf_token %}
