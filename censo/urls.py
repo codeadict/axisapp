@@ -12,10 +12,12 @@ urlpatterns = patterns('partners.views',
                        url(r'^clients/(?P<pk>\d+)/delete/$', 'client_delete', name='client-delete'),
                        url(r'^clients/(?P<pk>\d+)/set_status/$', 'client_set_status', name='client-set-status'),
                        url(r'^clients/(?P<pk>\d+)/verify/$', 'client_verify', name='client-verify'),
+
+                       url(r'^clients/(?P<pk>\d+)/assets/edit/(?P<marketasset_pk>\d+)/$',
+                           'client_single_market_asset', name='client-edit-market-assets'),
                        #url(r'^search/$', 'search_universal', name='search-universal'),
                        url(r'^partner/(?P<pk>\d+)/set_label/$', 'role_set_label', name='role-set-label'),
                        url(r'^clients/distribution/$', 'distribution_list', name='presales-client-distribution'),
                        url(r'^clients/distribution/(?P<pk>\d+)/edit/$', 'distribution_update', name='edit-distribution'),
                        url(r'^clients/distribution/generate/$', 'distribution_generate', name='generate-distribution'),
-
-)
+                       )

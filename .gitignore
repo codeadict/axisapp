@@ -64,12 +64,12 @@ env2
 staticfiles/
 static/libs/
 mediafiles/
+media/
 Django*
 django-jinja-bootstrap-form/
 *.idea
 .idea/
 scripts/gdrive_data/
-TutorCruncher/static/tests/import_data_right.xlsx
 
 # vim and ctags files
 *.swp

@@ -25,13 +25,23 @@
 {% endmacro %}
 
 {% macro showobject_with_image(object, detail_view) %}
-  {% if detail_view %}
-    <a class="photo" href="{{ url(detail_view, pk=object.pk) }}">
-        <img src="{{ "default_avatar.png"|static }}" width="50" height="50"/>
+  {% if detail_view_url %}
+    <a class="photo thumb" href="{{ url(detail_view_url, pk=object.pk) }}">
+      {% if object.foto %}
+        <img src="{{ object.foto.url }}" />
+      {% else %}
+        <img src="{{ "default_avatar.png"|static }}"/>
+      {% endif %}
     </a>
   {% else %}
-    <div class="photo">
-        <img src="{{ "default_avatar.png"|static }}" width="50" height="50"/>
+    <div class="photo thumb">
+      {% if object.foto %}
+        <a href="{{ media(object.foto) }}" data-lightbox="image-for-{{ object.pk }}" data-title="{{ object.get_full_name() }}">
+            <img src="{{ object.foto.url }}" />
+        </a>
+      {% else %}
+        <img src="{{ "default_avatar.png"|static }}"/>
+      {% endif %}
     </div>
   {% endif %}
 

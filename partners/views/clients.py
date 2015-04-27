@@ -8,9 +8,9 @@ from django.contrib.contenttypes.models import ContentType
 
 from base.default_views import EditModelView, ModalMixin
 from base.display_generator import BasicPage, ItemDisplayMixin
-from censo.models import Cliente
+from censo.models import Cliente, ActivosMercado
 from partners.view_utils import PartnerListView, PartnerMapView, PartnerDetailView
-from censo.forms import ClientSearchForm, CreateClientForm, UpdateClientForm, ClientsMapFilterForm
+from censo.forms import ClientSearchForm, CreateClientForm, UpdateClientForm, ClientsMapFilterForm, MarketAssetsForm
 from partners.partner_form_helper import DeletePartner
 
 
@@ -26,6 +26,7 @@ class ClientList(PartnerListView):
         'direccion',
         'convencional',
         'func|location',
+
     ]
     button_menu = [
         {'name': _('Agregar Cliente'), 'rurl': 'client-add'},
@@ -110,15 +111,10 @@ class ClientDetails(PartnerDetailView):
         'func|identificacion',
         'email',
         'celular',
-        'direccion',
-        'convencional',
-        'func|location',
-        'cumple',
-        'especial',
-        'razon_social',
-        'estatal',
-        'nombre_comercial',
         'website',
+        'convencional',
+        'cumple',
+        'administrador',
     ]
     extra_content = 'partners/client/extra_details.jinja'
     button_menu = [
@@ -163,17 +159,61 @@ class ClientDetails(PartnerDetailView):
 
     def map_url(self):
         url = reverse('client-map')
-        return url + '#19/%s/%s' % (self.object.coordenadas.y, self.object.coordenadas.x)
+        if self.object.coordenadas:
+            url += '#19/%s/%s' % (self.object.coordenadas.y, self.object.coordenadas.x)
+        return url
 
     def get_context_data(self, **kwargs):
         context = super(ClientDetails, self).get_context_data(**kwargs)
         con_type = ContentType.objects.get_for_model(Cliente)
         context['status_choices'] = dict(Cliente.ESTADOS)
+        object = self.get_object()
+        context['object'] = object
+
+        market_assets_qs = object.market_assets.all()
+        market_assets_qs = market_assets_qs.select_related('empresa',)
+        context['market_assets'] = market_assets_qs
+
         context['full_width'] = True
         return context
 
 
 client_details = ClientDetails.as_view()
+
+
+class MarketAssetsEdit(EditModelView, UpdateView):
+    template_name = 'partners/client/market_assets_form.jinja'
+    form_class = MarketAssetsForm
+    model = Cliente
+    active_page = 'client-list'
+    title = _('Add Market Asset')
+    perms = []
+
+    def get_queryset(self):
+        return self.model.objects.filter(estado=Cliente.ACTIVO)
+
+    def dispatch(self, request, *args, **kwargs):
+        self.ma_pk = kwargs.get('marketasset_pk')
+        self.client_pk = kwargs.get('pk')
+        return super(MarketAssetsEdit, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(MarketAssetsEdit, self).get_form_kwargs()
+        kwargs['contractor'] = self.object
+        kwargs['instance'] = get_object_or_404(ActivosMercado, pk=self.ma_pk)
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(MarketAssetsEdit, self).get_context_data(**kwargs)
+        context['ma_pk'] = self.ma_pk
+        context['client_pk'] = self.client_pk
+        return context
+
+    def get_success_url(self):
+        client_details_url = reverse('client-details', kwargs={'pk': self.client_pk})
+        return super(MarketAssetsEdit, self).get_success_url() or client_details_url
+
+client_single_market_asset = MarketAssetsEdit.as_view()
 
 
 class ClientCreate(EditModelView, CreateView):

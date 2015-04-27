@@ -75,9 +75,6 @@ class ClientesAdmin(admin.GeoModelAdmin, ImportExportModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-localizacion',),
             'fields': ['fecha_ingreso', 'fecha_retiro', 'codigo', 'estado']}),
-        ('Detalles de la Ruta', {
-            'classes': ('suit-tab', 'suit-tab-localizacion',),
-            'fields': ['frecuencia', 'secuencia']}),
         ('Ubicacion del Local', {
             'classes': ('suit-tab', 'suit-tab-localizacion',),
             'fields': ['barrio', 'sector', 'coordenadas',]}),

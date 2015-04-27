@@ -1,14 +1,16 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms import ModelForm, Select
-from django.contrib.gis.forms import GeometryField
+from django.contrib.gis.forms import GeometryField, PointField
 from suit.widgets import NumberInput
 
 from base.form_helper import GenericFilterForm, TCForm
 from base.fields import CSIMultipleChoiceField
+from base import widgets
 from base import gis as gisform
+from base.gis.widgets import SelectRelatedWithGeo
 from base.models import Area, Provincia, MacroCat, Categoria, Marca, Presentacion
-from censo.models import Cliente, PresalesDistribution
+from censo.models import Cliente, PresalesDistribution, ActivosMercado
 from partners.partner_form_helper import CreatePartnerForm, UpdatePartnerForm
 
 
@@ -37,23 +39,35 @@ class InvForm(ModelForm):
 
 
 class ClientSaveMixin(object):
+    coordenadas = PointField(widget=gisform.BaseGMapWidget)
+
     #class Columns(object):
         #order = ['title', 'first_name', 'last_name', 'category', 'street', 'postcode', 'town', 'country',
          #        'date_of_birth', 'phone', 'mobile', 'gender', 'photo', 'timezone', 'user_email', 'agent']
+
+    class Meta:
+        exclude = ['estado',]
 
     def __init__(self, *args, **kwargs):
         super(ClientSaveMixin, self).__init__(*args, **kwargs)
 
 
 class CreateClientForm(ClientSaveMixin, CreatePartnerForm):
+    coordenadas = PointField(widget=gisform.BaseGMapWidget)
+    foto = forms.ImageField(widget=widgets.SDImageWidget)
+
     class Meta:
         model = Cliente
-        exclude = ['agency', 'user']
+        exclude = ['estado',]
 
 
 class UpdateClientForm(ClientSaveMixin, UpdatePartnerForm):
+    coordenadas = PointField(widget=gisform.BaseGMapWidget)
+    foto = forms.ImageField(widget=widgets.SDImageWidget)
+
     class Meta:
         model = Cliente
+        exclude = ['estado',]
 
     def __init__(self, **kwargs):
         super(UpdateClientForm, self).__init__(**kwargs)
@@ -97,6 +111,33 @@ class ClientsMapFilterForm(TCForm):
         self.fields['presentation'].queryset = Presentacion.objects.all()
 
 
+class MarketAssetsForm(forms.ModelForm):
+
+    def __init__(self, request, client, *args, **kwargs):
+        self.request = request
+        self.contractor = client
+        super(MarketAssetsForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        if self.instance.pk:
+            self.client.market_assets.remove(self.instance)
+        ma, _ = ActivosMercado.objects.get_or_create(empresa=self.instance.empresa,
+                                                      p=self.instance.p,
+                                                      m=self.instance.m,
+                                                      g=self.instance.g,
+                                                      congelador=self.instance.congelador,
+                                                      exhibidor=self.instance.exhibidor,
+                                                      estante=self.instance.estante,
+                                                      rotulo=self.instance.rotulo,
+                                                      mesas=self.instance.mesas,
+                                                      sillas=self.instance.sillas)
+        self.client.market_assets.add(ma)
+
+    class Meta:
+        model = ActivosMercado
+        fields = ['empresa', 'p', 'm', 'g', 'congelador', 'exhibidor', 'estante', 'rotulo', 'mesas', 'sillas']
+
+
 class GenerateDistributionForm(TCForm):
     """
     Form used to give params to generate distribution view
@@ -121,4 +162,19 @@ class UpdateDistributionForm(UpdatePartnerForm):
 
     def __init__(self, **kwargs):
         super(UpdateDistributionForm, self).__init__(**kwargs)
+        self.clients_qs = self.instance.clients.all()
+        geo_select_widget_objects = []
+        for client in self.clients_qs:
+            if client.coordenadas:
+                element = {
+                    'id': client.id,
+                    'lat': client.coordenadas.x,
+                    'lon': client.coordenadas.y,
+                    'title': client.get_full_name()
+                }
+                geo_select_widget_objects.append(element)
 
+        self.fields['initial_client'].widget = SelectRelatedWithGeo(objects=geo_select_widget_objects)
+        self.fields['final_client'].widget = SelectRelatedWithGeo(objects=geo_select_widget_objects)
+        self.fields['initial_client'].qs = self.clients_qs
+        self.fields['final_client'].qs = self.clients_qs

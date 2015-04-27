@@ -9,7 +9,7 @@
 {% block content %}
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}{{ form.media|safe }}
-    {{ form|bootstrap_columns() }}
+    {{ form|bootstrap_columns(widths={'coordenadas': 12}) }}
     <input type="submit" value="{{ _('Guardar') }}" class="btn btn-success" />
   </form>
 {% endblock %}

@@ -12,6 +12,13 @@ from base.date_utils import humanize_time
 from mptt.models import MPTTModel, TreeForeignKey
 
 
+def date_default():
+    """
+    :return: timezone timedate
+    """
+    return timezone.now()
+
+
 class EmploymentHistory(models.Model):
     """
     Employment History
@@ -20,8 +27,8 @@ class EmploymentHistory(models.Model):
     # Employent History Data
     company = models.CharField(max_length=255, verbose_name=_('Company Name'))
     position = models.CharField(max_length=255, verbose_name=_('Position'))
-    date_in = models.DateField(default=timezone.now(), verbose_name=_('Date hired'))
-    date_out = models.DateField(default=timezone.now(), verbose_name=_('Date leaving'))
+    date_in = models.DateField(default=date_default, verbose_name=_('Date hired'))
+    date_out = models.DateField(default=date_default, verbose_name=_('Date leaving'))
     out_reason = models.CharField(max_length=255, verbose_name=_('Reason of leaving'))
 
     def __unicode__(self):
@@ -123,7 +130,7 @@ class FamilyDependant(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Name'))
     last_name = models.CharField(max_length=255, verbose_name=_('Last name'))
     relationship = models.ForeignKey(FamilyRelation, verbose_name=_('Relation ship'))
-    birthday = models.DateField(default=timezone.now(), verbose_name=_('Birthday'))
+    birthday = models.DateField(default=date_default, verbose_name=_('Birthday'))
     phone = modelfields.PhoneNumberField(verbose_name=_('Phone Number'),
                                          help_text='If phone from different country \
                                          than company, please provide international format +prefix-number')
@@ -148,6 +155,21 @@ class FamilyDependant(models.Model):
         verbose_name = _('Family dependant')
         verbose_name_plural = _('Family dependants')
         ordering = ['name']
+
+
+class EducationArea(models.Model):
+    """
+    Model to record the education areas
+    """
+
+    name = models.CharField(max_length=255, verbose_name=_('Area name'))
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s' % self.name
 
 
 class Education(models.Model):
@@ -179,8 +201,8 @@ class Education(models.Model):
 
     institution = models.CharField(max_length=255, verbose_name=_('Institution Name'))
     country = fields.CountryField(verbose_name=_('Institution Name'), blank_label=_('(select country)'))
-    start_date = models.DateField(default=timezone.now(), verbose_name=_('Start date'))
-    graduation_date = models.DateField(default=timezone.now(), verbose_name=_('Graduation date'))
+    start_date = models.DateField(default=date_default, verbose_name=_('Start date'))
+    graduation_date = models.DateField(default=date_default, verbose_name=_('Graduation date'))
     instruction_level = models.IntegerField(default=0, choices=INSTRUCTION_TYPE_LEVEL, verbose_name=_('Level'))
     degree = models.CharField(max_length=255, verbose_name=_('Degree'))
     is_finished = models.BooleanField(default=False, verbose_name=_('Finished?'))
@@ -208,42 +230,6 @@ class Education(models.Model):
         ordering = ['institution']
 
 
-class EducationArea(models.Model):
-    """
-    Model to record the education areas
-    """
-
-    name = models.CharField(max_length=255, verbose_name=_('Area name'))
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s' % self.name
-
-
-class EnterpriseDepartment(MPTTModel):
-    """
-    Model to record the Work Department
-    Need to be a tree model
-    """
-
-    name = models.CharField(max_length=255, unique=True, verbose_name=_('Department name'))
-    manager = models.ForeignKey(Employee, verbose_name=_('Department Manager'))
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='sub_department')
-
-    def __unicode__(self):
-        """
-        Object representation
-        :return: Unicode String
-        """
-        return '%s %s %s' % (self.name, ugettext(' managed by '), self.manager.name)
-
-    class MPTTMeta:
-        order_insertion_by = ['name']
-
-
 class Employee(base_models.Partner):
     """
     Model to record Employees
@@ -257,7 +243,7 @@ class Employee(base_models.Partner):
     ID_TYPE = (
         (RUC, _('R.U.C.')),
         (PASSPORT, _('Passport')),
-        (ID, _('Id')),
+        (ID, _('National ID Card')),
     )
 
     BLOOD_O = 0
@@ -338,9 +324,10 @@ class Employee(base_models.Partner):
 
     name = models.CharField(max_length=255, verbose_name=_('Name'))
     last_name = models.CharField(max_length=255, verbose_name=_('Last Name'))
-    id_type = models.IntegerField(choices=ID_TYPE, default=2, verbose_name=_('Id type'))
+    id_type = models.IntegerField(choices=ID_TYPE, default=ID, verbose_name=_('Identification type'))
     identification = models.CharField(max_length=20, verbose_name=_('ID number'))
-    photo = models.ImageField(verbose_name=_('Image'))
+    photo = models.ImageField(upload_to='photos/employee/', verbose_name=_('Image'),
+                              blank=True, null=True)
     address = models.CharField(max_length=255, verbose_name=_('Address'))
     province = models.ForeignKey(base_models.Provincia, verbose_name=_('Province'))
     parish = models.ForeignKey(base_models.Parroquia, verbose_name=_('Parish'))
@@ -348,31 +335,33 @@ class Employee(base_models.Partner):
     county = models.CharField(max_length=255, verbose_name=_('County'))
     city = models.CharField(max_length=255, verbose_name=_('City'))
     postcode = models.CharField(max_length=10, verbose_name=_('Postal Code'))
-    nationality = fields.CountryField(verbose_name=_('Nationality'), blank_label=_('(select country)'))
-    blood_type = models.IntegerField(choices=BLOOD_TYPE, default=0, verbose_name=_('Blood type'))
-    handicapped = models.BooleanField(default=0, verbose_name=_('Is handicapped?'))
-    handicap_percent = base_fields.PercentageField(default=0, verbose_name=_('Handicap percent'))
-    handicap_type = models.CharField(max_length=255, verbose_name=_('Handicap type'))
-    handicap_card_number = models.CharField(max_length=255, verbose_name=_('Handicap card number'))
+    nationality = fields.CountryField(verbose_name=_('Nationality'), default='EC')
+    blood_type = models.IntegerField(choices=BLOOD_TYPE, default=BLOOD_O, verbose_name=_('Blood type'))
+    handicapped = models.BooleanField(default=False, verbose_name=_('Is handicapped?'))
+    handicap_percent = base_fields.PercentageField(default=0, verbose_name=_('Handicap percent'), blank=True)
+    handicap_type = models.CharField(max_length=255, verbose_name=_('Handicap type'), blank=True)
+    handicap_card_number = models.CharField(max_length=255, verbose_name=_('Handicap card number'), blank=True)
     phone = modelfields.PhoneNumberField(verbose_name=_('Phone number'), help_text='If phone from different country \
                                          than company please, provide international format +prefix-number')
     cellphone = modelfields.PhoneNumberField(verbose_name=_('Cellphone number'), help_text='If cellphone from different \
                                          country than company please, provide international format +prefix-number')
     email = models.EmailField(max_length=255, verbose_name=_('Email'))
-    skype = models.CharField(max_length=255, verbose_name=_('Skype user'))
-    department = models.ForeignKey(EnterpriseDepartment, related_name='employees', verbose_name=_('Department'))
-    marital_status = models.IntegerField(choices=MARITAL_STATUS, default=0, verbose_name=_('Marital status'))
+    skype = models.CharField(max_length=255, verbose_name=_('Skype user'), blank=True)
+    department = models.ForeignKey('EnterpriseDepartment', related_name='employees', verbose_name=_('Department'))
+    marital_status = models.IntegerField(choices=MARITAL_STATUS, default=SINGLE, verbose_name=_('Marital status'))
     sex = models.IntegerField(choices=GENDER_TYPE, default=-1, verbose_name=_('Gender'))
-    birthday = models.DateField(default=timezone.now(), verbose_name=_('Birthday'))
+    birthday = models.DateField(default=date_default, verbose_name=_('Birthday'))
     emergency_person = models.CharField(max_length=255, verbose_name=_('Name to call at emergency'))
     emergency_phone = modelfields.PhoneNumberField(verbose_name=_('Phone number to call at emergency'))
 
-    maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_('Maintain reserve funds?'))
-    status = models.IntegerField(choices=STATUS_TYPE, default=0, verbose_name=_('Status'))
-    ethnic_race = models.IntegerField(choices=ETHNIC_RACE_TYPE, default=0, verbose_name=_('Ethnic race'))
-    family_dependants = models.ForeignKey(FamilyDependant, related_name='family_sdependants', verbose_name=_('Family dependants'))
+    maintain_reserve_funds = models.BooleanField(default=False, verbose_name=_('Maintain reserve funds?'), blank=True)
+    status = models.IntegerField(choices=STATUS_TYPE, default=STATUS_ACTIVE, verbose_name=_('Status'))
+    ethnic_race = models.IntegerField(choices=ETHNIC_RACE_TYPE, default=ETHNIC_RACE_WHITE, verbose_name=_('Ethnic race'))
+    family_dependants = models.ForeignKey(FamilyDependant, related_name='family_dependants',
+                                          verbose_name=_('Family dependants'))
     language_skill = models.ForeignKey(Language, related_name='languages', verbose_name=_('Language skills'))
-    employment_history = models.ForeignKey(EmploymentHistory, related_name='history', verbose_name=_('Employment history'))
+    employment_history = models.ForeignKey(EmploymentHistory, related_name='history',
+                                           verbose_name=_('Employment history'))
     education = models.ForeignKey(Education, related_name='education', verbose_name=_('Education'))
 
     def __unicode__(self):
@@ -386,3 +375,32 @@ class Employee(base_models.Partner):
         verbose_name = _('Employee')
         verbose_name_plural = _('Employees')
         ordering = ['last_name']
+
+    def employee_photo(self):
+        if self.photo:
+            return '<img src="/media/%s" height="200" with="200" style="height: 200px !important;"/>' % self.photo
+        return '<img src="http://placehold.it/200x200&text=%s" height="200" with="200"/>' % _('No photo available')
+
+    employee_photo.allow_tags = True
+    employee_photo.short_description = _('Employee\'s photo')
+
+
+class EnterpriseDepartment(MPTTModel):
+    """
+    Model to record the Work Department
+    Need to be a tree model
+    """
+
+    name = models.CharField(max_length=255, unique=True, verbose_name=_('Department name'))
+    manager = models.ForeignKey(Employee, verbose_name=_('Department Manager'))
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='sub_department')
+
+    def __unicode__(self):
+        """
+        Object representation
+        :return: Unicode String
+        """
+        return '%s %s %s' % (self.name, ugettext(' managed by '), self.manager.name)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']

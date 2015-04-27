@@ -1,0 +1,41 @@
+{% extends "page.jinja" %}
+
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ "libs/css/lightbox.css"|static }}{{ '?' if debug }}">
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+  <script src="{{ "libs/js/lightbox.min.js"|static }}{{ '?' if debug }}"></script>
+{% endblock %}
+
+{% import 'macro/display_functions.jinja' as display with context %}
+{% block content %}
+  {% if object.get_labels() %}
+    <div class="details-label">
+      {% for label in object.get_labels() %}
+        <span class="label label-default" style="background: {{ label.colour }};">{{ label }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {{ display.showobject_with_image(object, False) }}
+  {% if extra_content %}
+    {% include extra_content %}
+  {% endif %}
+  <script>
+    function isDark(color) {
+      var match = /rgb\((\d+).*?(\d+).*?(\d+)\)/.exec(color);
+      return parseFloat(match[1]) + parseFloat(match[2]) + parseFloat(match[3]) < 3 * 256 / 2;
+    }
+    $(document).ready(function () {
+      $('.label').each(function () {
+        if (isDark($(this).css('background-color'))) {
+          $(this).css('color', 'white')
+        } else {
+          $(this).css('color', 'black')
+        }
+      });
+    });
+  </script>
+{% endblock %}
