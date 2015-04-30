@@ -1,5 +1,6 @@
+__author__ = 'malbalat85'
+
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import ugettext, ugettext_lazy as _
 from decimal import Decimal
 from base import fields
@@ -11,9 +12,13 @@ class Brands(models.Model):
     """
 
     name = models.CharField(_('Name'), max_length=255)
+    model = models.ForeignKey('Model', verbose_name=_('Model'))
+    vehicle = models.ForeignKey('Vehicles', verbose_name=_('Vehicle'), related_name='brand')
 
     class Meta:
-        ordering = {'name', }
+        ordering = ['name', ]
+        verbose_name = _('Vehicle Brand')
+        verbose_name_plural = _('Vehicle Brands')
 
     def __unicode__(self):
         """
@@ -29,17 +34,19 @@ class Model(models.Model):
     """
 
     name = models.CharField(_('Name'), max_length=255)
-    brand = models.ForeignKey('Brands', verbose_name=_('Brand'))
+    vehicle = models.ForeignKey('Vehicles', verbose_name=_('Vehicle'), related_name='model')
 
     class Meta:
-        ordering = {'name', }
+        ordering = ['name', ]
+        verbose_name = _('Vehicle Model')
+        verbose_name_plural = _('Vehicle Models')
 
     def __unicode__(self):
         """
         Gets the unicode object representation
         :return: String
         """
-        return _('Brand: %s, Model: %s') % (self.brand.name if self.brand.name else 'None', self.name)
+        return _('Brand: %s') % self.name
 
 
 class VehicleType(models.Model):
@@ -48,9 +55,12 @@ class VehicleType(models.Model):
     """
 
     name = models.CharField(_('Name'), max_length=255)
+    vehicle = models.ForeignKey('Vehicles', verbose_name=_('Vehicle'), related_name='type')
 
     class Meta:
-        ordering = {'name', }
+        ordering = ['name', ]
+        verbose_name = _('Vehicle Type')
+        verbose_name_plural = _('Vehicle Types')
 
     def __unicode__(self):
         """
@@ -101,8 +111,8 @@ class Vehicles(models.Model):
 
     plate_number = models.CharField(_('Plate number'), max_length=20)
     chassis_number = models.CharField(_('Chassis number'), max_length=100)
-    brand = models.ForeignKey('Brands', verbose_name='Brand')
-    model = models.ForeignKey('Model', verbose_name='Model')
+    #brand = models.ForeignKey('Brands', verbose_name='Brand')
+    #model = models.ForeignKey('Model', verbose_name='Model')
 
     # Created year
     year = models.PositiveIntegerField(_('Model year'))
@@ -126,7 +136,7 @@ class Vehicles(models.Model):
     vehicle_usage = models.SmallIntegerField(_('Usage'), choices=USAGE_TYPE,
                                              default=USAGE_TYPE_CHARGE)
 
-    vehicle_type = models.ForeignKey('VehicleType', verbose_name=_('Vehicle type'))
+    #vehicle_type = models.ForeignKey('VehicleType', verbose_name=_('Vehicle type'))
 
     # Cars have at lease two doors, except hoist right?
     doors = models.PositiveSmallIntegerField(_('Doors count'), default=2)
@@ -135,12 +145,14 @@ class Vehicles(models.Model):
     people_capacity = models.PositiveSmallIntegerField(_('Number of passengers'), default=1)
 
     class Meta:
-        ordering = {'plate_number'}
+        ordering = ['plate_number', ]
+        verbose_name = _('Vehicle')
+        verbose_name_plural = _('Vehicles')
 
     def __unicode__(self):
         """
         Gets the unicode object representation
         :return: String
         """
-        return _('Car: %s, Model: ,Plate number:') % (self.brand.name, self.model.name, str(self.plate_number))
+        return _('Plate number:') % str(self.plate_number)
 
