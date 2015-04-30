@@ -27,43 +27,24 @@ class VehicleTypeResource(resources.ModelResource):
 
 class ModelAdmin(ImportExportModelAdmin):
     resource_class = ModelResource
-    list_display = ['name', ]
-    fieldsets = [
-        (_('Vehicle'), {
-            'classes': ('suit-tab', 'suit-tab-category',),
-            'fields': ['vehicle', ]}),
-    ]
+    list_display = ['name', 'brand',]
 
 
 class VehicleTypeAdmin(ImportExportModelAdmin):
     resource_class = VehicleTypeResource
     list_display = ['name', ]
-    fieldsets = [
-        (_('Vehicle'), {
-            'classes': ('suit-tab', 'suit-tab-category',),
-            'fields': ['vehicle', ]}),
-    ]
 
 
 class BrandsAdmin(ImportExportModelAdmin):
     resource_class = BrandsResource
-    list_display = ['name', ]
-    fieldsets = [
-        (_('Model'), {
-            'classes': ('suit-tab', 'suit-tab-category',),
-            'fields': ['model']}),
-        (_('Vehicle'), {
-            'classes': ('suit-tab', 'suit-tab-category',),
-            'fields': ['vehicle', ]}),
-
-    ]
+    list_display = ['name',]
 
 
 class VehiclesAdmin(ImportExportModelAdmin):
-    search_fields = ['name', 'plate_number', 'year']
-    list_filter = ['name', 'plate_number', ]
+    search_fields = ['plate_number', 'year']
+    list_filter = ['plate_number', ]
     resource_class = VehiclesResource
-    list_display = ['name', 'plate_number', 'year']
+    list_display = ['driver_name', 'plate_number', 'year']
 
 # Register your models here.
 admin.site.register(models.Vehicles, VehiclesAdmin)
