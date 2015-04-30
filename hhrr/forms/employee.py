@@ -2,13 +2,13 @@ __author__ = 'yo'
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
-from django.forms import ModelForm, Select
-from suit.widgets import NumberInput
+from django.contrib.gis.forms import PointField
 
+from base import gis as gisform
+from base import form_helper
 from hhrr.models import Employee, EmploymentHistory, FamilyRelation, FamilyDependant, \
     Language, EducationArea, Education, EnterpriseDepartment
 from partners.partner_form_helper import UpdatePartnerForm, CreatePartnerForm, DeletePartner
-from base import form_helper
 
 
 class EmployeeSearchForm(form_helper.GenericFilterForm):
@@ -36,14 +36,19 @@ class EmployeeSearchForm(form_helper.GenericFilterForm):
 
 
 class CreateEmployeeForm(CreatePartnerForm):
+    coordinates = PointField(widget=gisform.BaseGMapWidget)
+
     class Meta:
         model = Employee
-        exclude = []
+        exclude = ['status']
 
 
 class UpdateEmployeeForm(UpdatePartnerForm):
+    coordinates = PointField(widget=gisform.BaseGMapWidget)
+
     class Meta:
         model = Employee
+        exclude = ['status']
 
     def __init__(self, **kwargs):
         super(UpdateEmployeeForm, self).__init__(**kwargs)

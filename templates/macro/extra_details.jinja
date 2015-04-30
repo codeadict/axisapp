@@ -3,9 +3,9 @@
   <div class="panel-heading">
     <h3 class="panel-title">{{ title }}</h3>
     {% if addlink or addurl %}
-        <a {% if modal %}data-toggle="crud-modal"{% endif %} href="{{ addurl if addurl else url(addlink, pk=pk_page) if pk_page else url(addlink) }}"
+        <a class="btn btn-sm btn-primary" {% if modal %}data-toggle="crud-modal"{% endif %} href="{{ addurl if addurl else url(addlink, pk=pk_page) if pk_page else url(addlink) }}"
          data-placement="right" title="{{ _('Add ') }}{{ title }}">
-        <span class="subtle-link glyphicon glyphicon-plus"></span>
+        <span class="glyphicon glyphicon-plus"></span> {{ _('Add ') }}{{ title }}
       </a>
     {% endif %}
   </div>

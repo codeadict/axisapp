@@ -35,11 +35,3 @@ def descargar_apk(request):
 def map_view(request):
     clientes = Cliente.objects.all()
     return render_to_response('map.html', {'clientes': clientes}, context_instance=RequestContext(request))
-
-def crear_ruta(request):
-    """
-    Vista para crear rutas
-    :param request:
-    :return:
-    """
-    pass

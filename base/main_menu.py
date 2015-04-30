@@ -25,6 +25,7 @@ MENUS = {
         ]},
         {'name': _('HHRR'), 'submenu': [
             {'name': _('Employees'), 'rurl': 'employee-list', 'perms': []},
+            {'name': _('Employee Map'), 'rurl': 'employee-map', 'perms': []},
         ]},
         {'name': _('Configuracion'), 'submenu': [
             {'name': _('Importar Datos'), 'rurl': 'import', 'perms': []},

@@ -100,6 +100,7 @@ class BasicPage(object):
         context['title'] = self.title or ''
         context['button_menu'] = self.get_process_buttons()
         context['obj_url'] = self._object_url
+        context['convert_to_string'] = self.convert_to_string
         self.request.active_page = self.active_page
         return context
 

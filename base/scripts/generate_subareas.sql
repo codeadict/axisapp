@@ -1,4 +1,4 @@
-/* Function to create the sub areas */
+﻿/* Function to create the sub areas */
 CREATE OR REPLACE FUNCTION generate_subareas(costumers_number INT, area_id INT) RETURNS void
 AS $$
 DECLARE
@@ -51,26 +51,27 @@ BEGIN
 
     /* Loop to create the presales_dist_table */
     FOR rec IN
-	SELECT kmeans AS kmeans_group, count(*), ST_ConvexHull(ST_Collect(geom)) AS geom
+	SELECT kmeans AS kmeans_group, count(*) AS count, ST_ConvexHull(ST_Collect(geom))::geometry(POLYGON,4326) AS geom
 	FROM kmeans_table
 	GROUP BY kmeans_group
 	ORDER BY kmeans_group
     LOOP
-	INSERT INTO censo_presalesdistribution (name, polygon) VALUES (area.nombre || rec.kmeans_group, rec.geom);
-	SELECT CURRVAL(pg_get_serial_sequence('censo_presalesdistribution', 'id')) INTO temp_presales_dist;
+	IF rec.count >= 3 THEN
+		INSERT INTO censo_presalesdistribution (name, polygon) VALUES (area.nombre || rec.kmeans_group, rec.geom::geometry);
+		SELECT CURRVAL(pg_get_serial_sequence('censo_presalesdistribution', 'id')) INTO temp_presales_dist;
 
-	FOR rec1 IN
-		SELECT *
-		FROM kmeans_table
-		WHERE kmeans_table.kmeans = rec.kmeans_group
-	LOOP
-		RAISE NOTICE 'kmeans222 %s', rec1.kmeans || '///' || rec1.client_id || ']]';
-		RAISE NOTICE 'presales_id222 %s', temp_presales_dist;
+		FOR rec1 IN
+			SELECT *
+			FROM kmeans_table
+			WHERE kmeans_table.kmeans = rec.kmeans_group
+		LOOP
+			RAISE NOTICE 'kmeans222 %s', rec1.kmeans || '///' || rec1.client_id || ']]';
+			RAISE NOTICE 'presales_id222 %s', temp_presales_dist;
 
-		INSERT INTO censo_presalesdistribution_clients (presalesdistribution_id, cliente_id)
-			VALUES (temp_presales_dist, rec1.client_id);
-	END LOOP;
+			INSERT INTO censo_presalesdistribution_clients (presalesdistribution_id, cliente_id)
+				VALUES (temp_presales_dist, rec1.client_id);
+		END LOOP;
+	END IF;
     END LOOP;
-
 END
 $$ language 'plpgsql';
