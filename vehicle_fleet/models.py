@@ -68,7 +68,7 @@ class VehicleType(models.Model):
 
 class Vehicles(models.Model):
     """
-    Create a vehicle
+    Vehicles Table
     """
 
     TRANSMISSION_TYPE_AUTO = 0
