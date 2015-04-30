@@ -12,6 +12,7 @@ MENUS = {
             {'name': _('Distribucion'), 'submenu': [
                 {'name': _('Asignaciones Preventa'), 'rurl': 'presales-client-distribution', 'perms': []},
                 {'name': _('Seguimiento Censadores/Prevendedores'), 'rurl': 'index', 'perms': []},
+                {'name': _('Manage vehicles'), 'rurl': 'vehicles-list', 'perms': []},
             ]},
             {'name': _('Inventarios'), 'submenu': [
                     {'name': _('Productos'), 'rurl': 'index', 'perms': []},

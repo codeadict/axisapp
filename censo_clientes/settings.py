@@ -64,7 +64,8 @@ INSTALLED_APPS = (
     #For python-mptt
     'mptt',
     'hhrr',
-    'products'
+    'products',
+    'vehicle_fleet'
 )
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']

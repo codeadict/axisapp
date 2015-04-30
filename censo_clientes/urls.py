@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^', include('censo.urls')),
     url(r'^', include('hhrr.urls')),
     url(r'^', include('products.urls')),
+    url(r'^', include('vehicle_fleet.urls')),
     #url(r'^censo/mapa/$', 'censo.views.map_view', name='mapa'),
     url(r'^poligonos.geojson$', GeoJSONLayerView.as_view(model=Area, geometry_field = 'poligono', properties=(
             ['nombre', 'id']
