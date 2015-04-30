@@ -12,8 +12,6 @@ class Brands(models.Model):
     """
 
     name = models.CharField(_('Name'), max_length=255)
-    model = models.ForeignKey('Model', verbose_name=_('Model'))
-    vehicle = models.ForeignKey('Vehicles', verbose_name=_('Vehicle'), related_name='brand')
 
     class Meta:
         ordering = ['name', ]
@@ -25,16 +23,15 @@ class Brands(models.Model):
         Gets the unicode object representation
         :return: String
         """
-        return _('Name: %s') % self.name
+        return self.name
 
 
 class Model(models.Model):
     """
     Create the vehicle model, example: SW4324
     """
-
-    name = models.CharField(_('Name'), max_length=255)
-    vehicle = models.ForeignKey('Vehicles', verbose_name=_('Vehicle'), related_name='model')
+    brand = models.ForeignKey(Brands, verbose_name=_('Brand'), related_name='models')
+    name = models.CharField(_('Model Name'), max_length=255)
 
     class Meta:
         ordering = ['name', ]
@@ -46,7 +43,7 @@ class Model(models.Model):
         Gets the unicode object representation
         :return: String
         """
-        return _('Brand: %s') % self.name
+        return self.name
 
 
 class VehicleType(models.Model):
@@ -55,7 +52,6 @@ class VehicleType(models.Model):
     """
 
     name = models.CharField(_('Name'), max_length=255)
-    vehicle = models.ForeignKey('Vehicles', verbose_name=_('Vehicle'), related_name='type')
 
     class Meta:
         ordering = ['name', ]
@@ -67,12 +63,12 @@ class VehicleType(models.Model):
         Gets the unicode object representation
         :return: String
         """
-        return _('Name: %s') % self.name
+        return self.name
 
 
 class Vehicles(models.Model):
     """
-    Create a vehicle
+    Vehicles Table
     """
 
     TRANSMISSION_TYPE_AUTO = 0
@@ -104,18 +100,18 @@ class Vehicles(models.Model):
     )
 
     USAGE_TYPE_CHARGE = 0
+    USAGE_TYPE_TRANSPORT = 1
 
     USAGE_TYPE = (
         (USAGE_TYPE_CHARGE, _('Charge')),
+        (USAGE_TYPE_TRANSPORT, _('Transportation'))
     )
 
     plate_number = models.CharField(_('Plate number'), max_length=20)
     chassis_number = models.CharField(_('Chassis number'), max_length=100)
-    #brand = models.ForeignKey('Brands', verbose_name='Brand')
-    #model = models.ForeignKey('Model', verbose_name='Model')
-
-    # Created year
-    year = models.PositiveIntegerField(_('Model year'))
+    brand = models.ForeignKey(Brands, verbose_name='Brand')
+    model = models.ForeignKey(Model, verbose_name='Model')
+    year = models.PositiveIntegerField(_('Model year'), null=True, blank=True)
 
     driver_name = models.CharField(_('Driver Name'), max_length=255)
     color = fields.ColorField(_('Color'))
@@ -125,7 +121,6 @@ class Vehicles(models.Model):
     fuel = models.SmallIntegerField(_('Fuel type'), choices=FUEL_TYPE,
                                     default=FUEL_TYPE_DIESEL)
 
-    # TODO: For electrical types only?
     power = models.PositiveIntegerField(_('Power'), help_text=_('Battery power in Kw'))
 
     co2 = models.FloatField(_('CO2 emission of the vehicle'), default=Decimal('0.00'))
@@ -136,12 +131,11 @@ class Vehicles(models.Model):
     vehicle_usage = models.SmallIntegerField(_('Usage'), choices=USAGE_TYPE,
                                              default=USAGE_TYPE_CHARGE)
 
-    #vehicle_type = models.ForeignKey('VehicleType', verbose_name=_('Vehicle type'))
+    vehicle_type = models.ForeignKey(VehicleType, verbose_name=_('Vehicle type'))
 
     # Cars have at lease two doors, except hoist right?
     doors = models.PositiveSmallIntegerField(_('Doors count'), default=2)
 
-    # At lease the driver
     people_capacity = models.PositiveSmallIntegerField(_('Number of passengers'), default=1)
 
     class Meta:

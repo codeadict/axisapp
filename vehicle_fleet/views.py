@@ -1,15 +1,12 @@
 __author__ = 'malbalat85'
-
-from django.shortcuts import render
-from base.default_views import CustomListView, CustomDetailView
-from view_utils import ListFilterMixin
-from vehicle_fleet import forms
-from vehicle_fleet import models
 from django.utils.translation import ugettext_lazy as _
-from base.default_views import EditModelView, DeleteObject
 from django.views.generic import CreateView, UpdateView
 from django.core.urlresolvers import reverse
-from django.contrib.contenttypes.models import ContentType
+
+from base.default_views import CustomListView, CustomDetailView, EditModelView, DeleteObject
+from vehicle_fleet import models
+from vehicle_fleet import forms
+from vehicle_fleet.view_utils import ListFilterMixin
 
 
 class VehicleList(CustomListView):
@@ -23,20 +20,26 @@ class VehicleList(CustomListView):
     detail_view = 'vehicles-details'
     display_items = [
         'plate_number',
-        'chassis_number',
-        'year',
+        'driver_name',
+        'brand',
+        'model',
         'color',
+        'fuel',
         'ownership',
+        'people_capacity',
     ]
     button_menu = [
         {'name': _('Add Vehicle'), 'rurl': 'vehicles-add'},
         {'name': _('Filter'), 'rurl': 'vehicles-filter'}
     ]
-    #search_form = ProductSearchForm
-    #related_fields = ['image', 'category', 'ice_tax', 'attributes']
 
     def get_queryset(self):
         return super(VehicleList, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(VehicleList, self).get_context_data(**kwargs)
+        context['full_width'] = True
+        return context
 
 vehicles_list = VehicleList.as_view()
 
@@ -48,12 +51,10 @@ class VehicleFilter(ListFilterMixin, CustomListView):
     perms = []
     display_items = []
     search_form = forms.VehicleSearchForm
-    #related_fields = ['image', 'category', 'ice_tax', 'attributes']
 
     def get_context_data(self, **kwargs):
         context = super(VehicleFilter, self).get_context_data(**kwargs)
         context['rurl'] = 'vehicles-list'
-        #context['search_form'] = forms.VehicleSearchForm
         return context
 
 vehicles_filter = VehicleFilter.as_view()
@@ -85,14 +86,15 @@ class VehicleDetails(CustomDetailView):
     ]
 
     def edit_url(self):
-        return reverse('vehicle-edit', kwargs={'pk': self.object.pk})
+        return reverse('vehicles-edit', kwargs={'pk': self.object.pk})
 
     def delete_url(self):
-        return reverse('vehicle-delete', kwargs={'pk': self.object.pk})
+        return reverse('vehicles-delete', kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super(VehicleDetails, self).get_context_data(**kwargs)
-        cont_type = ContentType.objects.get_for_model(models.Vehicles)
+        context['title'] = '%s %s (%s)' %(self.object.brand, self.object.model, self.object.plate_number)
+        context['full_width'] = True
         return context
 
 vehicles_details = VehicleDetails.as_view()
@@ -100,7 +102,7 @@ vehicles_details = VehicleDetails.as_view()
 
 class VehicleCreate(EditModelView, CreateView):
     template_name = 'vehicle_fleet/form.jinja'
-    form_class = forms.CreateVehicleForm
+    form_class = forms.EditVehicleForm
     active_page = 'vehicles-list'
     title = _('Add Vehicle')
     perms = []
@@ -114,10 +116,10 @@ vehicles_create = VehicleCreate.as_view()
 class VehicleUpdate(EditModelView, UpdateView):
     template_name = 'vehicle_fleet/form.jinja'
     perms = []
-    form_class = forms.UpdateVehicleForm
+    form_class = forms.EditVehicleForm
     model = models.Vehicles
     active_page = 'vehicles-list'
-    title = _('Edit Product')
+    title = _('Edit Vehicle')
 
     def get_success_url(self):
         return reverse('vehicles-details', kwargs={'pk': self.object.pk})

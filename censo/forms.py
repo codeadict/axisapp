@@ -76,16 +76,22 @@ class UpdateClientForm(ClientSaveMixin, UpdatePartnerForm):
 class ProfileClientForm(ClientSaveMixin, UpdatePartnerForm):
     class Meta:
         model = Cliente
-        #exclude = ['agency', 'user', 'qualifications', 'skills', 'calendar_colour', 'status']
 
 
 class ClientSearchForm(GenericFilterForm):
-    recipient = forms.CharField(label=_(u'Service Recipient name'))
     created_after = forms.DateTimeField(label=_(u'Created After'))
     created_before = forms.DateTimeField(label=_(u'Created Before'))
+    first_name = forms.CharField(label=_(u'Names'))
+    last_name = forms.CharField(label=_(u'Last Names'))
+    email = forms.EmailField(label=_(u'Email'))
+
+    generic_fields_mapping = {
+        'first_name': 'nombres__icontains',
+        'last_name': 'apellidos__icontains',
+        'email': 'email',
+    }
 
     fields_mapping = {
-        'recipient': 'paid_recipients__user__first_name__icontains',
         'created_after': 'user__date_created__gte',
         'created_before': 'user__date_created__lte'
     }

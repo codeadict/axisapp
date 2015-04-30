@@ -223,16 +223,10 @@ class TCModelForm(_TCFormMix, forms.ModelForm):
 
 class GenericFilterForm(TCForm):
     required_css_class = 'required'
-    search = forms.CharField(label=_(u'Buscar'))
-
-    first_name = forms.CharField(label=_(u'Nombres'))
-    last_name = forms.CharField(label=_(u'Apellidos'))
-    email = forms.EmailField(label=_(u'Email'))
+    search = forms.CharField(label=_('Search'))
 
     generic_fields_mapping = {
-        'first_name': 'nombres__icontains',
-        'last_name': 'apellidos__icontains',
-        'email': 'email',
+
     }
     fields_mapping = {}
 
