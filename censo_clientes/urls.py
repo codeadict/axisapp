@@ -13,16 +13,17 @@ from censo.models import Cliente, PresalesDistribution
 
 
 urlpatterns = patterns('',
-                       # Examples:
-                       url(r'^admin/', include(admin.site.urls)),
-                       url(r'^$', 'base.default_views.not_built', name='index'),
-                       url(r'^', include('base.urls')),
-                       url(r'^chaining/', include('smart_selects.urls')),
-                       url(r'^api/', include('api.urls')),
+    # Examples:
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'base.default_views.not_built', name='index'),
+    url(r'^', include('base.urls')),
+    url(r'^chaining/', include('smart_selects.urls')),
+    url(r'^api/', include('api.urls')),
 
     url(r'^', include('sdauth.urls', namespace='auth')),
     url(r'^', include('censo.urls')),
     url(r'^', include('hhrr.urls')),
+    url(r'^', include('tracking.urls')),
     url(r'^', include('products.urls')),
     url(r'^', include('vehicle_fleet.urls')),
     #url(r'^censo/mapa/$', 'censo.views.map_view', name='mapa'),

@@ -1,0 +1,83 @@
+{% extends "page.jinja" %}
+
+{% block html_extra %} ng-app="employeeTrackingApp"{% endblock %}
+{% block body_attr %} class="tracking_page" ng-controller="TrackingController"{% endblock %}
+
+{% block module_icon %}<i class="glyphicon glyphicon-eye-open"></i>  {% endblock %}
+
+{% block content %}
+  <div class="col-md-8" id="trackmap" event-broadcast="actions">
+    <ui-gmap-google-map center='map.center' zoom='map.zoom' options="options"></ui-gmap-google-map>
+    <h2>{{ _('Tracking at') }}: [[times.selected | date:'shortTime']]</h2>
+    <md-slider aria-label="Tracking Slider" ng-model="times.selected" min="[[times.from]]" max="[[times.to]]" step="[[times.step]]"></md-slider>
+  </div>
+
+  <div id="sidebar-tracking" class="col-md-4">
+    <div class="sidebar-wrapper">
+      <div class="panel panel-default" id="calendar">
+        <datepicker ng-model="date" max-date="today" show-weeks="false" class="well well-sm"></datepicker>
+      </div>
+      <div class="panel panel-default" id="features">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            {{ _('Employee activity for') }} <span ng-bind="date_str()"></span>
+          </h3>
+        </div>
+        <div class="panel-body" ng-switch="!!events.length">
+          <div class="row event-activity">
+            <ul class="unstyled" ng-switch-when="true">
+              <li ng-repeat="event in events track by event.pk">
+                <div class="author">
+                  <img ng-src="[[event.avatar]]"/>
+                </div>
+                <div class="name" ng-bind="event.user"></div>
+                <div class="date" ng-bind="event.added"></div>
+                <div class="description">
+                  <a ng-href="[[ event.url ]]" ng-bind="event.description" ng-show="event.url"></a>
+                  <span ng-bind="event.description" ng-hide="event.url"></span>
+                </div>
+              </li>
+            </ul>
+            <div ng-switch-when="false">
+              <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                {{ _('There is no user activity on this day.') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  super()
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment-with-locales.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.js"></script>
+  <script src="{{ "libs/js/lodash.min.js"|static }}"></script>
+  <script src="{{ "libs/js/angular-google-maps.min.js"|static }}"></script>
+  <script src="{{ "js/tracking/app.js"|static }}"></script>
+
+    <script>
+
+    $('.map-go-fullscreen').on('click', function () {
+      var element = $('.angular-google-map-container')[0];
+      console.log(element);
+      if (element.requestFullScreen) {
+        element.requestFullScreen();
+      }
+      if (element.webkitRequestFullScreen) {
+        element.webkitRequestFullScreen();
+      }
+      if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      }
+    });
+
+  </script>
+{% endblock %}
