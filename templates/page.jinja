@@ -1,6 +1,8 @@
 {% extends "base.jinja" %}
 
 {% block extra_css %}
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
   <link rel="stylesheet" href="{{ "css/theme.css"|static }}{{ '?' if debug }}">
   <link rel="stylesheet" href="{{ "css/page_styles.css"|static }}{{ '?' if debug }}">
   <link rel="stylesheet" href="{{ 'css/Control.FullScreen.css'|static }}"/>
@@ -245,12 +247,12 @@
             <div class="col-ms-10">
               <ul id="AppTabs">
                 <li class="active">
-                  <a href="/invoices/544221/">
+                  <a href="#">
                     List
                   </a>
                 </li>
                 <li class="last-tab">
-                  <a href="/invoices/recurring/544221/">
+                  <a href="#">
                     Map
                   </a>
                 </li>

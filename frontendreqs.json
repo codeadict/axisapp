@@ -76,7 +76,9 @@
     "{{ github }}/mlevans/leaflet-hash/master/leaflet-hash.js": "js/{{ filename }}",
     "{{ github }}/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer_compiled.js": "js/{{ filename }}",
     "{{ github }}/brianreavis/selectize.js/master/dist/js/standalone/selectize.min.js": "js/{{ filename }}",
-    "{{ github }}/brianreavis/selectize.js/master/dist/css/selectize.bootstrap3.css": "css/{{ filename }}"
-
+    "{{ github }}/brianreavis/selectize.js/master/dist/css/selectize.bootstrap3.css": "css/{{ filename }}",
+    "{{ github }}/angular-ui/angular-google-maps/2.1.0-X.10/dist/angular-google-maps.min.js": "js/{{ filename }}",
+    "{{ github }}/eowo/angular-horizontal-timeline/master/angular-horizontal-timeline.css": "css/{{ filename }}",
+    "{{ github }}/eowo/angular-horizontal-timeline/master/angular-horizontal-timeline.js": "js/{{ filename }}"
   }
 }

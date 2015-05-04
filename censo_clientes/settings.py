@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'django_jinja.contrib._easy_thumbnails',
     'djcelery',
     'rest_framework',
+    'swampdragon',
     'smart_selects',
     'leaflet',
     'djgeojson',
@@ -65,7 +66,8 @@ INSTALLED_APPS = (
     'mptt',
     'hhrr',
     'products',
-    'vehicle_fleet'
+    'vehicle_fleet',
+    'tracking'
 )
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
@@ -248,6 +250,8 @@ JWT_AUTH = {
 }
 
 ALLOWED_HOSTS = []
+
+SWAMP_DRAGON_CONNECTION = ('swampdragon.connections.sockjs_connection.DjangoSubscriberConnection', '/tracking')
 
 CORS_ORIGIN_ALLOW_ALL = True
 

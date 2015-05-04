@@ -809,7 +809,7 @@ footer a:hover, footer a:focus {
   border-top: none;
 }
 
-.list-group-item div{
+.list-group-item div {
   display: block;
   float: left;
   vertical-align: middle;
@@ -1105,7 +1105,7 @@ span.loading {
 
 .map-canvas {
   width: 100%;
-  max-width:565px;
+  max-width: 565px;
   height: 400px;
 }
 
@@ -1115,8 +1115,7 @@ ul#id_frequency {
   -moz-columns: 2;
 }
 
-
-.nav-tabs.nav-justified>li {
+.nav-tabs.nav-justified > li {
   cursor: pointer;
   border: solid 1px #e0e0e0;
   border-top: solid 3px #999;
@@ -1133,20 +1132,31 @@ ul#id_frequency {
   border-top-left-radius: 6px;
 }
 
-.nav-tabs.nav-justified>li.active{
+.nav-tabs.nav-justified > li.active {
   background: #fff;
   color: #175B51;
   border-top: solid 3px #175B51;
   border-bottom: solid 1px #fff;
 }
 
-.tab-content{
+.tab-content {
   background: #FFFFFF;
   min-height: 300px;
   padding: 10px 20px;
 }
 
 #legend {
-    background: white;
-    padding: 10px;
-  }
+  background: white;
+  padding: 10px;
+}
+
+.tracking_page .angular-google-map-container {
+  height: 400px;
+}
+
+.tracking_page #sidebar {
+  overflow: auto;
+  -webkit-transition: all 0.25s ease-out;
+  -moz-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
+}
