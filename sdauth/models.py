@@ -50,19 +50,19 @@ class User(AbstractBaseUser):
         (2, _('Male'))
     )
     email = models.EmailField(verbose_name=_('Correo'), max_length=255, blank=True, unique=True)
-    is_active = models.BooleanField(default=True, verbose_name=_('Esta Activo?'))
-    is_deleted = models.BooleanField(default=False, verbose_name=_('Usuario Eliminado?'))
+    is_active = models.BooleanField(default=True, verbose_name=_('Esta Activo'))
+    is_deleted = models.BooleanField(default=False, verbose_name=_('Usuario Eliminado'))
     is_admin = models.BooleanField(_('Super Administrador?'), default=False)
-    is_admin.help_text = _('Es el administrador del sitema con todo tipo de privilegios.')
+    is_admin.help_text = _('Es el administrador del sistema con todo tipo de privilegios.')
 
     first_name = models.CharField(_('Nombres'), max_length=255, null=True, blank=True)
     last_name = models.CharField(_('Apellidos'), max_length=255)
     mobile = models.CharField(_('Celular'), max_length=255, null=True, blank=True)
     phone = models.CharField(_('Telefono Convencional'), max_length=255, null=True, blank=True)
-    gender = models.PositiveSmallIntegerField(_('Género'), choices=GENDERS, null=True, blank=True)
-    date_of_birth = models.DateField(_('Cumpleaños'), null=True, blank=True)
+    gender = models.PositiveSmallIntegerField(_('Genero'), choices=GENDERS, null=True, blank=True)
+    date_of_birth = models.DateField(_('Cumpleanos'), null=True, blank=True)
     date_created = models.DateField(_('Fecha Creado'), auto_now_add=True)
-    street = models.TextField(_('Dirección'), null=True, blank=True)
+    street = models.TextField(_('Direccion'), null=True, blank=True)
     city = models.CharField(_('Ciudad'), max_length=50, null=True, blank=True)
 
     objects = UserManager.from_queryset(UserQueryset)()
@@ -146,4 +146,3 @@ def update_user_history(sender, user, **kwargs):
     if settings.RECORD_LOGIN:
         user.user_logs.create(action=History.LOGIN)
         user.save(process_photo=False)
-

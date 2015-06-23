@@ -34,7 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    #'suit',
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'django_jinja.contrib._easy_thumbnails',
     'djcelery',
     'rest_framework',
+    'rest_framework.authtoken',
     'swampdragon',
     'smart_selects',
     'leaflet',
