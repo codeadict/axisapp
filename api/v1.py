@@ -72,7 +72,7 @@ class UserViewSet(ChasquiModelViewSet):
     filter_fields = ['email', 'last_name', 'first_name']
 
 
-class UserAreasList(generics.ListAPIView):
+class UserAreasViewSet(ChasquiModelViewSet):
     serializer_class = serializers.AreasSerializer
 
     def get_queryset(self):

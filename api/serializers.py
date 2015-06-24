@@ -50,7 +50,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class AreasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
-        exclude = ('censador', 'prevendedor')
 
 
 class AreasNestedSerializer(serializers.ModelSerializer):

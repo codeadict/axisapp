@@ -11,7 +11,7 @@ from api.routers import NamespaceRouter
 router = NamespaceRouter()
 
 router.register(r'users', views.UserViewSet)
-#router.register(r'areas', views.AdministratorViewSet)
+router.register(r'areas', views.UserAreasViewSet)
 
 
 # Wire up our API using automatic URL routing.
