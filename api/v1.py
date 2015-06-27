@@ -73,6 +73,7 @@ class UserViewSet(ChasquiModelViewSet):
 
 
 class UserAreasViewSet(ChasquiModelViewSet):
+    model = Area
     serializer_class = serializers.AreasSerializer
 
     def get_queryset(self):

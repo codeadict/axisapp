@@ -20,12 +20,5 @@ router.register(r'areas', views.UserAreasViewSet)
 urlpatterns = patterns('api.views',
     url(r'^', include(router.urls)),
     url(r'^api-token-auth/', rf_views.obtain_auth_token),
+    url(r'^clientes/(?P<area>\d+)', views.ClientesAreaList.as_view()),
 )
-
-
-# urlpatterns = patterns('',
-#     url(r'v1/auth/login/', 'rest_framework_jwt.views.obtain_jwt_token'),
-#     url(r'v1/users/', views.UserListAPIView.as_view()),
-#     url(r'v1/user_areas/', views.UserAreasList.as_view()),
-#     url(r'v1/clientes/(?P<area>\d+)', views.ClientesAreaList.as_view()),
-# )
