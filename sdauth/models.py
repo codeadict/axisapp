@@ -6,7 +6,10 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
+
+from rest_framework.authtoken.models import Token
 
 from base.querysets import BaseRequestQueryset
 
@@ -146,3 +149,9 @@ def update_user_history(sender, user, **kwargs):
     if settings.RECORD_LOGIN:
         user.user_logs.create(action=History.LOGIN)
         user.save(process_photo=False)
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

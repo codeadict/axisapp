@@ -1,6 +1,7 @@
 __author__ = 'codeadict'
 from django.conf.urls import include, patterns, url
 from django.views.generic import TemplateView
+from rest_framework.authtoken import views as rf_views
 
 from api import v1 as views
 
@@ -18,6 +19,7 @@ router.register(r'areas', views.UserAreasViewSet)
 # Additionally, we include token URL
 urlpatterns = patterns('api.views',
     url(r'^', include(router.urls)),
+    url(r'^api-token-auth/', rf_views.obtain_auth_token),
 )
 
 

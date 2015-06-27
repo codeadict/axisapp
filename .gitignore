@@ -1,7 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
+*.pyc
 # C extensions
 *.so
 
@@ -74,3 +74,6 @@ scripts/gdrive_data/
 # vim and ctags files
 *.swp
 tags
+
+.idea
+.idea/*
