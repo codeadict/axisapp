@@ -1,7 +1,7 @@
 {% extends "base.jinja" %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
   <link rel="stylesheet" href="{{ "css/theme.css"|static }}{{ '?' if debug }}">
   <link rel="stylesheet" href="{{ "css/page_styles.css"|static }}{{ '?' if debug }}">
@@ -86,6 +86,7 @@
     {% endif %}
   {% endif %}
 {% endmacro %}
+
 
 {% macro user_mobile_menu() %}
   <div class="menu-item hide-std">
@@ -238,29 +239,32 @@
             <div class="alert alert-warning">{{ _('Your account it not active until you confirm your email address') }}</div>
           {% endif %}
 
-          <div class="btn-toolbar pull-right" role="toolbar">
-            {{ buttons(button_menu) }}
-          </div>
-
-
-          <div class="col-md-12">
-            <div class="col-ms-10">
-              <ul id="AppTabs">
-                <li class="active">
-                  <a href="#">
-                    List
-                  </a>
-                </li>
-                <li class="last-tab">
-                  <a href="#">
-                    Map
-                  </a>
-                </li>
-              </ul>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="btn-toolbar pull-right" role="toolbar">
+                {{ buttons(button_menu) }}
+              </div>
             </div>
           </div>
 
-          <div class="content{{ ' block' if not no_outer_block }}{{ ' pad' if not no_page_pad }}">
+
+          {% if tabs_menu %}
+            <div class="col-md-12">
+              <div class="col-ms-10">
+                <ul id="AppTabs" role="tablist" class="">
+                  {% for tab in tabs_menu %}
+                    <li class="{{'active' if loop.first}}" role="presentation">
+                      <a href="{{ tab.rurl }}" role="tab" data-toggle="tab">
+                        {{ tab.name }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="content{{ ' block' if not no_outer_block }}{{ ' pad' if not no_page_pad }}{{ ' tab-content' if tabs_menu }}">
             <div class="row">
               <div class="col-md-12">
                 <div class="pull-left">

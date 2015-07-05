@@ -16,7 +16,9 @@ from partners.partner_form_helper import DeletePartner
 
 class ClientList(PartnerListView):
     active_page = 'client-list'
+    geometry_field = 'coordenadas'
     model = Cliente
+    paginate_by = None  # we get all the results no pagination
     perms = []
     detail_view = 'client-details'
     display_items = [
@@ -32,10 +34,23 @@ class ClientList(PartnerListView):
         {'name': _('Agregar Cliente'), 'rurl': 'client-add'},
         {'name': _('Filtrar'), 'rurl': 'client-filter'}
     ]
-    search_form = ClientSearchForm
+
+    tabs_menu = [
+        {'name': _('Lista'), 'rurl': '#listtab'},
+        {'name': _('Mapa'), 'rurl': '#maptab'}
+    ]
 
     def get_queryset(self):
-        return super(ClientList, self).get_queryset()
+        return super(ClientList, self).get_queryset().only('tipo_id', 'identif', 'email', 'celular', 'coordenadas', 'direccion', 'nombres', 'apellidos').order_by().cache()
+
+    def get_search_form(self):
+        return ClientsMapFilterForm(data=self.request.GET, request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientList, self).get_context_data(**kwargs)
+        context['search_form'] = self.get_search_form()
+        context['full_width'] = True
+        return context
 
 
 client_list = ClientList.as_view()

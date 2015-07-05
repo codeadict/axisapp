@@ -17,6 +17,8 @@ class BasicPage(object):
     _ATTR_NOT_FOUND = '__ATTR_NOT_FOUND__'
     title = None
     button_menu = []
+     #: Renders tabbed menu on Top
+    tabs_menu = []
     active_page = -1
 
     def _get_attr(self, name):
@@ -99,6 +101,7 @@ class BasicPage(object):
         context = super(BasicPage, self).get_context_data(**kwargs)
         context['title'] = self.title or ''
         context['button_menu'] = self.get_process_buttons()
+        context['tabs_menu'] = getattr(self, 'get_tabs', lambda : self.tabs_menu)()
         context['obj_url'] = self._object_url
         context['convert_to_string'] = self.convert_to_string
         self.request.active_page = self.active_page
