@@ -1,6 +1,7 @@
 __author__ = 'codeadict'
 from sdauth.models import User
 from base.models import Area
+from censo.models import Cliente
 from django.db.models import Q
 import datetime
 import json
@@ -51,6 +52,12 @@ class AreasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
 
+
+class ClientsSerialier(serializers.ModelSerializer):
+
+    class Meta:
+        partial = True
+        model = Cliente
 
 class AreasNestedSerializer(serializers.ModelSerializer):
     clientes = serializers.SerializerMethodField('obtener_clientes_area')

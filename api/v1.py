@@ -95,3 +95,12 @@ class ClientesAreaList(generics.ListAPIView):
             area_obj = Area.objects.get(pk=area)
             queryset = queryset.filter(coordenadas__within=area_obj.poligono)
         return queryset
+
+
+class CustomersViewSet(ChasquiModelViewSet):
+    """
+    Lista todos los clientes de determinada area
+    """
+    model = Cliente
+
+    serializer_class = serializers.ClientsSerialier

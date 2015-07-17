@@ -232,21 +232,28 @@ SERIALIZATION_MODULES = {
     'geojson': 'djgeojson.serializers'
 }
 
-
 REST_FRAMEWORK = {
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.TokenAuthentication',
-   ),
-   'DEFAULT_PERMISSION_CLASSES': (
-       'rest_framework.permissions.AllowAny',
-   ),   
-   'PAGINATE_BY': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # Useful for testing. We can leave it in production too.
+        'rest_framework.authentication.SessionAuthentication',
+
+        # Standard way
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.DjangoFilterBackend',
+    ),
+    'PAGINATE_BY': 1000
 }
+
 
 REST_SESSION_LOGIN = False
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 SWAMP_DRAGON_CONNECTION = ('swampdragon.connections.sockjs_connection.DjangoSubscriberConnection', '/tracking')
 

@@ -41,7 +41,7 @@ class ClientList(PartnerListView):
     ]
 
     def get_queryset(self):
-        return super(ClientList, self).get_queryset().only('tipo_id', 'identif', 'email', 'celular', 'coordenadas', 'direccion', 'nombres', 'apellidos').order_by().cache()
+        return super(ClientList, self).get_queryset().only('tipo_id', 'identif', 'email', 'celular', 'coordenadas', 'direccion', 'nombres', 'apellidos').order_by()
 
     def get_search_form(self):
         return ClientsMapFilterForm(data=self.request.GET, request=self.request)
