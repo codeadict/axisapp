@@ -56,6 +56,7 @@ docs/_build/
 
 # custom
 localsettings.*
+censo_clientes/localsettings.py
 extra_path.txt
 *.DS_Store
 env
