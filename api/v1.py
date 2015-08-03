@@ -81,20 +81,20 @@ class UserAreasViewSet(ChasquiModelViewSet):
         user = self.request.user
         return Area.objects.filter(censador=user)
 
- class ClientesAreaList(generics.ListAPIView):
-    """
-    Lista todos los clientes de determinada area
-    """
-    model = Cliente
-    serializer_class = serializers.ClientsSerialier
+class ClientesAreaList(generics.ListAPIView):
+   """
+   Lista todos los clientes de determinada area
+   """
+   model = Cliente
+   serializer_class = serializers.ClientsSerialier
 
-    def get_queryset(self):
-        queryset = Cliente.objects.all()
-        area = self.kwargs.get('area', None)
-        if area is not None:
-            area_obj = Area.objects.get(pk=area)
-            queryset = queryset.filter(coordenadas__within=area_obj.poligono)
-        return queryset
+   def get_queryset(self):
+       queryset = Cliente.objects.all()
+       area = self.kwargs.get('area', None)
+       if area is not None:
+           area_obj = Area.objects.get(pk=area)
+           queryset = queryset.filter(coordenadas__within=area_obj.poligono)
+       return queryset
 
 
 class CustomersViewSet(ChasquiModelViewSet):
