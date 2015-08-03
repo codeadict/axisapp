@@ -20,6 +20,7 @@ router.register(r'marketassetcompanies', views.MarketAssetsCompanies)
 router.register(r'visitscompanies', views.VisitsCompaniesViewSet)
 router.register(r'packages', views.PackagesViewSet)
 router.register(r'macrocategories', views.MacroCategoryViewSet)
+router.register(r'locations', views.TrackingViewSet)
 
 ocassions_router = routers.NestedSimpleRouter(router, r'macrochannels', lookup='macrochannel')
 ocassions_router.register(r'ocassions', views.OcassionsViewSet, base_name='ocassions')

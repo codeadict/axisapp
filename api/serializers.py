@@ -6,6 +6,7 @@ from sdauth.models import User
 from base.models import Area, OcasionConsumo, MacroCanal, Canal, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
     MacroCat, Categoria, Marca
 from censo.models import Cliente
+from tracking.models import UserTracking
 from django.db.models import Q
 
 from rest_framework import serializers
@@ -104,6 +105,17 @@ class MakesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marca
+
+
+class TrackingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserTracking
+        fields = ['id', 'lat', 'lgn', 'date_time']
+
+    def save_object(self, obj, **kwargs):
+        obj.user = self.context['request'].user
+        return super(TrackingSerializer, self).save_object(obj, **kwargs)
 
 
 class ClientsSerialier(serializers.ModelSerializer):

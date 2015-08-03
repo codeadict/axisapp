@@ -16,6 +16,7 @@ from api import serializers
 from base.models import Area, Canal, MacroCanal, OcasionConsumo, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
     MacroCat, Categoria, Marca
 from censo.models import Cliente
+from tracking.models import UserTracking
 
 """
 Chasqui API
@@ -232,3 +233,16 @@ class MakeViewSet(ChasquiModelViewSet):
         make = get_object_or_404(queryset, pk=pk)
         serializer = self.serializer_class(make)
         return Response(serializer.data)
+
+
+class TrackingViewSet(ChasquiModelViewSet):
+    """
+    Enpoint para seguimiento del usuario.
+    """
+    model = UserTracking
+    serializer_class = serializers.TrackingSerializer
+    filter_fields = ['user']
+
+    def get_queryset(self):
+        qs = self.model.objects.all()
+        return qs.select_related('user')
