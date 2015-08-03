@@ -3,7 +3,8 @@ import datetime
 import json
 
 from sdauth.models import User
-from base.models import Area, OcasionConsumo, MacroCanal, Canal, SubCanal
+from base.models import Area, OcasionConsumo, MacroCanal, Canal, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
+    MacroCat, Categoria, Marca
 from censo.models import Cliente
 from django.db.models import Q
 
@@ -73,6 +74,36 @@ class SubChannelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubCanal
+
+
+class MarketAssetsCompaniesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EmpresaActivos
+
+
+class VisitsCompaniesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EmpresaVisitas
+
+
+class PackagingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Envase
+
+
+class CategoriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Categoria
+
+
+class MakesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Marca
 
 
 class ClientsSerialier(serializers.ModelSerializer):
