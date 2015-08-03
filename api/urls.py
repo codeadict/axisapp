@@ -14,6 +14,7 @@ router = NamespaceRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'areas', views.UserAreasViewSet)
 router.register(r'customers', views.CustomersViewSet)
+router.register(r'macrochannels', views.MacroChannelViewSet)
 
 
 # Wire up our API using automatic URL routing.
