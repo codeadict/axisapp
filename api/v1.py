@@ -40,6 +40,7 @@ class _CreateViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     Allow Model creation only
     """
+
     def get_serializer_context(self):
         return {'request': self.request}
 
@@ -49,7 +50,6 @@ class _CreateListRetrieveViewSet(_ChasquiRequestMixin,
                                  mixins.ListModelMixin,
                                  mixins.RetrieveModelMixin,
                                  viewsets.GenericViewSet):
-
     def get_serializer_context(self):
         return {'request': self.request}
 
@@ -74,14 +74,15 @@ class UserViewSet(ChasquiModelViewSet):
 
 class UserAreasViewSet(ChasquiModelViewSet):
     model = Area
-    
+
     serializer_class = serializers.AreasSerializer
 
     def get_queryset(self):
         user = self.request.user
         return Area.objects.filter(censador=user)
 
- class ClientesAreaList(generics.ListAPIView):
+
+class ClientesAreaList(generics.ListAPIView):
     """
     Lista todos los clientes de determinada area
     """
