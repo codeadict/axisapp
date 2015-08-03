@@ -1,11 +1,15 @@
 __author__ = 'codeadict'
+import datetime
+import json
+
 from sdauth.models import User
 from base.models import Area
 from censo.models import Cliente
 from django.db.models import Q
-import datetime
-import json
+
 from rest_framework import serializers
+
+from drf_extra_fields.fields import Base64ImageField
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -54,6 +58,8 @@ class AreasSerializer(serializers.ModelSerializer):
 
 
 class ClientsSerialier(serializers.ModelSerializer):
+    foto = Base64ImageField(required=False)
+    foto_local = Base64ImageField(required=False)
 
     class Meta:
         partial = True

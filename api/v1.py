@@ -12,7 +12,7 @@ from rest_framework import status
 from rest_framework import generics
 
 from api import serializers
-from base.models import Area
+from base.models import Area, Canal, MacroCanal, OcasionConsumo, SubCanal
 from censo.models import Cliente
 
 """
@@ -81,12 +81,12 @@ class UserAreasViewSet(ChasquiModelViewSet):
         user = self.request.user
         return Area.objects.filter(censador=user)
 
-
-class ClientesAreaList(generics.ListAPIView):
+ class ClientesAreaList(generics.ListAPIView):
     """
     Lista todos los clientes de determinada area
     """
     model = Cliente
+    serializer_class = serializers.ClientsSerialier
 
     def get_queryset(self):
         queryset = Cliente.objects.all()
@@ -104,3 +104,10 @@ class CustomersViewSet(ChasquiModelViewSet):
     model = Cliente
 
     serializer_class = serializers.ClientsSerialier
+
+
+class MacroChannelViewSet(ChasquiModelViewSet):
+    """
+    Macro Canales
+    """
+    model = MacroCanal
