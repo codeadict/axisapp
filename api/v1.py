@@ -13,8 +13,10 @@ from rest_framework import status
 from rest_framework import generics
 
 from api import serializers
-from base.models import Area, Canal, MacroCanal, OcasionConsumo, SubCanal
+from base.models import Area, Canal, MacroCanal, OcasionConsumo, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
+    MacroCat, Categoria, Marca
 from censo.models import Cliente
+from tracking.models import UserTracking
 
 """
 Chasqui API
@@ -114,6 +116,7 @@ class MacroChannelViewSet(ChasquiModelViewSet):
     Macro Canales
     """
     model = MacroCanal
+    paginate_by = None
 
 
 class OcassionsViewSet(ChasquiModelViewSet):
@@ -171,3 +174,76 @@ class SubChannelsViewSet(ChasquiModelViewSet):
         subchannel = get_object_or_404(queryset, pk=pk)
         serializer = self.serializer_class(subchannel)
         return Response(serializer.data)
+
+class MarketAssetsCompanies(ChasquiModelViewSet):
+    model = EmpresaActivos
+    serializer_class = serializers.MarketAssetsCompaniesSerializer
+    paginate_by = None
+
+
+class VisitsCompaniesViewSet(ChasquiModelViewSet):
+    model = EmpresaVisitas
+    serializer_class = serializers.VisitsCompaniesSerializer
+    paginate_by = None
+
+
+class PackagesViewSet(ChasquiModelViewSet):
+    model = Envase
+    serializer_class = serializers.PackagingSerializer
+    paginate_by = None
+
+
+class MacroCategoryViewSet(ChasquiModelViewSet):
+    model = MacroCat
+    paginate_by = None
+
+
+class CategoryViewSet(ChasquiModelViewSet):
+    """
+    Categorias de Productos
+    """
+    model = Categoria
+    serializer_class = serializers.CategoriesSerializer
+
+    def list(self, request, macrocategory_pk=None):
+        queryset = self.model.objects.filter(macro=macrocategory_pk)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None, macrocategory_pk=None):
+        queryset = self.model.objects.filter(pk=pk, macro=macrocategory_pk)
+        category = get_object_or_404(queryset, pk=pk)
+        serializer = self.serializer_class(category)
+        return Response(serializer.data)
+
+
+class MakeViewSet(ChasquiModelViewSet):
+    """
+    Marcas de Productos
+    """
+    model = Marca
+    serializer_class = serializers.MakesSerializer
+
+    def list(self, request, macrocategory_pk=None, category_pk=None):
+        queryset = self.model.objects.filter(categoria=category_pk)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None, macrocategory_pk=None, category_pk=None):
+        queryset = self.model.objects.filter(pk=pk, categoria=category_pk)
+        make = get_object_or_404(queryset, pk=pk)
+        serializer = self.serializer_class(make)
+        return Response(serializer.data)
+
+
+class TrackingViewSet(ChasquiModelViewSet):
+    """
+    Enpoint para seguimiento del usuario.
+    """
+    model = UserTracking
+    serializer_class = serializers.TrackingSerializer
+    filter_fields = ['user']
+
+    def get_queryset(self):
+        qs = self.model.objects.all()
+        return qs.select_related('user')
