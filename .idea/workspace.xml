@@ -2,35 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3a0fc20-fae0-4cd1-927d-50731a9f5537" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/libs/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/libs/fields/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/base/profiling/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/js/competence_report/app.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/js/dashboard/app.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/libs/fields/boolean_field.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/partners/client/competence_report.jinja" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/reports/dashboard.jinja" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/js/dashboard/controllers/dashboard.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/libs/fields/json_field.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/libs/serializers.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/base/profiling/sql.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/libs/tools.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/app_logo.png" afterPath="$PROJECT_DIR$/static/app_logo.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/base/admin.py" afterPath="$PROJECT_DIR$/base/admin.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/base.jinja" afterPath="$PROJECT_DIR$/templates/base.jinja" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/partners/views/clients.py" afterPath="$PROJECT_DIR$/partners/views/clients.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/base/main_menu.py" afterPath="$PROJECT_DIR$/base/main_menu.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/base/models.py" afterPath="$PROJECT_DIR$/base/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/censo/models.py" afterPath="$PROJECT_DIR$/censo/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/page.jinja" afterPath="$PROJECT_DIR$/templates/page.jinja" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/serializers.py" afterPath="$PROJECT_DIR$/api/serializers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/censo_clientes/settings.py" afterPath="$PROJECT_DIR$/censo_clientes/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/css/theme.css" afterPath="$PROJECT_DIR$/static/css/theme.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/censo/urls.py" afterPath="$PROJECT_DIR$/censo/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/censo_clientes/urls.py" afterPath="$PROJECT_DIR$/censo_clientes/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/v1.py" afterPath="$PROJECT_DIR$/api/v1.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/base/views.py" afterPath="$PROJECT_DIR$/base/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="axisapp-1.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -97,19 +70,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="v1.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/v1.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.714286">
-              <caret line="300" column="16" selection-start-line="300" selection-start-column="12" selection-end-line="300" selection-end-column="16" />
-              <folding>
-                <element signature="e#25#55#0" expanded="true" />
-                <marker date="1439180017215" expanded="true" signature="3085:3283" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="tools.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/libs/tools.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -120,11 +80,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2533784">
-              <caret line="122" column="50" selection-start-line="122" selection-start-column="50" selection-end-line="122" selection-end-column="50" />
+            <state vertical-scroll-proportion="-12.571428">
+              <caret line="169" column="63" selection-start-line="169" selection-start-column="63" selection-end-line="169" selection-end-column="63" />
               <folding>
                 <element signature="e#25#40#0" expanded="true" />
               </folding>
@@ -198,6 +158,18 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="v1.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/api/v1.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.7419355">
+              <caret line="150" column="64" selection-start-line="150" selection-start-column="64" selection-end-line="150" selection-end-column="64" />
+              <folding>
+                <element signature="e#25#55#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -247,9 +219,9 @@
         <option value="$PROJECT_DIR$/base/models.py" />
         <option value="$PROJECT_DIR$/base/admin.py" />
         <option value="$PROJECT_DIR$/api/libs/tools.py" />
-        <option value="$PROJECT_DIR$/api/v1.py" />
         <option value="$PROJECT_DIR$/censo/models.py" />
         <option value="$PROJECT_DIR$/api/serializers.py" />
+        <option value="$PROJECT_DIR$/api/v1.py" />
       </list>
     </option>
   </component>
@@ -1448,17 +1420,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/v1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.714286">
-          <caret line="300" column="16" selection-start-line="300" selection-start-column="12" selection-end-line="300" selection-end-column="16" />
-          <folding>
-            <element signature="e#25#55#0" expanded="true" />
-            <marker date="1439180017215" expanded="true" signature="3085:3283" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/libs/tools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1469,10 +1430,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2533784">
-          <caret line="122" column="50" selection-start-line="122" selection-start-column="50" selection-end-line="122" selection-end-column="50" />
+        <state vertical-scroll-proportion="-12.571428">
+          <caret line="169" column="63" selection-start-line="169" selection-start-column="63" selection-end-line="169" selection-end-column="63" />
           <folding>
             <element signature="e#25#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/v1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7419355">
+          <caret line="150" column="64" selection-start-line="150" selection-start-column="64" selection-end-line="150" selection-end-column="64" />
+          <folding>
+            <element signature="e#25#55#0" expanded="true" />
           </folding>
         </state>
       </provider>

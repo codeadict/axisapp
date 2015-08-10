@@ -148,7 +148,8 @@ class CustomersViewSet(ChasquiModelViewSet):
 
         if status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]:
             visitas = tools.get_client_visits(cliente)
-            serializer = serializers.VisitasSerializer(visitas, context={'request': request}, many=True)
+            paginated = self.paginate_queryset(visitas)
+            serializer = serializers.VisitasSerializer(paginated, context={'request': request}, many=True)
             data = serializer.data
 
         return Response(data)
