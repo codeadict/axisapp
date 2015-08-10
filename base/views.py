@@ -16,7 +16,7 @@ from base.data_import import TemplateSheet, trigger_import
 
 
 class Dashboard(TemplateView):
-    template_name = 'dashboard.html'
+    template_name = 'reports/dashboard.jinja'
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -33,7 +33,11 @@ class Dashboard(TemplateView):
         print clientes_x_dia
         context = super(Dashboard, self).get_context_data()
         context['data_grafico'] = clientes_x_dia
+        context['title'] = 'Tablero de Mando'
+        context['full_width'] = True
         return context
+
+dashboard = Dashboard.as_view()
 
 
 def import_template(request):

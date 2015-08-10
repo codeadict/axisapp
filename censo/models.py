@@ -99,6 +99,7 @@ class Cliente(modelos_maestros.Partner):
 
     #Datos Localizacion
     fecha_ingreso = models.DateField('Fecha Ingreso', null=True, blank=True)
+    registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Registrado Por'), null=True)
     fecha_retiro = models.DateField('Fecha Retiro', null=True, blank=True)
     #area = models.ForeignKey(modelos_maestros.Area, verbose_name='Area o Poligono')
     codigo = models.CharField(max_length=20, verbose_name='Codigo', null=True, blank=True)
@@ -243,7 +244,7 @@ class Visita(models.Model):
     """
     Visita Clientes
     """
-    cliente = models.ForeignKey(Cliente, verbose_name='Cliente', default=0)
+    cliente = models.ForeignKey(Cliente, verbose_name='Cliente', related_name='visits')
     empresa = models.ForeignKey(modelos_maestros.EmpresaVisitas, verbose_name='Competencia')
     lunes = models.BooleanField('Lun', default=False)
     martes = models.BooleanField('Mar', default=False)

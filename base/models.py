@@ -143,22 +143,41 @@ class Partner(models.Model):
         # make sure we always use the role id even if this method is called on child instances.
         return getattr(self, 'partner_ptr_id', self.id)
 
-class Provincia(NombreMayusculasModel):
-    codigo = models.CharField(max_length=10, verbose_name='Codigo de Provincia', default='')
-    nombre = models.CharField(max_length=45, verbose_name='Nombre de la Provincia')
+class Provincia(gismodel.Model):
+    codigo = gismodel.CharField(max_length=10, verbose_name='Codigo de Provincia', unique=True)
+    nombre = gismodel.CharField(max_length=45, verbose_name='Nombre de la Provincia')
+    geom = gismodel.MultiPolygonField(null=True) # we want our model in a different SRID
+
+    objects = gismodel.GeoManager()
 
 
-class Canton(NombreMayusculasModel):
-    provincia = models.ForeignKey(Provincia)
-    nombre = models.CharField(max_length=45, verbose_name='Nombre del Canton')
+    def __unicode__(self):
+        return self.nombre
+
+
+class Canton(gismodel.Model):
+    provincia = gismodel.ForeignKey(Provincia, to_field='codigo')
+    codigo = gismodel.CharField(max_length=10, verbose_name='Codigo del Canton', default='', unique=True, db_index=True)
+    nombre = gismodel.CharField(max_length=45, verbose_name='Nombre del Canton')
+    geom = gismodel.MultiPolygonField(null=True)
+
+    objects = gismodel.GeoManager()
 
     class Meta:
         verbose_name_plural = 'Cantones'
 
 
-class Parroquia(NombreMayusculasModel):
-    canton = models.ForeignKey(Canton)
-    nombre = models.CharField(max_length=45, verbose_name='Nombre de la Parroquia')
+    def __unicode__(self):
+        return self.nombre
+
+
+class Parroquia(gismodel.Model):
+    canton = gismodel.ForeignKey(Canton, to_field='codigo')
+    codigo = gismodel.CharField(max_length=10, verbose_name='Codigo de la Parroquia', default='', unique=True, db_index=True)
+    nombre = models.CharField(max_length=255, verbose_name='Nombre de la Parroquia')
+    geom = gismodel.MultiPolygonField(null=True)
+
+    objects = gismodel.GeoManager()
 
     def __unicode__(self):
         return unicode(self.nombre)

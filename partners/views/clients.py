@@ -2,7 +2,7 @@ import copy
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, FormView
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
@@ -117,6 +117,25 @@ class ClientFilter(PartnerListView):
 
 client_filter = ClientFilter.as_view()
 
+
+class CompetenceReport(PartnerMapView):
+    model = Cliente
+    title = 'Reportes de la Competencia'
+    template_name = 'partners/client/competence_report.jinja'
+    active_page = 'competence-report'
+    search_form = ClientsMapFilterForm
+
+    def get_search_form(self):
+        return ClientsMapFilterForm(data=self.request.GET, request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super(CompetenceReport, self).get_context_data(**kwargs)
+        context['search_form'] = self.get_search_form()
+        context['full_width'] = True
+        return context
+
+
+competence_report = CompetenceReport.as_view()
 
 class ClientDetails(PartnerDetailView):
     active_page = 'client-list'
