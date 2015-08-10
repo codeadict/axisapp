@@ -110,6 +110,7 @@ class CustomersViewSet(ChasquiModelViewSet):
     queryset = Cliente.objects.all()
     lookup_field = 'pk'
     model = Cliente
+    paginate_by = 100
     serializer_class = serializers.ClientsSerialier
 
 
@@ -130,7 +131,7 @@ class CustomersViewSet(ChasquiModelViewSet):
                     visita = Visita.objects.filter(cliente=cliente).get(pk=pk)
                 except Visita.DoesNotExist:
                     status_code = status.HTTP_400_BAD_REQUEST
-                    data['pk'] = [_(u"La visita `%(pk)d` no existe para este cliente." % {'pk': pk})]
+                    data['pk'] = [_(u"La visita `%(pk)s` no existe para este cliente." % {'pk': pk})]
                 else:
                     if request.method == 'POST':
                         if isinstance(visita, Visita):
@@ -155,15 +156,19 @@ class CustomersViewSet(ChasquiModelViewSet):
 
 
     def list(self, request, *args, **kwargs):
+        data = {}
         area = request.QUERY_PARAMS.get('area')
 
         if area:
-            area_obj = Area.objects.get(pk=area)
-            kwargs = {'coordenadas__within': area_obj.poligono}
-            self.object_list = self.filter_queryset(self.get_queryset()) | \
-                Cliente.objects.filter(estado=Cliente.ACTIVO, **kwargs)
+            try:
+                area_obj = Area.objects.get(pk=area)
+                self.object_list = Cliente.objects.filter(estado=Cliente.ACTIVO, coordenadas__within=area_obj.poligono)
+            except Area.DoesNotExist:
+                status_code = status.HTTP_400_BAD_REQUEST
+                data['result'] = [_(u"El area `%(pk)s` no existe." % {'pk': area})]
+                return Response(data)
         else:
-            self.object_list = self.filter_queryset(self.get_queryset())
+            self.object_list  = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
 
         serializer = self.get_serializer(self.object_list, many=True)
 
