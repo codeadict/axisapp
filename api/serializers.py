@@ -148,7 +148,7 @@ class ActivosMercadoSerializer(serializers.ModelSerializer):
         model = ActivosMercado
 
 
-class VisitasSerializer(serializers.HyperlinkedModelSerializer):
+class VisitasSerializer(serializers.ModelSerializer):
     """
     Serializer con competition visits
     """
@@ -167,7 +167,7 @@ class VisitasSerializer(serializers.HyperlinkedModelSerializer):
         model = Visita
 
 
-class InventarioProductosSerializer(serializers.HyperlinkedModelSerializer):
+class InventarioProductosSerializer(serializers.ModelSerializer):
     """
     Serializer for competition products for each client.
     """
