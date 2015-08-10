@@ -10,12 +10,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ViewSet
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework import generics
 
 from api import serializers
+from api.libs import tools
 from base.models import Area, Canal, MacroCanal, OcasionConsumo, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
     MacroCat, Categoria, Marca
-from censo.models import Cliente
+from censo.models import Cliente, Visita, InvProductos, ActivosMercado
 from tracking.models import UserTracking
 
 """
@@ -106,9 +108,66 @@ class CustomersViewSet(ChasquiModelViewSet):
     """
     Lista todos los clientes de determinada area
     """
+    queryset = Cliente.objects.all()
+    lookup_field = 'pk'
     model = Cliente
-
     serializer_class = serializers.ClientsSerialier
+
+
+    @action(methods=['DELETE', 'GET', 'POST'])
+    def visits(self, request, *args, **kwargs):
+        """
+        Agregar o listar visitas a un cliente
+        """
+        cliente = self.object = self.get_object()
+        data = {}
+        status_code = status.HTTP_200_OK
+
+        if request.method.upper() in ['DELETE', 'POST']:
+            pk = request.DATA.get('pk') or request.QUERY_PARAMS.get('pk')
+
+            if pk:
+                try:
+                    visita = Visita.objects.filter(cliente=cliente).get(pk=pk)
+                except Visita.DoesNotExist:
+                    status_code = status.HTTP_400_BAD_REQUEST
+                    data['pk'] = [_(u"La visita `%(pk)d` no existe para este cliente." % {'pk': pk})]
+                else:
+                    if request.method == 'POST':
+                        if isinstance(visita, Visita):
+                            serializer = serializers.VisitasSerializer(visita, context={'request': request})
+                            data = serializer.data
+                    elif request.method == 'DELETE':
+                        tools.remove_visit_from_client(cliente, visita)
+                    status_code = status.HTTP_201_CREATED
+            else:
+                status_code = status.HTTP_400_BAD_REQUEST
+                data['pk'] = [_(u"Debe especificar un id de visita.")]
+
+            return Response(visita, status=status.HTTP_400_BAD_REQUEST)
+
+        if status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]:
+            visitas = tools.get_client_visits(cliente)
+            serializer = serializers.VisitasSerializer(visitas, context={'request': request}, many=True)
+            data = serializer.data
+
+        return Response(data)
+
+
+    def list(self, request, *args, **kwargs):
+        area = request.QUERY_PARAMS.get('area')
+
+        if area:
+            area_obj = Area.objects.get(pk=area)
+            kwargs = {'coordenadas__within': area_obj.poligono}
+            self.object_list = self.filter_queryset(self.get_queryset()) | \
+                Cliente.objects.filter(estado=Cliente.ACTIVO, **kwargs)
+        else:
+            self.object_list = self.filter_queryset(self.get_queryset())
+
+        serializer = self.get_serializer(self.object_list, many=True)
+
+        return Response(serializer.data)
 
 
 class MacroChannelViewSet(ChasquiModelViewSet):

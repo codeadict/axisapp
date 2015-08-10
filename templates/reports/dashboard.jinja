@@ -1,0 +1,105 @@
+{% extends "page.jinja" %}
+
+{% block html_extra %} ng-app="ReportingApp"{% endblock %}
+{% block body_attr %} class="dashboard_page" ng-controller="DashboardController"{% endblock %}
+
+{% block module_icon %}<i class="glyphicon glyphicon-dashboard"></i>{% endblock %}
+
+{% block content %}
+    <section id="areasChart" class="primary-area">
+        <div class="row">
+            <p class="lead text-center">
+                Clientes censados por provincia y censadores en este día
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+
+                <div class="well well-success">
+                    <div id="carousel" class="carousel slide" on-slide next="slides.next()" prev="slides.prev()"
+                         style="height: 120px">
+                        <div class="carousel-inner">
+                            <div class="item"
+                                 ng-repeat="regiao in ['Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul']"
+                                 ng-class="{active: $first}">
+                                <h3 class="text-center text-inverse" style="margin-top:50px" ng-bind="regiao"></h3>
+                            </div>
+                        </div>
+
+                        <a class="left carousel-control" href="#carousel" data-slide="prev" style="margin-left:-10px">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel" data-slide="next" style="margin-right:-10px">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+                    </div>
+
+                    <div class="well well-compressed well-regiao-counter bg-dark-success">
+                        <h3 class="text-center text-inverse" ng-bind="porRegiao.data.total"></h3>
+
+                        <p class="text-center text-inverse" ng-bind="porRegiao.data.totalLabel"></p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-8">
+                <div class="well well-success">
+                    <header class="well-title ng-cloak">Clientes en el area</header>
+                    <div class="col-md-12">
+                        <div vega-chart data="porRegiao.data" spec="porRegiao.spec" opts="porRegiao.opts"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <section id="weeklyChart" class="primary-area">
+        <div class="row">
+            <p class="lead text-center">
+                Clientes censados esta semana
+            </p>
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-12">
+                <div class="well well-orange">
+                    <header class="well-title ng-cloak">Clientes censado esta semana</header>
+                    <div class="col-md-12">
+                        <div vega-chart data="porRegiao.data" spec="porRegiao.spec" opts="porRegiao.opts"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <section id="typesChart" class="primary-area">
+        <div class="row">
+            <div class="col-sm-4">
+                <p class="lead text-center">
+                    Clientes Nuevos V.S Actualizados
+                </p>
+
+                <div class="well well-shadow">
+                    <div class="col-md-12">
+                        <div vega-chart data="porRegiao.data" spec="porRegiao.spec" opts="porRegiao.opts"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <p class="lead text-center">
+                    Censadores más destacados de la semana
+                </p>
+
+                <div class="well well-shadow">
+                    <div class="col-md-12">
+                        <div vega-chart data="porRegiao.data" spec="porRegiao.spec" opts="porRegiao.opts"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

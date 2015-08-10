@@ -12,8 +12,7 @@ body {
   font-weight: normal;
   line-height: 20px;
   color: #444;
-  background: url('../img/bg-noise.png') repeat left top;
-  min-width: 1023px;
+  background: url('../img/bg-noise.png') repeat left top !important;
 }
 
 a:focus {
@@ -22,6 +21,98 @@ a:focus {
 a:hover, a:active {
   outline: 0;
   text-decoration: none;
+}
+
+.well-success {
+  background-color: #68d286;
+}
+.well {
+  border: 0;
+  min-height: 335px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+.well-success {
+  background-color: #68d286;
+}
+.well {
+  border: 0;
+  min-height: 335px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.bg-dark-success {
+  background-color: #36B453;
+}
+
+.well-orange {
+  background-color: #fcd174;
+}
+
+.well-shadow {
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 1px 0 rgba(0,0,0,.2);
+}
+
+.lead {
+  color: #8D9AA5;
+  margin-bottom: 0;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.well-regiao-counter {
+  margin-top: 30px;
+}
+.well-compressed {
+  min-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.carousel {
+  position: relative;
+}
+
+.carousel-inner {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-inner>.active {
+  left: 0;
+}
+.carousel-inner>.active, .carousel-inner>.next, .carousel-inner>.prev {
+  display: block;
+}
+.carousel-inner>.item {
+  display: none;
+  position: relative;
+  -webkit-transition: .6s ease-in-out left;
+  transition: .6s ease-in-out left;
+}
+
+.carousel-control.right {
+  left: auto;
+  right: 0;
+  background-image: -webkit-gradient(linear,0 top,100% top,from(rgba(0,0,0,0)),to(rgba(0,0,0,0)));
+  background-image: -webkit-linear-gradient(left,color-stop(rgba(0,0,0,0) 0),color-stop(rgba(0,0,0,0) 100%));
+  background-image: -webkit-linear-gradient(left,rgba(0,0,0,0) 0,rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(to right,rgba(0,0,0,0) 0,rgba(0,0,0,0) 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#00000000', GradientType=1);
+}
+
+.carousel-control.left {
+  background-image: -webkit-gradient(linear,0 top,100% top,from(rgba(0,0,0,0)),to(rgba(0,0,0,0)));
+  background-image: -webkit-linear-gradient(left,color-stop(rgba(0,0,0,0) 0),color-stop(rgba(0,0,0,0) 100%));
+  background-image: -webkit-linear-gradient(left,rgba(0,0,0,0) 0,rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(to right,rgba(0,0,0,0) 0,rgba(0,0,0,0) 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#00000000', GradientType=1);
 }
 
 button, input, select, textarea {

@@ -58,18 +58,22 @@ class EmpresaVisitasIE(resources.ModelResource):
 
 
 class ProvinciaAdmin(ImportExportModelAdmin):
+    search_fields = ['nombre']
     resource_class = ProvinciasResource
     list_display = ['nombre']
 
 
 class CantonAdmin(ImportExportModelAdmin):
+    search_fields = ['nombre']
     resource_class = CantonResource
     list_display = ['nombre']
 
 
 class ParroquiaAdmin(ImportExportModelAdmin):
+    search_fields = ['nombre']
     resource_class = ParroquiaIE
     list_display = ['nombre']
+    list_filter = ['canton']
 
 
 class AreaAdmin(LeafletGeoAdmin):

@@ -1,16 +1,18 @@
 __author__ = 'codeadict'
 import datetime
 import json
-
-from sdauth.models import User
-from base.models import Area, OcasionConsumo, MacroCanal, Canal, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
-    MacroCat, Categoria, Marca
-from censo.models import Cliente
-from tracking.models import UserTracking
 from django.db.models import Q
 
-from rest_framework import serializers
+from sdauth.models import User
+from api.libs.fields.boolean_field import BooleanField
 
+from base.models import Area, OcasionConsumo, MacroCanal, Canal, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
+    MacroCat, Categoria, Marca
+from censo.models import Cliente, ActivosMercado, Visita, InvProductos
+from tracking.models import UserTracking
+
+
+from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 
 
@@ -125,6 +127,54 @@ class ClientsSerialier(serializers.ModelSerializer):
     class Meta:
         partial = True
         model = Cliente
+
+    def save_object(self, obj, **kwargs):
+        obj.registrado_por = self.context['request'].user
+        return super(TrackingSerializer, self).save_object(obj, **kwargs)
+
+
+class ActivosMercadoSerializer(serializers.ModelSerializer):
+    """
+    Sealizer for client market assets
+    """
+    congelador = BooleanField()
+    exhibidor = BooleanField()
+    estante = BooleanField()
+    rotulo = BooleanField()
+    mesas = BooleanField()
+    sillas = BooleanField()
+
+    class Meta:
+        model = ActivosMercado
+
+
+class VisitasSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer con competition visits
+    """
+    lunes = BooleanField()
+    martes = BooleanField()
+    miercoles = BooleanField()
+    jueves = BooleanField()
+    viernes = BooleanField()
+    sabado = BooleanField()
+    domingo = BooleanField()
+    preventa = BooleanField()
+    autoventa = BooleanField()
+    televenta = BooleanField()
+
+    class Meta:
+        model = Visita
+
+
+class InventarioProductosSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for competition products for each client.
+    """
+
+    class Meta:
+        model = InvProductos
+
 
 class AreasNestedSerializer(serializers.ModelSerializer):
     clientes = serializers.SerializerMethodField('obtener_clientes_area')

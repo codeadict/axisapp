@@ -144,16 +144,6 @@
       </button>
     </div>
     <div class="navbar-collapse">
-      <form class="navbar-form navbar-left" role="search" method="get"
-            action="{{ url('search-universal') }}{% if search_section %}?section={{ search_section }}{% endif %}">
-        <div class="input-group">
-          <input type="text" class="form-control" name="search"
-                 placeholder={{ _("Search") }} value="{{ request.GET.search }}">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-            </span>
-        </div>
-      </form>
       <ul class="nav navbar-nav">
         {% if branches %}
           <li class="dropdown">

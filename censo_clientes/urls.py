@@ -15,7 +15,7 @@ from censo.models import Cliente, PresalesDistribution
 urlpatterns = patterns('',
     # Examples:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'base.default_views.not_built', name='index'),
+    url(r'^$', 'base.views.dashboard', name='index'),
     url(r'^', include('base.urls')),
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

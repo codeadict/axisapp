@@ -1,0 +1,49 @@
+{% extends "page.jinja" %}
+
+{% import 'macro/display_functions.jinja' as display with context %}
+{% block html_extra %} ng-app="competenceReportApp"{% endblock %}
+{% block body_attr %} class="report_page" ng-controller="CompetenceController"{% endblock %}
+
+{% block module_icon %}<i class="glyphicon glyphicon-search"></i> {% endblock %}
+
+{% block content %}
+    {% if search_form %}
+        <div class="col-md-12">
+            <form method="GET" class="form-inline">
+                {% for field in search_form %}
+                    {{ field|bootstrap }}
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">{{ _('Ejecuar Reporte') }}</button>
+            </form>
+        </div>
+    {% endif %}
+    <div class="col-md-12" id="map" event-broadcast="clients">
+
+        <div class="loading-indicator">
+            <div class='text'> Cargando...</div>
+        </div>
+        <div ng-switch="!!clients.length">
+            <div ng-switch-when="true">
+                <ui-gmap-google-map center='map.center' zoom='map.zoom' options="options"></ui-gmap-google-map>
+            </div>
+            <div ng-switch-when="false">
+                <div class="alert alert-info" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    {{ _('Por favor escoja los filtros que desea para ver la ubicación de su competencia.') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment-with-locales.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.js"></script>
+    <script src="{{ "libs/js/lodash.min.js"|static }}"></script>
+    <script src="{{ "libs/js/angular-google-maps.min.js"|static }}"></script>
+    <script src="{{ "js/competence_report/app.js"|static }}"></script>
+{% endblock %}

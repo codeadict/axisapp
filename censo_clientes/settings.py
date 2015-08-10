@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sys
 import os
 import datetime
 import djcelery
@@ -90,6 +91,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'base.profiling.sql.SqlTimingMiddleware',
     'sdauth.middleware.SDAuthMiddleware',
 )
 
@@ -311,6 +313,81 @@ CACHEOPS_DEFAULTS = {
 }
 
 #CACHEOPS_DEGRADE_ON_FAILURE = True
+
+
+def skip_suspicious_operations(record):
+    """Prevent django from sending 500 error
+    email notifications for SuspiciousOperation
+    events, since they are not true server errors,
+    especially when related to the ALLOWED_HOSTS
+    configuration
+    background and more information:
+    http://www.tiwoc.de/blog/2013/03/django-prevent-email-notification-on-susp\
+    iciousoperation/
+    """
+    if record.exc_info:
+        exc_value = record.exc_info[1]
+        if isinstance(exc_value, SuspiciousOperation):
+            return False
+    return True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s' +
+                      ' %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'sql': {
+            'format': '%(levelname)s %(process)d %(thread)d' +
+                      ' %(time)s seconds %(message)s %(sql)s'
+        },
+        'sql_totals': {
+            'format': '%(levelname)s %(process)d %(thread)d %(time)s seconds' +
+                      ' %(message)s %(num_queries)s sql queries'
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        # Define filter for suspicious urls
+        'skip_suspicious_operations': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_suspicious_operations,
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false', 'skip_suspicious_operations'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'stream': sys.stdout
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'console_logger': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+    }
+}
 
 # this provides a way of overwriting variables locally without
 # adding it to git, use for TEST_CONCURRENCY, DATABASES
