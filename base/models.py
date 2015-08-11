@@ -188,23 +188,11 @@ class Area(NombreMayusculasModel):
     Modelo de Areas o regiones a censar
     """
     #TODO: poner fechas y horas que solo se pueden modificar los datos.
-    #TODO: Poner cliente inicial y final.
     nombre = gismodel.CharField(max_length=255, verbose_name='Nombre del poligono', null=False, blank=False)
-    provincia = models.ForeignKey(Provincia)
-    canton = ChainedForeignKey(
-        Canton,
-        chained_field="provincia",
-        chained_model_field="provincia",
-        show_all=False, auto_choose=True
-    )
-    parroquia = ChainedForeignKey(Parroquia, chained_field="canton", chained_model_field="canton")
     agencia = models.CharField(max_length=20, verbose_name='Agencia', null=True, blank=True)
     tipo_ruta = models.CharField(max_length=20, verbose_name='Tipo Ruta', null=True, blank=True)
     ruta = models.CharField(max_length=20, verbose_name='Ruta', null=True, blank=True)
     poligono = gismodel.PolygonField()
-    ruta_geom = gismodel.LineStringField(
-        null=True, blank=True,
-        help_text='Ruta a seguir por el censador o prevendedor')
     censador = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Censador Asignado', related_name='areas_censador', null=True,
                                  blank=False)
     prevendedor = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Prevendedor Asignado', related_name='areas_prevendedor',

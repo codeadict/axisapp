@@ -186,9 +186,6 @@ class Cliente(modelos_maestros.Partner):
         """
         Generar Codigo Automatico, autogenerar fechas y guardar mayusculas
         """
-        #codigo_prov = self.area.provincia.codigo
-        top = Cliente.objects.count()
-        #self.codigo = codigo_prov + str(1000 + top + 1)
         if not self.id:
             self.fecha_ingreso = date.today()
         if self.estado and self.estado in [self.PASIVO, self.ELIMINADO]:
@@ -203,9 +200,14 @@ class Cliente(modelos_maestros.Partner):
         if not self.nombre_comercial:
             setattr(self, 'nombre_comercial', self.apellidos + ' ' + self.nombres)
 
-        #TODO: Regenerar el administrador para que no sea requerido
         if not self.administrador:
             setattr(self, 'administrador', self.apellidos + ' ' + self.nombres)
+
+        # Find localization toponyms based on coordinates
+        if self.coordenadas:
+            province = modelos_maestros.Provincia.objects.filter(geom__contains=self.coordenadas)
+            canton = modelos_maestros.Canton.objects.filter(geom__contains=self.coordenadas)
+            parish = modelos_maestros.Parroquia.objects.filter(geom__contains=self.coordenadas )
 
         #obtener todos los campos Char sin choices para poner en mayusculas, DRY
         char_fields = [f.name for f in self._meta.fields if isinstance(f, models.CharField) and not isinstance(f, models.EmailField) and not isinstance(f, models.URLField) and not getattr(f, 'choices')]

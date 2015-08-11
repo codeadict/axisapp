@@ -48,6 +48,11 @@ urlpatterns = patterns('',
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
     from django.conf.urls.static import static
+    import debug_toolbar
+
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

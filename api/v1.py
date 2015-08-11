@@ -162,17 +162,17 @@ class CustomersViewSet(ChasquiModelViewSet):
         if area:
             try:
                 area_obj = Area.objects.get(pk=area)
-                self.object_list = Cliente.objects.filter(estado=Cliente.ACTIVO, coordenadas__within=area_obj.poligono)
+                self.object_list = Cliente.objects.filter(estado=Cliente.ACTIVO, coordenadas__within=area_obj.poligono)\
+                    .values('id', 'nombres', 'apellidos', 'tipo_id', 'identif')
             except Area.DoesNotExist:
                 status_code = status.HTTP_400_BAD_REQUEST
                 data['result'] = [_(u"El area `%(pk)s` no existe." % {'pk': area})]
                 return Response(data)
         else:
-            self.object_list  = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+            self.object_list  = self.filter_queryset(self.get_queryset().values('id', 'nombres', 'apellidos', 'tipo_id', 'identif'))
 
-        serializer = self.get_serializer(self.object_list, many=True)
-
-        return Response(serializer.data)
+        #serializer = self.get_serializer(self.object_list, many=True)
+        return Response(self.object_list)
 
 
 class MacroChannelViewSet(ChasquiModelViewSet):

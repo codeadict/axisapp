@@ -1,6 +1,4 @@
-'use strict';
-
-angular.module('ReportingApp', ['vegaModule'])
+angular.module('ReportingApp',  [])
     .factory('chartSize', function () {
         return function (element) {
             return {
