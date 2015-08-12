@@ -78,7 +78,7 @@ class ParroquiaAdmin(ImportExportModelAdmin):
 
 class AreaAdmin(LeafletGeoAdmin):
     search_fields = ['nombre']
-    list_display = ['nombre', 'provincia', 'canton', 'parroquia']
+    list_display = ['nombre',]
     default_zoom = 7
     actions = ['generar_ruta']
 

@@ -1,21 +1,19 @@
-'use strict';
-
 angular.module('ReportingApp')
     .controller('DashboardController', [
         '$scope',
-        '$q',
-        '$location',
-        function ($scope, $q, $location) {
+        function ($scope) {
 
             $scope.provinces = [
-                
+                'Azuay',
+                'Pichincha',
+                'Guayas',
             ];
 
-            $scope.weekly = weekChart;
+            //$scope.weekly = weekChart;
 
-            $scope.perprovince = perProvinceChart;
+            //$scope.perprovince = perProvinceChart;
 
-            $scope.perstatus = statusesChart;
+            //$scope.perstatus = statusesChart;
 
             $scope.slides = {
                 list: $scope.provinces,
@@ -35,7 +33,7 @@ angular.module('ReportingApp')
 
                     $scope.slides.current = list[idx % list.length];
 
-                    $scope.perprovince.loadData($scope.banner.api, $scope.slides.current.name);
+                    //$scope.perprovince.loadData($scope.banner.api, $scope.slides.current.name);
                 }
             };
         }
