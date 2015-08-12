@@ -404,6 +404,29 @@ class MakeViewSet(ChasquiModelViewSet):
         return Response(serializer.data)
 
 
+class AssetsViewSet(ChasquiModelViewSet):
+    """
+    Macro Canales
+    """
+    model = ActivosMercado
+    serializer_class = serializers.ActivosMercadoSerializer
+
+
+class VisitViewSet(ChasquiModelViewSet):
+    """
+    Visitas de la competencia
+    """
+    model = Visita
+    serializer_class = serializers.VisitasSerializer
+
+
+class ProductsViewSet(ChasquiModelViewSet):
+    """
+    Productos de la competencia
+    """
+    model = InvProductos
+    serializer_class = serializers.InventarioProductosSerializer
+
 class TrackingViewSet(ChasquiModelViewSet):
     """
     Enpoint para seguimiento del usuario.
