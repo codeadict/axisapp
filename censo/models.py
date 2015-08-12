@@ -272,7 +272,7 @@ class InvProductos(models.Model):
     """
     Inventario de Productos
     """
-    cliente = models.ForeignKey(Cliente, verbose_name='Cliente')
+    cliente = models.ForeignKey(Cliente, verbose_name='Cliente', related_name='products')
     macro_categ = models.ForeignKey(modelos_maestros.MacroCat, verbose_name='Macro Cat.')
     categ = ChainedForeignKey(
         modelos_maestros.Categoria,
@@ -288,12 +288,7 @@ class InvProductos(models.Model):
         chained_model_field="categoria",
         show_all=False, auto_choose=True
     )
-    presentacion = ChainedForeignKey(modelos_maestros.Presentacion,
-                                            verbose_name='Presentacion',
-                                            chained_field="marca",
-                                            chained_model_field="marca",
-                                            show_all=False, auto_choose=True
-    )
+    presentacion = models.PositiveIntegerField(verbose_name='Presentacion(ML)')
     envase = models.ForeignKey(modelos_maestros.Envase, verbose_name='Envase')
 
     class Meta:

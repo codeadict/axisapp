@@ -33,7 +33,7 @@ class InvForm(ModelForm):
     class Meta:
         widgets = {
             # Optionally you specify attrs too
-            'presentacion': Select(attrs={'class': 'input-mini'}),
+            'presentacion': NumberInput(attrs={'class': 'input-mini'}),
             'envase': Select(attrs={'class': 'input-mini'}),
         }
 

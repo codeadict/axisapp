@@ -149,8 +149,111 @@ class CustomersViewSet(ChasquiModelViewSet):
         if status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]:
             visitas = tools.get_client_visits(cliente)
             paginated = self.paginate_queryset(visitas)
-            serializer = serializers.VisitasSerializer(paginated, context={'request': request}, many=True)
-            data = serializer.data
+
+            pk = request.DATA.get('pk') or request.QUERY_PARAMS.get('pk')
+            if pk:
+                visita = visitas.get(pk=pk)
+                serializer = serializers.VisitasSerializer(visita, context={'request': request})
+                data = serializer.data
+            else:
+                serializer = serializers.VisitasSerializer(paginated, context={'request': request}, many=True)
+                data = serializer.data
+
+        return Response(data)
+
+
+    @action(methods=['DELETE', 'GET', 'POST'])
+    def assets(self, request, *args, **kwargs):
+        """
+        Agregar o listar activos de mercado de un cliente
+        """
+        cliente = self.object = self.get_object()
+        data = {}
+        status_code = status.HTTP_200_OK
+
+        if request.method.upper() in ['DELETE', 'POST']:
+            pk = request.DATA.get('pk') or request.QUERY_PARAMS.get('pk')
+
+            if pk:
+                try:
+                    asset = ActivosMercado.objects.filter(cliente=cliente).get(pk=pk)
+                except ActivosMercado.DoesNotExist:
+                    status_code = status.HTTP_400_BAD_REQUEST
+                    data['pk'] = [_(u"Activo de mercado `%(pk)s` no existe para este cliente." % {'pk': pk})]
+                else:
+                    if request.method == 'POST':
+                        if isinstance(asset, ActivosMercado):
+                            serializer = serializers.ActivosMercadoSerializer(asset, context={'request': request})
+                            data = serializer.data
+                    elif request.method == 'DELETE':
+                        tools.remove_market_asset_from_client(cliente, asset)
+                    status_code = status.HTTP_201_CREATED
+            else:
+                status_code = status.HTTP_400_BAD_REQUEST
+                data['pk'] = [_(u"Debe especificar un id de activo de mercado.")]
+
+            return Response(asset, status=status.HTTP_400_BAD_REQUEST)
+
+        if status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]:
+            assets = tools.get_client_market_assets(cliente)
+            paginated = self.paginate_queryset(assets)
+
+            pk = request.DATA.get('pk') or request.QUERY_PARAMS.get('pk')
+            if pk:
+                assets = assets.get(pk=pk)
+                serializer = serializers.ActivosMercadoSerializer(assets, context={'request': request})
+                data = serializer.data
+            else:
+                serializer = serializers.ActivosMercadoSerializer(paginated, context={'request': request}, many=True)
+                data = serializer.data
+
+        return Response(data)
+
+
+    @action(methods=['DELETE', 'GET', 'POST'])
+    def products(self, request, *args, **kwargs):
+        """
+        Agregar o listar productos de la competencia de un cliente
+        """
+        cliente = self.object = self.get_object()
+        data = {}
+        status_code = status.HTTP_200_OK
+
+        if request.method.upper() in ['DELETE', 'POST']:
+            pk = request.DATA.get('pk') or request.QUERY_PARAMS.get('pk')
+
+            if pk:
+                try:
+                    product = InvProductos.objects.filter(cliente=cliente).get(pk=pk)
+                except InvProductos.DoesNotExist:
+                    status_code = status.HTTP_400_BAD_REQUEST
+                    data['pk'] = [_(u"Producto de la competencia `%(pk)s` no existe para este cliente." % {'pk': pk})]
+                else:
+                    if request.method == 'POST':
+                        if isinstance(product, InvProductos):
+                            serializer = serializers.InventarioProductosSerializer(product, context={'request': request})
+                            data = serializer.data
+                    elif request.method == 'DELETE':
+                        tools.remove_product_from_client(cliente, product)
+                    status_code = status.HTTP_201_CREATED
+            else:
+                status_code = status.HTTP_400_BAD_REQUEST
+                data['pk'] = [_(u"Debe especificar un id de producto de la competencia.")]
+
+            return Response(product, status=status.HTTP_400_BAD_REQUEST)
+
+        if status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]:
+            products = tools.get_client_products(cliente)
+            paginated = self.paginate_queryset(products)
+
+            pk = request.DATA.get('pk') or request.QUERY_PARAMS.get('pk')
+            if pk:
+                product = products.get(pk=pk)
+                serializer = serializers.InventarioProductosSerializer(product, context={'request': request})
+                data = serializer.data
+            else:
+                serializer = serializers.InventarioProductosSerializer(paginated, context={'request': request}, many=True)
+                data = serializer.data
 
         return Response(data)
 
