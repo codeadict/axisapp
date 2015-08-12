@@ -137,12 +137,18 @@ class ActivosMercadoSerializer(serializers.ModelSerializer):
     """
     Sealizer for client market assets
     """
+    nombre_empresa = serializers.SerializerMethodField('get_company_name')
     congelador = BooleanField()
     exhibidor = BooleanField()
     estante = BooleanField()
     rotulo = BooleanField()
     mesas = BooleanField()
     sillas = BooleanField()
+
+
+    def get_company_name(self, *args, **kwargs):
+        this = args[0]
+        return this.empresa.nombre
 
     class Meta:
         model = ActivosMercado
@@ -171,6 +177,26 @@ class InventarioProductosSerializer(serializers.ModelSerializer):
     """
     Serializer for competition products for each client.
     """
+    nombre_macro_category = serializers.SerializerMethodField('get_macrocategory_name')
+    nombre_category = serializers.SerializerMethodField('get_category_name')
+    nombre_brand = serializers.SerializerMethodField('get_brand_name')
+    nombre_envase = serializers.SerializerMethodField('get_packaging_name')
+
+    def get_macrocategory_name(self, *args, **kwargs):
+        this = args[0]
+        return this.macro_categ.nombre
+
+    def get_category_name(self, *args, **kwargs):
+        this = args[0]
+        return this.categ.nombre
+
+    def get_brand_name(self, *args, **kwargs):
+        this = args[0]
+        return this.marca.marca
+
+    def get_packaging_name(self, *args, **kwargs):
+        this = args[0]
+        return this.envase.nombre
 
     class Meta:
         model = InvProductos
