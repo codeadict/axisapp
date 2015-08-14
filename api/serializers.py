@@ -123,8 +123,7 @@ class TrackingSerializer(serializers.ModelSerializer):
 class ClientsSerialier(serializers.ModelSerializer):
     foto = Base64ImageField(required=False)
     foto_local = Base64ImageField(required=False)
-    registrado_por = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True,
-                                                        default=None)
+    registrado_por = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None)
 
     class Meta:
         partial = True
