@@ -3,7 +3,7 @@
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'axisapp2',
+        'NAME': 'axisapp3',
         'USER': 'postgres',
         'PASSWORD': '1 m3 m1n3',
         'HOST': 'localhost',
