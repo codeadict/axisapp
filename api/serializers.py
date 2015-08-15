@@ -123,18 +123,16 @@ class TrackingSerializer(serializers.ModelSerializer):
 class ClientsSerialier(serializers.ModelSerializer):
     foto = Base64ImageField(required=False)
     foto_local = Base64ImageField(required=False)
-    registrado_por = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None)
 
     class Meta:
         partial = True
         model = Cliente
 
-    def validate_registrado_por(self, value):
-        return self.context['request'].user
-
     def save_object(self, obj, **kwargs):
-        obj.registrado_por = self.context['request'].user
-        return super(TrackingSerializer, self).save_object(obj, **kwargs)
+        if not obj.registrado_por:
+            obj.registrado_por = self.context['request'].user
+
+        return super(ClientsSerialier, self).save_object(obj, **kwargs)
 
 
 class ActivosMercadoSerializer(serializers.ModelSerializer):

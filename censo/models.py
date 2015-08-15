@@ -99,7 +99,7 @@ class Cliente(modelos_maestros.Partner):
 
     #Datos Localizacion
     fecha_ingreso = models.DateField('Fecha Ingreso', null=True, blank=True)
-    registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Registrado Por'), null=True)
+    registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Registrado Por'), null=True, blank=True)
     fecha_retiro = models.DateField('Fecha Retiro', null=True, blank=True)
     #area = models.ForeignKey(modelos_maestros.Area, verbose_name='Area o Poligono')
     codigo = models.CharField(max_length=20, verbose_name='Codigo', null=True, blank=True)
