@@ -25,6 +25,10 @@ router.register(r'clientvisits', views.VisitViewSet)
 router.register(r'clientassets', views.AssetsViewSet)
 router.register(r'clientproducts', views.ProductsViewSet)
 
+# Make a better view with object json structure
+router.register(r'macrocategories2', views.MacroCategory2ViewSet)
+router.register(r'macrochannels2', views.MacroChannel2ViewSet)
+
 ocassions_router = routers.NestedSimpleRouter(router, r'macrochannels', lookup='macrochannel')
 ocassions_router.register(r'ocassions', views.OcassionsViewSet, base_name='ocassions')
 

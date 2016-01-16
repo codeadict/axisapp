@@ -72,7 +72,7 @@
     "{{ github }}/t0m/select2-bootstrap-css/fce5f9f984b0cc6c8483ce7225ad2639f3a4dae5/select2-bootstrap.css": "css/{{ filename }}",
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/moment.min.js": "js/{{ filename }}",
     "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker.js": "js/{{ filename }}",
-    "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker-bs3.css": "css/{{ filename }}",
+    "{{ github }}/dangrossman/bootstrap-daterangepicker/master/daterangepicker.css": "css/{{ filename }}",
     "{{ github }}/mlevans/leaflet-hash/master/leaflet-hash.js": "js/{{ filename }}",
     "{{ github }}/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer_compiled.js": "js/{{ filename }}",
     "{{ github }}/brianreavis/selectize.js/master/dist/js/standalone/selectize.min.js": "js/{{ filename }}",

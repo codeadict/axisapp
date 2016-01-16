@@ -110,8 +110,9 @@
         latlng = new google.maps.LatLng("{{ client.coordenadas.y }}", "{{ client.coordenadas.x }}");
         var marker = new google.maps.Marker({
           position: latlng,
-          title: "{{ client.get_full_name() }}",
-          url: "{{ client.get_absolute_url() }}"
+          title: "{{ client.get_identif() }}: {{ client.get_full_name() }}",
+          //url: "{{ client.get_absolute_url() }}"
+          url: "{{ client.get_admin_url() }}"
         });
         google.maps.event.addListener(marker, 'click', function () {
           window.location.href = marker.url;
