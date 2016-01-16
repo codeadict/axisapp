@@ -7,7 +7,7 @@ from sdauth.models import User
 from api.libs.fields.boolean_field import BooleanField
 
 from base.models import Area, OcasionConsumo, MacroCanal, Canal, SubCanal, EmpresaActivos, EmpresaVisitas, Envase,\
-    MacroCat, Categoria, Marca
+    MacroCat, Categoria, Marca, Presentacion
 from censo.models import Cliente, ActivosMercado, Visita, InvProductos
 from tracking.models import UserTracking
 
@@ -97,16 +97,38 @@ class PackagingSerializer(serializers.ModelSerializer):
         model = Envase
 
 
+class MakesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Marca
+
+
+class PresentationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Presentacion
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    #presentations = PresentationSerializer(required=False, many=True)
+
+    class Meta:
+        model = Marca
+
+
 class CategoriesSerializer(serializers.ModelSerializer):
+
+    brands = BrandSerializer(required=False, many=True)
 
     class Meta:
         model = Categoria
 
 
-class MakesSerializer(serializers.ModelSerializer):
+class MacroCategorySerializer(serializers.ModelSerializer):
+
+    categories = CategoriesSerializer(required=False, many=True)
 
     class Meta:
-        model = Marca
+        model = MacroCat
 
 
 class TrackingSerializer(serializers.ModelSerializer):
@@ -218,3 +240,49 @@ class AreasNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Area
+
+
+class ClientsSerializerAllInOne(serializers.ModelSerializer):
+    foto = Base64ImageField(required=False)
+    foto_local = Base64ImageField(required=False)
+    products = InventarioProductosSerializer(required=False, many=True)
+    market_assets = ActivosMercadoSerializer(required=False, many=True)
+    visits = VisitasSerializer(required=False, many=True)
+
+    class Meta:
+        partial = True
+        model = Cliente
+
+    def save_object(self, obj, **kwargs):
+        if not obj.registrado_por:
+            obj.registrado_por = self.context['request'].user
+
+        return super(ClientsSerializerAllInOne, self).save_object(obj, **kwargs)
+
+
+## Those class to make a better objects list
+class SubChannel2Serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubCanal
+
+
+class Channels2Serializer(serializers.ModelSerializer):
+    subchannel = SubChannel2Serializer(required=False, many=True)
+
+    class Meta:
+        model = Canal
+
+
+class Ocassions2Serializer(serializers.ModelSerializer):
+    channel = Channels2Serializer(required=False, many=True)
+
+    class Meta:
+        model = OcasionConsumo
+
+
+class MacroChannelsSerializerAllInOne(serializers.ModelSerializer):
+    ocassions = Ocassions2Serializer(required=False, many=True)
+
+    class Meta:
+        model = MacroCanal

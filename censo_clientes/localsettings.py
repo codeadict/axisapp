@@ -3,9 +3,9 @@
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'axisapp3',
+        'NAME': 'axisapp',
         'USER': 'postgres',
-        'PASSWORD': '1 m3 m1n3',
+        'PASSWORD': 'swda-1432',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -18,9 +18,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-	'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 50,
+    'PAGE_SIZE': 50,
+    'MAX_PAGINATE_BY': 50,
 }
-

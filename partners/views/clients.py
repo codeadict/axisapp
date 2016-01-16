@@ -59,7 +59,7 @@ client_list = ClientList.as_view()
 class ClientMap(PartnerMapView):
     active_page = 'client-map'
     geometry_field = 'coordenadas'
-    paginate_by = 1000  # we get all the results no pagination
+    paginate_by = 1000000  # we get all the results no pagination
     model = Cliente
     perms = []
     detail_view = 'client-details'

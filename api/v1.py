@@ -93,13 +93,15 @@ class ClientesAreaList(generics.ListAPIView):
     Lista todos los clientes de determinada area
     """
     model = Cliente
-    serializer_class = serializers.ClientsSerialier
+    #serializer_class = serializers.ClientsSerialier
+    serializer_class = serializers.ClientsSerializerAllInOne
 
     def get_queryset(self):
         queryset = Cliente.objects.all()
         area = self.kwargs.get('area', None)
         if area is not None:
             area_obj = Area.objects.get(pk=area)
+            #TODO: make it only with the day of the week
             queryset = queryset.filter(coordenadas__within=area_obj.poligono)
         return queryset
 
@@ -112,7 +114,8 @@ class CustomersViewSet(ChasquiModelViewSet):
     lookup_field = 'pk'
     model = Cliente
     paginate_by = 100
-    serializer_class = serializers.ClientsSerialier
+    #serializer_class = serializers.ClientsSerialier
+    serializer_class = serializers.ClientsSerializerAllInOne
 
 
     @action(methods=['DELETE', 'GET', 'POST'])
@@ -343,6 +346,16 @@ class SubChannelsViewSet(ChasquiModelViewSet):
         serializer = self.serializer_class(subchannel)
         return Response(serializer.data)
 
+
+class MacroChannel2ViewSet(ChasquiModelViewSet):
+    """
+    Macro Canales
+    """
+    model = MacroCanal
+    paginate_by = None
+    serializer_class = serializers.MacroChannelsSerializerAllInOne
+
+
 class MarketAssetsCompanies(ChasquiModelViewSet):
     model = EmpresaActivos
     serializer_class = serializers.MarketAssetsCompaniesSerializer
@@ -364,6 +377,12 @@ class PackagesViewSet(ChasquiModelViewSet):
 class MacroCategoryViewSet(ChasquiModelViewSet):
     model = MacroCat
     paginate_by = None
+
+
+class MacroCategory2ViewSet(ChasquiModelViewSet):
+    model = MacroCat
+    paginate_by = None
+    serializer_class = serializers.MacroCategorySerializer
 
 
 class CategoryViewSet(ChasquiModelViewSet):

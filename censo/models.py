@@ -7,6 +7,9 @@ from django.contrib.gis.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from smart_selects.db_fields import ChainedForeignKey
 
+from django.core import urlresolvers
+from django.contrib.contenttypes.models import ContentType
+
 from base import models as modelos_maestros
 
 
@@ -132,6 +135,15 @@ class Cliente(modelos_maestros.Partner):
         if "'" in self.nombres:
             return ugettext('Names not present on DataBase')
         return '%s %s' % (self.nombres, self.apellidos)
+
+    def get_identif(self):
+        if "'" in self.identif:
+            return ugettext('Identification not present on DataBase')
+        return '%s' % (self.identif)
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return urlresolvers.reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.id,))
 
     def foto_cliente_admin(self):
         if self.foto:

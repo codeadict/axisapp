@@ -2,6 +2,7 @@ from django.contrib.gis import admin
 from django.contrib.admin import SimpleListFilter
 from censo import models
 from censo import forms
+from base.gis import BaseGMapWidget
 from base.models import Marca
 
 from leaflet.admin import LeafletGeoAdmin
@@ -83,6 +84,7 @@ class ClientesAdmin(admin.GeoModelAdmin, ImportExportModelAdmin):
             'fields': ['foto_local_admin', 'foto_local', ]}),
     ]
 
+    map_template = 'gis/admin/osm.html'
 
 admin.site.register(models.Cliente, ClientesAdmin)
 

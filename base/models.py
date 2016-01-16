@@ -227,7 +227,7 @@ class OcasionConsumo(NombreMayusculasModel):
     """
     Ocasiones de Consumo
     """
-    macrocanal = models.ForeignKey(MacroCanal)
+    macrocanal = models.ForeignKey(MacroCanal, related_name='ocassions')
     nombre = models.CharField(max_length=100, verbose_name='Ocasion de Consumo')
 
 
@@ -243,7 +243,7 @@ class Canal(NombreMayusculasModel):
     """
     Tabla de Canales
     """
-    ocasion = models.ForeignKey(OcasionConsumo, verbose_name='Ocacion de Consumo')
+    ocasion = models.ForeignKey(OcasionConsumo, verbose_name='Ocacion de Consumo', related_name='channel')
     nombre = models.CharField(max_length=100, verbose_name='Canal')
 
     class Meta:
@@ -258,7 +258,7 @@ class SubCanal(NombreMayusculasModel):
     """
     Sub Canales
     """
-    canal = models.ForeignKey(Canal, verbose_name='Canal')
+    canal = models.ForeignKey(Canal, verbose_name='Canal', related_name='subchannel')
     nombre = models.CharField(max_length=255, verbose_name='Sub Canal')
 
     class Meta:
@@ -289,7 +289,7 @@ class Categoria(NombreMayusculasModel):
     """
     Categorias de Productos
     """
-    macro = models.ForeignKey(MacroCat, verbose_name='Macro Categorizacion')
+    macro = models.ForeignKey(MacroCat, verbose_name='Macro Categorizacion', related_name='categories')
     nombre = models.CharField(max_length=255, verbose_name='Categorizacion')
 
     def __unicode__(self):
@@ -300,7 +300,7 @@ class Marca(models.Model):
     """
     Marcas de Productos
     """
-    categoria = models.ForeignKey(Categoria, verbose_name='Categorizacion')
+    categoria = models.ForeignKey(Categoria, verbose_name='Categorizacion', related_name='brands')
     marca = models.CharField(max_length=255, verbose_name='Marca')
 
     def __unicode__(self):
@@ -314,7 +314,7 @@ class Marca(models.Model):
 
 
 class Presentacion(NombreMayusculasModel):
-    marca = models.ForeignKey(Marca, verbose_name='Marca', null=True)
+    marca = models.ForeignKey(Marca, verbose_name='Marca', null=True, related_name='presentations')
     nombre = models.CharField(max_length=100, verbose_name='Presentacion')
 
     class Meta:
